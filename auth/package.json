@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "start": "tsc && node build/index.js",
     "start:dev": "env-cmd -f ./config/.env.development ts-node-dev src/index.ts"
   },
   "keywords": [],
