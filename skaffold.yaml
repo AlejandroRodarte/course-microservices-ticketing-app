@@ -1,0 +1,20 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kustomize:
+    paths:
+      - ./infra/k8s/base
+      - ./infra/k8s/overlays/dev
+build:
+  local:
+    push: false
+  artifacts:
+    - image: rodarte/ms-node-react-ticketing-app-auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+        target: dev
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
