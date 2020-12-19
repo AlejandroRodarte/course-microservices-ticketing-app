@@ -5,3 +5,4 @@ resources:
   - 100-auth-configmap.yaml
   - 200-auth-deployment.yaml
   - 300-auth-service.yaml
+  - 900-ticketing-ingress.yaml
