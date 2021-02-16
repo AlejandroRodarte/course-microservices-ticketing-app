@@ -16,10 +16,4 @@ spec:
     spec:
       containers:
         - name: auth
-          image: rodarte/ms-node-react-ticketing-app-auth:prod
-          env:
-            - name: PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: auth-configmap
-                  key: PORT
+          image: rodarte/msnr-ta-auth-prod:0.0.1

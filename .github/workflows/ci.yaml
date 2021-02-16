@@ -1,0 +1,108 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+      - development
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-vars:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Get commit hash and date
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git log -1 --format="%h")"
+          echo "::set-output name=created_date::$(date "+%s")"
+
+      - name: Get npm package version
+        uses: martinbeentjes/npm-get-version-action@master
+        id: package-version
+
+    outputs:
+      sha-short: ${{ steps.vars.outputs.sha_short }}
+      created-date: ${{ steps.vars.outputs.created_date }}
+      package-version: ${{ steps.package-version.outputs.current-versio }}
+
+  build-auth:
+    runs-on: ${{ matrix.os }}
+    needs: build-vars
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Setup production buildx
+        uses: docker/setup-buildx-action@v1
+        id: prodbuilder
+
+      - name: Setup development buildx
+        uses: docker/setup-buildx-action@v1
+        id: devbuilder
+
+      - name: Setup skaffold buildx
+        uses: docker/setup-buildx-action@v1
+        id: skaffoldbuilder
+
+      - name: Build against prodbuilder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./auth
+          push: true
+          builder: ${{ steps.prodbuilder.output.name }}
+          target: prod
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.package-version }}
+
+      - name: Build against devbuilder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./auth
+          push: true
+          builder: ${{ steps.devbuilder.output.name }}
+          target: dev
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-auth-dev:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-auth-dev:${{ needs.build-vars.outputs.package-version }}
+
+      - name: Build against skaffoldbuilder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./auth
+          push: true
+          builder: ${{ steps.skaffoldbuilder.output.name }}
+          target: skaffold
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-auth-skaffold:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-auth-skaffold:${{ needs.build-vars.outputs.package-version }}
+

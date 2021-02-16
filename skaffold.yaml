@@ -9,11 +9,11 @@ build:
   local:
     push: false
   artifacts:
-    - image: rodarte/ms-node-react-ticketing-app-auth
+    - image: rodarte/msnr-ta-auth-skaffold
       context: auth
       docker:
         dockerfile: Dockerfile
-        target: dev
+        target: skaffold
       sync:
         manual:
           - src: 'src/**/*.ts'
