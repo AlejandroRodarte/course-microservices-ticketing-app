@@ -48,7 +48,7 @@ jobs:
         uses: martinbeentjes/npm-get-version-action@master
         id: package-version
         with:
-          path: packages/auth
+          path: ./auth
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
