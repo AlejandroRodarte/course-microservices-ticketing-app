@@ -17,6 +17,11 @@ jobs:
       matrix:
         os: [ubuntu-latest]
 
+    outputs:
+      sha-short: ${{ steps.vars.outputs.sha_short }}
+      created-date: ${{ steps.vars.outputs.created_date }}
+      package-version: ${{ steps.package-version.outputs.current-version }}
+
     steps:
       - name: Get commit hash and date
         id: vars
@@ -28,11 +33,6 @@ jobs:
       - name: Get npm package version
         uses: martinbeentjes/npm-get-version-action@master
         id: package-version
-
-    outputs:
-      sha-short: ${{ steps.vars.outputs.sha_short }}
-      created-date: ${{ steps.vars.outputs.created_date }}
-      package-version: ${{ steps.package-version.outputs.current-versio }}
 
   build-auth:
     runs-on: ${{ matrix.os }}
