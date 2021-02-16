@@ -10,7 +10,7 @@ on:
       - master
 
 jobs:
-  buildvars:
+  build-vars:
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -18,11 +18,14 @@ jobs:
         os: [ubuntu-latest]
 
     outputs:
-      shashort: ${{ steps.vars.outputs.sha_short }}
-      createddate: ${{ steps.vars.outputs.created_date }}
-      packageversion: ${{ steps.package-version.outputs.current-version }}
+      sha-short: ${{ steps.vars.outputs.sha_short }}
+      created-date: ${{ steps.vars.outputs.created_date }}
+      package-version: ${{ steps.package-version.outputs.current-version }}
 
     steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
       - name: Get commit hash and date
         id: vars
         shell: bash
@@ -36,7 +39,7 @@ jobs:
 
   build-auth:
     runs-on: ${{ matrix.os }}
-    needs: buildvars
+    needs: build-vars
 
     strategy:
       matrix:
@@ -73,10 +76,10 @@ jobs:
           target: prod
           build-args: |
             SOURCE_COMMIT=${{ github.sha }}
-            CREATED_DATE=${{ needs.buildvars.outputs.createddate }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
           tags: |
-            rodarte/msnr-ta-auth-prod:${{ needs.buildvars.outputs.shashort }}
-            rodarte/msnr-ta-auth-prod:${{ needs.buildvars.outputs.packageversion }}
+            rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.package-version }}
 
       - name: Build against devbuilder
         uses: docker/build-push-action@v2
@@ -87,10 +90,10 @@ jobs:
           target: dev
           build-args: |
             SOURCE_COMMIT=${{ github.sha }}
-            CREATED_DATE=${{ needs.buildvars.outputs.createddate }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
           tags: |
-            rodarte/msnr-ta-auth-dev:${{ needs.buildvars.outputs.shashort }}
-            rodarte/msnr-ta-auth-dev:${{ needs.buildvars.outputs.packageversion }}
+            rodarte/msnr-ta-auth-dev:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-auth-dev:${{ needs.build-vars.outputs.package-version }}
 
       - name: Build against skaffoldbuilder
         uses: docker/build-push-action@v2
@@ -101,8 +104,8 @@ jobs:
           target: skaffold
           build-args: |
             SOURCE_COMMIT=${{ github.sha }}
-            CREATED_DATE=${{ needs.buildvars.outputs.createddate }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
           tags: |
-            rodarte/msnr-ta-auth-skaffold:${{ needs.buildvars.outputs.shashort }}
-            rodarte/msnr-ta-auth-skaffold:${{ needs.buildvars.outputs.packageversion }}
+            rodarte/msnr-ta-auth-skaffold:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-auth-skaffold:${{ needs.build-vars.outputs.package-version }}
 
