@@ -2,6 +2,6 @@ version: "3.4"
 
 services:
   auth:
-    image: rodarte/msnr-ta-auth-prod:0.0.1
+    image: rodarte/msnr-ta-auth-prod:f3f0cef
     ports:
       - "3000:3000"

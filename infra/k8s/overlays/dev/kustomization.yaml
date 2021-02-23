@@ -15,4 +15,4 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-skaffold
   newName: rodarte/msnr-ta-auth-skaffold
-  newTag: 6c8c134
+  newTag: f3f0cef

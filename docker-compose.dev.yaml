@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   auth:
-    image: rodarte/msnr-ta-auth-dev:0.0.1
+    image: rodarte/msnr-ta-auth-dev:f3f0cef
     volumes:
       - ./auth:/node/app
       - /node/app/node_modules
