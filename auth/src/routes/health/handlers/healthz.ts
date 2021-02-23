@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 
 const healthz: RequestHandler = (req, res) => {
-    res.send({ message: 'OK' });
+    res.send({ message: 'OK!' });
 };
 
 export default healthz;
