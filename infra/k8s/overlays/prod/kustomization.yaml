@@ -13,4 +13,4 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod
-  newTag: 6c8c134
+  newTag: f3f0cef
