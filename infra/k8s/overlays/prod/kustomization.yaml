@@ -1,12 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 patchesJson6902:
-  - path: hosts.yaml
-    target:
-      group: networking.k8s.io
-      kind: Ingress
-      name: ticketing-ingress
-      namespace: ticketing
-      version: v1beta1
-bases:
-  - ../../base
+- path: hosts.yaml
+  target:
+    group: networking.k8s.io
+    kind: Ingress
+    name: ticketing-ingress
+    namespace: ticketing
+    version: v1beta1
+resources:
+- ../../base
+images:
+- name: rodarte/msnr-ta-auth-prod
+  newName: rodarte/msnr-ta-auth-prod
+  newTag: 6c8c134

@@ -1,13 +1,16 @@
-name: ci
+name: auth
 
 on:
   push:
     branches:
-      - master
-      - development
+      - '*'
+    paths:
+      - 'auth/**'
   pull_request:
     branches:
-      - master
+      - '*'
+    paths:
+      - 'auth/**'
 
 jobs:
   build-vars:
@@ -32,9 +35,10 @@ jobs:
           echo "::set-output name=sha_short::$(git log -1 --format="%h")"
           echo "::set-output name=created_date::$(date "+%s")"
 
-  build-auth:
+  build:
     runs-on: ${{ matrix.os }}
     needs: build-vars
+    if: ${{ (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/development')) || (github.event_name == 'pull_request' && (github.base_ref == 'master' || github.base_ref == 'development')) }}
 
     strategy:
       matrix:
@@ -81,6 +85,7 @@ jobs:
           tags: |
             rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.sha-short }}
             rodarte/msnr-ta-auth-prod:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-auth-prod:latest
 
       - name: Build against devbuilder
         uses: docker/build-push-action@v2
@@ -95,6 +100,7 @@ jobs:
           tags: |
             rodarte/msnr-ta-auth-dev:${{ needs.build-vars.outputs.sha-short }}
             rodarte/msnr-ta-auth-dev:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-auth-dev:latest
 
       - name: Build against skaffoldbuilder
         uses: docker/build-push-action@v2
@@ -109,4 +115,39 @@ jobs:
           tags: |
             rodarte/msnr-ta-auth-skaffold:${{ needs.build-vars.outputs.sha-short }}
             rodarte/msnr-ta-auth-skaffold:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-auth-skaffold:latest
 
+  deploy:
+    runs-on: ${{ matrix.os }}
+    needs: [build-vars, build]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: "3.6.1"
+
+      - name: Update Kubernetes resources
+        run: |
+          cd infra/k8s/overlays/prod
+          kustomize edit set image rodarte/msnr-ta-auth-prod=rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.sha-short }}
+          cat kustomization.yaml
+
+      - name: Commit kustomization.yaml file
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git commit -am "Bump rodarte/msnr-ta-auth-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

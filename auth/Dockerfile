@@ -78,6 +78,9 @@ ENV NODE_ENV development
 # mkdir /node/app & workdir /node/app
 WORKDIR /node/app
 
+# run healthcheck
+HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/auth/health/healthz || exit 1
+
 # change to node user
 USER node
 
@@ -112,6 +115,9 @@ LABEL com.rodarte.ms-node-react.ticketing.auth.stage skaffold
 # override node environment to development
 ENV NODE_ENV development
 
+# run healthcheck
+HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/auth/health/healthz || exit 1
+
 # change to node user
 USER node
 
@@ -145,6 +151,9 @@ LABEL com.rodarte.ms-node-react.ticketing.auth.stage prod
 
 # from build stage, copy /node/build files (compiled javascript code) to /node/src in prod stage
 COPY --chown=node:node --from=build /node/build ./src
+
+# run healthcheck
+HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 CMD curl -f http://localhost:${PORT}/auth/health/healthz || exit 1
 
 # change to node user
 USER node

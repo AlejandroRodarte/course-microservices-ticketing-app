@@ -10,7 +10,7 @@ spec:
     - host: ticketing-api.dummy-value.com
       http:
         paths:
-          - path: /auth-api
+          - path: /auth
             backend:
               serviceName: auth-service
               servicePort: 3000

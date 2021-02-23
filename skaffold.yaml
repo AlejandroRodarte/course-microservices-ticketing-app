@@ -1,20 +1,21 @@
-apiVersion: skaffold/v2alpha3
+apiVersion: skaffold/v2beta12
 kind: Config
-deploy:
-  kustomize:
-    paths:
-      - ./infra/k8s/base
-      - ./infra/k8s/overlays/dev
-build:
-  local:
-    push: false
-  artifacts:
-    - image: rodarte/msnr-ta-auth-skaffold
-      context: auth
-      docker:
-        dockerfile: Dockerfile
-        target: skaffold
-      sync:
-        manual:
-          - src: 'src/**/*.ts'
-            dest: .
+profiles:
+  - name: dev
+    build:
+      artifacts:
+        - image: rodarte/msnr-ta-auth-skaffold
+          context: auth
+          sync:
+            manual:
+            - src: src/**/*.ts
+              dest: .
+          docker:
+            dockerfile: Dockerfile
+            target: skaffold
+      local:
+        push: false
+    deploy:
+      kustomize:
+        paths:
+        - ./infra/k8s/overlays/dev

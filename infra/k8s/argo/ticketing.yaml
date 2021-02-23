@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ticketing
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/AlejandroRodarte/course-microservices-ticketing-app.git
+    targetRevision: HEAD
+    path: infra/k8s/overlays/prod
+    directory:
+      recurse: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ticketing
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
