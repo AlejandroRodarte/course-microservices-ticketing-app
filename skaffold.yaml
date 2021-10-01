@@ -1,21 +1,21 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 profiles:
-  - name: dev
+  - name: dev # profile name (why we run "skaffold dev")
     build:
       artifacts:
         - image: rodarte/msnr-ta-auth-skaffold
-          context: auth
+          context: auth # build image based on what is inside ./auth
           sync:
             manual:
-            - src: src/**/*.ts
+            - src: src/**/*.ts # recompile when a .ts file inside ./auth/src changes
               dest: .
           docker:
             dockerfile: Dockerfile
-            target: skaffold
+            target: skaffold # build image based on skaffold-specific image
       local:
         push: false
     deploy:
       kustomize:
         paths:
-        - ./infra/k8s/overlays/dev
+        - ./infra/k8s/overlays/dev # kustomize deployment method; use development overlay

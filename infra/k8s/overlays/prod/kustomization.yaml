@@ -1,7 +1,10 @@
+# production overlay
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# override these resources
 patchesStrategicMerge:
 - 200-auth-deployment.yaml
+# patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patchesJson6902:
 - path: hosts.yaml
   target:
@@ -10,8 +13,10 @@ patchesJson6902:
     name: ticketing-ingress
     namespace: ticketing
     version: v1beta1
+# path to our base resources
 resources:
 - ../../base
+# set production images and tags (edited by GitHub Actions for CD)
 images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod

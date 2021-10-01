@@ -1,23 +1,25 @@
+# default auth microservice deployment configuration
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auth-deployment
-  namespace: ticketing
+  namespace: ticketing # associated to application namespace
 spec:
-  replicas: 1
+  replicas: 1 # only 1 replica
   selector:
     matchLabels:
-      app: auth
+      app: auth # app=auth label associated to the deployment
+  # pod creation template
   template:
     metadata:
       labels:
-        app: auth
-      namespace: ticketing
+        app: auth # all pods created by this deployment will have the app=auth label
+      namespace: ticketing # all pods created by this deployment will be associated to the application namespace
     spec:
       containers:
         - name: auth
-          image: rodarte/msnr-ta-auth-prod
-          startupProbe:
+          image: rodarte/msnr-ta-auth-prod # use production image
+          startupProbe: # startup probe to check that pod kickstarted properly; will check on pod's port 3000
             failureThreshold: 3
             tcpSocket:
               port: 3000
@@ -25,7 +27,7 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
-          readinessProbe:
+          readinessProbe: # readiness probe to check if pod is ready to start accepting traffic: hit /auth/health/healthz API route
             failureThreshold: 3
             httpGet:
               path: /auth/health/healthz
@@ -35,7 +37,7 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 10
-          livenessProbe:
+          livenessProbe: # liveness probe to check if pod requires to be restarted: hit /auth/health/healthz API route
             failureThreshold: 3
             httpGet:
               path: /auth/health/healthz

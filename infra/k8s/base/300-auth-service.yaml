@@ -1,14 +1,15 @@
+# auth microservice Kubernetes service (pod load balancer)
 apiVersion: v1
 kind: Service
 metadata:
   name: auth-service
-  namespace: ticketing
+  namespace: ticketing # related to application namespace
 spec:
-  type: ClusterIP
+  type: ClusterIP # service only reachable within cluster
   selector:
-    app: auth
+    app: auth # service will load balance all pods marked with the app=auth label (the ones created by the auth-deployment Deployment resource)
   ports:
     - name: auth
-      port: 3000
+      port: 3000 # expose this service on port 3000 within the cluster (http://auth-service:3000 or http://auth-service.ticketing:3000; ticketing is the namespace)
       protocol: TCP
-      targetPort: 3000
+      targetPort: 3000 # pod port to manage (3000, our express.js port)

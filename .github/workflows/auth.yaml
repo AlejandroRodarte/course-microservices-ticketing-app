@@ -1,5 +1,7 @@
+# workflow for the authentication microservice
 name: auth
 
+# run this workflow on all branches and pull requests, when changes inside ./auth are present in the commit
 on:
   push:
     branches:
@@ -13,6 +15,7 @@ on:
       - 'auth/**'
 
 jobs:
+  # job 1: prep variables that we will use in the other jobs
   build-vars:
     runs-on: ${{ matrix.os }}
 
@@ -20,14 +23,17 @@ jobs:
       matrix:
         os: [ubuntu-latest]
 
+    # declare output names: short git hash and creation date
     outputs:
       sha-short: ${{ steps.vars.outputs.sha_short }}
       created-date: ${{ steps.vars.outputs.created_date }}
 
     steps:
+      # step 1 of job 1: checkout current commit
       - name: Checkout 🛎
         uses: actions/checkout@master
 
+      # step 2 of job 2: use bash to set output variables
       - name: Get commit hash and date
         id: vars
         shell: bash
@@ -35,9 +41,12 @@ jobs:
           echo "::set-output name=sha_short::$(git log -1 --format="%h")"
           echo "::set-output name=created_date::$(date "+%s")"
 
+  # job 2: build Docker image for multiple stages
   build:
     runs-on: ${{ matrix.os }}
     needs: build-vars
+
+    # only runs when pushing/making a pull request to the master or development branch
     if: ${{ (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/development')) || (github.event_name == 'pull_request' && (github.base_ref == 'master' || github.base_ref == 'development')) }}
 
     strategy:
@@ -45,21 +54,26 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
+
+      # step 1 of job 2: checkout current commit
       - name: Checkout 🛎
         uses: actions/checkout@master
 
+      # step 2 of job 2: get version from ./auth/package.json to use as image tag in a future step
       - name: Get npm package version
         uses: martinbeentjes/npm-get-version-action@master
         id: package-version
         with:
           path: ./auth
 
+      # step 3 of job 2: login to DockerHub where we will push the images to build
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      # steps 4-6 of job 2: Setup buildx for all of our Dockerfile stages (prod/dev/skaffold)
       - name: Setup production buildx
         uses: docker/setup-buildx-action@v1
         id: prodbuilder
@@ -72,6 +86,11 @@ jobs:
         uses: docker/setup-buildx-action@v1
         id: skaffoldbuilder
 
+      # steps 7-9: build images for each stage with correct build args
+      # three tags to implement on each image:
+      # 1. latest
+      # 2. short commit hash
+      # 3. package.json version number
       - name: Build against prodbuilder
         uses: docker/build-push-action@v2
         with:
@@ -117,9 +136,13 @@ jobs:
             rodarte/msnr-ta-auth-skaffold:${{ steps.package-version.outputs.current-version }}
             rodarte/msnr-ta-auth-skaffold:latest
 
+  # job 3: edit ./infra/k8s/overlays/prod/kustomization.yaml file to recently created tag for
+  # continuous deployment to ArgoCD
   deploy:
     runs-on: ${{ matrix.os }}
     needs: [build-vars, build]
+
+    # only execute this job when pushing to master
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
     strategy:
@@ -127,26 +150,31 @@ jobs:
         os: [ubuntu-latest]
 
     steps:
+      # step 1 of job 3: checkout to current commit
       - name: Checkout 🛎
         uses: actions/checkout@master
 
+      # step 2 of job 3: use kustomize
       - name: Setup Kustomize
         uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: "3.6.1"
 
+      # step 3 of job 3: update file to implement prod image built on job 2
       - name: Update Kubernetes resources
         run: |
           cd infra/k8s/overlays/prod
           kustomize edit set image rodarte/msnr-ta-auth-prod=rodarte/msnr-ta-auth-prod:${{ needs.build-vars.outputs.sha-short }}
           cat kustomization.yaml
 
+      # step 4 of job 3: commit changes as GitHub Actions user
       - name: Commit kustomization.yaml file
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
           git commit -am "Bump rodarte/msnr-ta-auth-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
 
+      # step 5 of job 3: push changes to GitHub
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:

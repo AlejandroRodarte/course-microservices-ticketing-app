@@ -1,7 +1,8 @@
 version: "3.4"
 
+# base version of compose files
 services:
   auth:
-    image: rodarte/msnr-ta-auth-prod:f3f0cef
+    image: rodarte/msnr-ta-auth-prod:f3f0cef # use latest image built by CI/CD pipeline (prod stage)
     ports:
-      - "3000:3000"
+      - "3000:3000" # publish port 3000 of container to port 3000 of virtual computer

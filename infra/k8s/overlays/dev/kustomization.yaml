@@ -1,7 +1,10 @@
+# development overlay
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# override these resources
 patchesStrategicMerge:
 - 200-auth-deployment.yaml
+# patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patchesJson6902:
 - path: hosts.yaml
   target:
@@ -10,8 +13,10 @@ patchesJson6902:
     name: ticketing-ingress
     namespace: ticketing
     version: v1beta1
+# path to our base resources
 resources:
 - ../../base
+# set development images and tags
 images:
 - name: rodarte/msnr-ta-auth-skaffold
   newName: rodarte/msnr-ta-auth-skaffold
