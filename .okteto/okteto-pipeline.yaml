@@ -1,9 +1,11 @@
 deploy:
+  - kubectl apply -f ./infra/k8s/setup/argocd-namespace.yaml
   - kubectl apply -f ./infra/k8s/setup/argo-resources.yaml
   - kubectl apply -f ./infra/k8s/setup/ingress-nginx-resources-lb.yaml
   - kubectl apply -f ./infra/k8s/setup/sealed-secret-resources.yaml
   - kubectl apply -f ./infra/k8s/kustomize/prod.yaml
 devs:
+  - infra/k8s/setup/argocd-namespace.yaml
   - infra/k8s/setup/argo-resources.yaml
   - infra/k8s/setup/ingress-nginx-resources-lb.yaml
   - infra/k8s/setup/sealed-secret-resources.yaml
