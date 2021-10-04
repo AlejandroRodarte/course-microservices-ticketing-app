@@ -1,2 +1,5 @@
 devs:
+  - infra/k8s/setup/argo-resources.yaml
+  - infra/k8s/setup/ingress-nginx-resources-lb.yaml
+  - infra/k8s/setup/sealed-secret-resources.yaml
   - infra/k8s/kustomize/prod.yaml
