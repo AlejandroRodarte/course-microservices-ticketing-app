@@ -1,0 +1,2 @@
+devs:
+  - infra/k8s/kustomize/prod.yaml
