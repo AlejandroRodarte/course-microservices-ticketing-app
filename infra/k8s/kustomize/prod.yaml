@@ -41,14 +41,14 @@ spec:
       namespace: ticketing
     spec:
       containers:
-      - image: rodarte/msnr-ta-auth-prod:6da788e
+      - image: rodarte/msnr-ta-auth-prod:752b181
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /auth/health/healthz
             port: 3000
             scheme: HTTP
-          initialDelaySeconds: 30
+          initialDelaySeconds: 15
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -59,7 +59,7 @@ spec:
             path: /auth/health/healthz
             port: 3000
             scheme: HTTP
-          initialDelaySeconds: 20
+          initialDelaySeconds: 10
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
