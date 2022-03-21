@@ -12,7 +12,7 @@ patchesJson6902:
     kind: Ingress
     name: ticketing-ingress
     namespace: ticketing
-    version: v1beta1
+    version: v1
 # path to our base resources
 resources:
 - ../../base

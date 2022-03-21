@@ -5,14 +5,14 @@ kind: Kustomization
 patchesStrategicMerge:
 - 200-auth-deployment.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
-patchesJson6902:
+patches:
 - path: hosts.yaml
   target:
     group: networking.k8s.io
     kind: Ingress
     name: ticketing-ingress
     namespace: ticketing
-    version: v1beta1
+    version: v1
 # path to our base resources
 resources:
 - ../../base
