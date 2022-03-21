@@ -3,18 +3,19 @@ kind: Config
 profiles:
   - name: dev # profile name (why we run "skaffold dev")
     build:
+      insecureRegistries: ["localhost:32000"]
       artifacts:
-        - image: rodarte/msnr-ta-auth-skaffold
+        - image: localhost:32000/msnr-ta-auth-skaffold
           context: auth # build image based on what is inside ./auth
           sync:
             manual:
-            - src: src/**/*.ts # recompile when a .ts file inside ./auth/src changes
+            - src: src/***/*.ts # recompile when a .ts file inside ./auth/src changes
               dest: .
           docker:
             dockerfile: Dockerfile
             target: skaffold # build image based on skaffold-specific image
       local:
-        push: false
+        push: true
     deploy:
       kustomize:
         paths:

@@ -19,7 +19,7 @@ ARG SOURCE_COMMIT=not-set
 # environment variables: node environment and port
 ENV NODE_ENV production
 ENV PORT 3000
-ENV TINI_VERSION 0.18.0-r0
+ENV TINI_VERSION 0.19.0-r0
 
 # install tini
 RUN apk update \
