@@ -1,7 +1,7 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 profiles:
-  - name: dev # profile name (why we run "skaffold dev")
+  - name: dev-microk8s # profile name (why we run "skaffold dev")
     build:
       insecureRegistries: ["localhost:32000"]
       artifacts:
@@ -19,4 +19,22 @@ profiles:
     deploy:
       kustomize:
         paths:
-        - ./infra/k8s/overlays/dev # kustomize deployment method; use development overlay
+        - ./infra/k8s/overlays/dev-microk8s # kustomize deployment method; use development overlay
+  - name: dev-gcloud # profile name (why we run "skaffold dev")
+    build:
+      artifacts:
+        - image: rodarte/msnr-ta-auth-skaffold
+          context: auth # build image based on what is inside ./auth
+          sync:
+            manual:
+            - src: src/**/*.ts # recompile when a .ts file inside ./auth/src changes
+              dest: .
+          docker:
+            dockerfile: Dockerfile
+            target: skaffold # build image based on skaffold-specific image
+      local:
+        push: false
+    deploy:
+      kustomize:
+        paths:
+        - ./infra/k8s/overlays/dev-gcloud # kustomize deployment method; use development overlay

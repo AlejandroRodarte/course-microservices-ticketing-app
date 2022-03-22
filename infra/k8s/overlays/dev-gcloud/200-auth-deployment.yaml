@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: auth
+          # use skaffold version of the image instead and provide more failure/delay tolerance
+          # since it takes more time to boot up
+          image: rodarte/msnr-ta-auth-skaffold
+          startupProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 10
+          readinessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 15
+          livenessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 20

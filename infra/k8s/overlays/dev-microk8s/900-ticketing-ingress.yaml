@@ -1,0 +1,8 @@
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ticketing-ingress
+  namespace: ticketing # application namespace
+spec:
+  ingressClassName: public

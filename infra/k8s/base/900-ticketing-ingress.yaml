@@ -5,7 +5,6 @@ metadata:
   name: ticketing-ingress
   namespace: ticketing # application namespace
 spec:
-  ingressClassName: public
   rules:
     - host: ticketing-api.dummy-value.com # dummy host value (replaces by kustomize)
       http:
