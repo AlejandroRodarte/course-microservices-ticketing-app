@@ -32,8 +32,6 @@ profiles:
           docker:
             dockerfile: Dockerfile
             target: skaffold # build image based on skaffold-specific image
-      local:
-        push: false
       googleCloudBuild:
         projectId: prime-byway-274602
     deploy:
