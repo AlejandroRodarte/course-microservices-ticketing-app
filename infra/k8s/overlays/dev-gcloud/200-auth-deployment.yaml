@@ -10,7 +10,7 @@ spec:
         - name: auth
           # use skaffold version of the image instead and provide more failure/delay tolerance
           # since it takes more time to boot up
-          image: rodarte/msnr-ta-auth-skaffold
+          image: us.gcr.io/prime-byway-274602/msnr-ta-auth-skaffold
           startupProbe:
             failureThreshold: 5
             initialDelaySeconds: 10

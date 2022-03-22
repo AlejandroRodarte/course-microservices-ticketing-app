@@ -23,7 +23,7 @@ profiles:
   - name: dev-gcloud # profile name (why we run "skaffold dev")
     build:
       artifacts:
-        - image: rodarte/msnr-ta-auth-skaffold
+        - image: us.gcr.io/prime-byway-274602/msnr-ta-auth-skaffold
           context: auth # build image based on what is inside ./auth
           sync:
             manual:
@@ -34,6 +34,8 @@ profiles:
             target: skaffold # build image based on skaffold-specific image
       local:
         push: false
+      googleCloudBuild:
+        projectId: prime-byway-274602
     deploy:
       kustomize:
         paths:
