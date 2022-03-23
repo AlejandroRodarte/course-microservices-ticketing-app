@@ -1,4 +1,4 @@
-apiVersion: skaffold/v2beta12
+apiVersion: skaffold/v2beta28
 kind: Config
 profiles:
   - name: dev-microk8s # profile name (why we run "skaffold dev")
