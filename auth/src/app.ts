@@ -1,12 +1,12 @@
 import express from 'express';
 import { json } from 'body-parser';
 
-import routes from './routes';
+import routers from './routers';
 
 const app = express();
 
 app.use(json());
 
-app.use('/auth', routes);
+app.use('/auth', routers.auth);
 
 export default app;
