@@ -8,18 +8,9 @@ import { UsersRequestHandlers } from '../../../../../../lib/types/request-handle
 const post = (req: UsersRequestHandlers.PostSignUpExtendedRequest, res: Response) => {
   const errors = validationResult(req);
 
-  if (!errors.isEmpty())
-    return res
-      .status(200)
-      .send(
-        new ApplicationResponse<undefined, ValidationError[]>(
-          commonResponses.validationError.status,
-          commonResponses.validationError.code,
-          commonResponses.validationError.message,
-          undefined,
-          errors.array()
-        )
-      );
+  if (!errors.isEmpty()) throw new Error('Invalid email or password');
+
+  throw new Error('Error conecting to the database');
 
   return res
     .status(200)
