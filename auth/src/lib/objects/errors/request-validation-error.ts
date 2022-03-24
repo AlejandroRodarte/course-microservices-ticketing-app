@@ -1,5 +1,5 @@
 import { ValidationError } from 'express-validator';
-import { REQUEST_VALIDATION_ERROR } from '../../constants/objects/error';
+import { REQUEST_VALIDATION_ERROR } from '../../constants/objects/errors';
 
 class RequestValidationError extends Error {
   public readonly type = REQUEST_VALIDATION_ERROR;

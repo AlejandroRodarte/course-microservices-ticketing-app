@@ -1,7 +1,7 @@
-import common from './common';
+import errors from './errors';
 
 const responses = {
-  common,
+  errors,
 };
 
 export default responses;

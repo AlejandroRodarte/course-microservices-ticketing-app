@@ -1,4 +1,4 @@
-import { DATABASE_CONNECTION_ERROR } from '../../constants/objects/error';
+import { DATABASE_CONNECTION_ERROR } from '../../constants/objects/errors';
 
 class DatabaseConnectionError extends Error {
   public readonly type = DATABASE_CONNECTION_ERROR;
