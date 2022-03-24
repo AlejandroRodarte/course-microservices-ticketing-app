@@ -1,16 +1,15 @@
 import { Response } from 'express';
-import { validationResult, ValidationError } from 'express-validator';
+import { validationResult } from 'express-validator';
 
-import ApplicationResponse from '../../../../../../lib/objects/application-response';
-import commonResponses from '../../../../../../lib/constants/responses/common';
+import RequestValidationError from '../../../../../../lib/objects/errors/request-validation-error';
+import DatabaseConnectionError from '../../../../../../lib/objects/errors/database-connection-error';
 import { UsersRequestHandlers } from '../../../../../../lib/types/request-handlers/users';
 
 const post = (req: UsersRequestHandlers.PostSignUpExtendedRequest, res: Response) => {
   const errors = validationResult(req);
 
-  if (!errors.isEmpty()) throw new Error('Invalid email or password');
-
-  throw new Error('Error conecting to the database');
+  if (!errors.isEmpty()) throw new RequestValidationError(errors.array());
+  throw new DatabaseConnectionError('Error connecting to the database.');
 
   return res
     .status(200)
