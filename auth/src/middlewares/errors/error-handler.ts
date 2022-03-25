@@ -1,22 +1,30 @@
 import { ErrorRequestHandler } from 'express';
 import ApplicationResponse from '../../lib/objects/application-response';
 import UniversalError from '../../lib/objects/errors/universal-error';
-import { ErrorObjectTypes } from '../../lib/types/objects/errors';
-import errorApplicationResponseDictionary from '../../lib/constants/responses/errors';
+import CustomError from '../../lib/objects/errors/custom-error';
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-  const error = err as ErrorObjectTypes.ErrorType;
-  const applicationResponseData =
-    errorApplicationResponseDictionary[error.type];
+  if (err instanceof CustomError)
+    return res
+      .status(200)
+      .send(
+        new ApplicationResponse<undefined, UniversalError>(
+          err.status,
+          err.code,
+          err.message,
+          undefined,
+          err.serialize()
+        )
+      );
   return res
     .status(200)
     .send(
-      new ApplicationResponse<undefined, UniversalError>(
-        applicationResponseData.status,
-        applicationResponseData.code,
-        applicationResponseData.message,
+      new ApplicationResponse<undefined, undefined>(
+        400,
+        'GENERIC_ERROR',
+        'Something went wrong with the application.',
         undefined,
-        error.serialize()
+        undefined
       )
     );
 };
