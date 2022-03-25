@@ -3,4 +3,9 @@ import RequestValidationError from '../../objects/errors/request-validation-erro
 
 export namespace ErrorObjectTypes {
   export type ErrorType = DatabaseConnectionError | RequestValidationError;
+
+  export interface UniversalErrorItem {
+    message: string;
+    field?: string;
+  }
 }
