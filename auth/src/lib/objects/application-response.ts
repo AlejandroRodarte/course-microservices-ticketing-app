@@ -18,6 +18,16 @@ class ApplicationResponse<DataType = undefined, ErrorType = undefined> {
     this.data = data;
     this.error = error;
   }
+
+  static getGenericErrorResponse(): ApplicationResponse<undefined, undefined> {
+    return new ApplicationResponse<undefined, undefined>(
+      400,
+      'GENERIC_ERROR',
+      'Something went wrong with the application.',
+      undefined,
+      undefined
+    );
+  }
 }
 
 export default ApplicationResponse;

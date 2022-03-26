@@ -1,5 +1,5 @@
+import ApplicationResponse from '../application-response';
 import UniversalError from './universal-error';
-
 abstract class CustomError extends Error {
   abstract type: string;
   abstract status: number;
@@ -11,7 +11,7 @@ abstract class CustomError extends Error {
     Object.setPrototypeOf(this, CustomError.prototype);
   }
 
-  abstract serialize(): UniversalError;
+  abstract toApplicationResponse(): ApplicationResponse<undefined, UniversalError>;
 }
 
 export default CustomError;

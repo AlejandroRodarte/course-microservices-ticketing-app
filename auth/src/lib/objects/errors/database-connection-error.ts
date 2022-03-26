@@ -1,5 +1,6 @@
 import { DATABASE_CONNECTION_ERROR } from '../../constants/objects/errors';
 import { ErrorObjectTypes } from '../../types/objects/errors';
+import ApplicationResponse from '../application-response';
 import CustomError from './custom-error';
 import UniversalError from './universal-error';
 
@@ -17,14 +18,21 @@ class DatabaseConnectionError extends CustomError {
     Object.setPrototypeOf(this, DatabaseConnectionError.prototype);
   }
 
-  serialize(): UniversalError {
+  toApplicationResponse(): ApplicationResponse<undefined, UniversalError> {
     const formattedErrors: ErrorObjectTypes.UniversalErrorItem[] = [
       {
         message: this.reason,
       },
     ];
+    const universalError = new UniversalError(this.type, formattedErrors);
 
-    return new UniversalError(this.type, formattedErrors);
+    return new ApplicationResponse(
+      this.status,
+      this.code,
+      this.message,
+      undefined,
+      universalError
+    );
   }
 
   get reason() {

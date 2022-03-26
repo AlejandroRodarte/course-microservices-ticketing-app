@@ -3,6 +3,7 @@ import { ErrorObjectTypes } from '../../types/objects/errors';
 import { REQUEST_VALIDATION_ERROR } from '../../constants/objects/errors';
 import UniversalError from './universal-error';
 import CustomError from './custom-error';
+import ApplicationResponse from '../application-response';
 
 class RequestValidationError extends CustomError {
   public readonly type = REQUEST_VALIDATION_ERROR;
@@ -22,14 +23,21 @@ class RequestValidationError extends CustomError {
     return this._errors;
   }
 
-  serialize(): UniversalError {
+  toApplicationResponse(): ApplicationResponse<undefined, UniversalError> {
     const formattedErrors: ErrorObjectTypes.UniversalErrorItem[] =
       this.errors.map((error) => ({
         message: error.msg,
         field: error.param,
       }));
+    const universalError = new UniversalError(this.type, formattedErrors);
 
-    return new UniversalError(this.type, formattedErrors);
+    return new ApplicationResponse<undefined, UniversalError>(
+      this.status,
+      this.code,
+      this.message,
+      undefined,
+      universalError
+    );
   }
 }
 
