@@ -4,6 +4,7 @@ kind: Kustomization
 # override these resources
 patchesStrategicMerge:
 - 200-auth-deployment.yaml
+- 201-auth-mongodb-deployment.yaml
 - 900-ticketing-ingress.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patchesJson6902:

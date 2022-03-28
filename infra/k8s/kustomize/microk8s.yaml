@@ -56,7 +56,7 @@ spec:
       namespace: ticketing
     spec:
       containers:
-      - image: us.gcr.io/prime-byway-274602/msnr-ta-auth-skaffold
+      - image: localhost:32000/msnr-ta-auth-skaffold
         livenessProbe:
           failureThreshold: 5
           httpGet:
@@ -109,13 +109,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    kubernetes.io/ingress.class: nginx
   name: ticketing-ingress
   namespace: ticketing
 spec:
+  ingressClassName: public
   rules:
-  - host: ticketing-api.104.197.128.80.nip.io
+  - host: ticketing-api.10.64.140.43.nip.io
     http:
       paths:
       - backend:

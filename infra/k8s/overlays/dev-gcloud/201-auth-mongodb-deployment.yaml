@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mongodb-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: auth-mongodb
+          image: mongo:latest
