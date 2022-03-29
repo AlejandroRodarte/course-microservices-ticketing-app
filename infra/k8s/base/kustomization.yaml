@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - 000-ticketing-namespace.yaml
   - 100-auth-configmap.yaml
+  - 101-auth-secret.yaml
   - 200-auth-deployment.yaml
   - 201-auth-mongodb-deployment.yaml
   - 300-auth-service.yaml
