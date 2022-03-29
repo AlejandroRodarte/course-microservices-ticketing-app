@@ -3,9 +3,11 @@ version: '3.4'
 # base version of compose files
 services:
   auth:
-    image: rodarte/msnr-ta-auth-prod:f3f0cef # use latest image built by CI/CD pipeline (prod stage)
+    image: rodarte/msnr-ta-auth-prod:b22e084 # use latest image built by CI/CD pipeline (prod stage)
     ports:
       - '3000:3000' # publish port 3000 of container to port 3000 of virtual computer
+    environment:
+      - 'MONGODB_URL=mongodb://auth-mongodb:27017/msnr-ta-auth'
     depends_on:
       - auth-mongodb
   auth-mongodb:
