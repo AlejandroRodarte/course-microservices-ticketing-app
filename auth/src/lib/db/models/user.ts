@@ -12,9 +12,12 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model('User', userSchema);
-
-const buildUser: DbModelTypes.BuildUserWrapperFunction = (attributes) =>
+userSchema.statics.build = (attributes: DbModelTypes.UserAttributes) =>
   new User(attributes);
 
-export { User, buildUser };
+const User = mongoose.model<any, DbModelTypes.UserStaticMethods>(
+  'User',
+  userSchema
+);
+
+export default User;
