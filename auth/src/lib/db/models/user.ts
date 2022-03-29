@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { DbModelTypes } from '../../types/db/models';
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -13,4 +14,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-export default User;
+const buildUser: DbModelTypes.BuildUserWrapperFunction = (attributes) =>
+  new User(attributes);
+
+export { User, buildUser };
