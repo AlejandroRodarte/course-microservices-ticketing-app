@@ -18,7 +18,7 @@ userSchema.statics.build = function (attributes: DbModelTypes.UserAttributes) {
 
 const User = mongoose.model<
   DbModelTypes.UserDocument,
-  DbModelTypes.UserStaticMethods
+  DbModelTypes.UserModel
 >('User', userSchema);
 
 export default User;

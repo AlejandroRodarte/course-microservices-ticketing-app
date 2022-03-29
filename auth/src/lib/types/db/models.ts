@@ -19,7 +19,7 @@ export namespace DbModelTypes {
     (attrs: UserAttributes): UserDocument;
   };
   // interface to describe additional static methods for the User model
-  export interface UserStaticMethods extends mongoose.Model<UserDocument> {
+  export interface UserModel extends mongoose.Model<UserDocument> {
     build: BuildUserWrapperFunction;
   }
 }
