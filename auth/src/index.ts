@@ -1,7 +1,3 @@
-import app from './app';
+import main from './main';
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Auth service launched on port ${port}`);
-});
+main.start().then(main.onFullfilled);

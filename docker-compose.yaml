@@ -6,5 +6,7 @@ services:
     image: rodarte/msnr-ta-auth-prod:f3f0cef # use latest image built by CI/CD pipeline (prod stage)
     ports:
       - '3000:3000' # publish port 3000 of container to port 3000 of virtual computer
+    depends_on:
+      - auth-mongodb
   auth-mongodb:
     image: mongo:5.0
