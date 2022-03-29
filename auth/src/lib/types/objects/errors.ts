@@ -3,4 +3,6 @@ export namespace ErrorObjectTypes {
     message: string;
     field?: string;
   }
+  export type DatabaseOperationErrorTypes = 'exists' | 'save';
+  export type EntityErrorTypes = 'user';
 }
