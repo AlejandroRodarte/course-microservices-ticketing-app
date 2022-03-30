@@ -5,4 +5,5 @@ export namespace ErrorObjectTypes {
   }
   export type DatabaseOperationErrorTypes = 'exists' | 'save';
   export type EntityErrorTypes = 'user';
+  export type LibraryErrorTypes = 'bcrypt';
 }
