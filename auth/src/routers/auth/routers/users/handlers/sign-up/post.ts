@@ -6,6 +6,9 @@ import { UsersRequestHandlers } from '../../../../../../lib/types/request-handle
 import helpers from '../../../../../../lib/db/helpers';
 import User from '../../../../../../lib/db/models/user';
 import BadEntityError from '../../../../../../lib/objects/errors/bad-entity-error';
+import ApplicationResponse from '../../../../../../lib/objects/application-response';
+import SignUpData from '../../../../../../lib/objects/data/users/sign-up-data';
+import BaseUserDto from '../../../../../../lib/objects/dto/users/base-user-dto';
 
 const post = async (
   req: UsersRequestHandlers.PostSignUpExtendedRequest,
@@ -35,7 +38,15 @@ const post = async (
 
   return res
     .status(200)
-    .send(savedUser!);
+    .send(
+      new ApplicationResponse<SignUpData, undefined>(
+        201,
+        'USER_REGISTERED',
+        'The user has been succesfully registered into the database.',
+        new SignUpData(BaseUserDto.fromUserDocument(savedUser!)),
+        undefined
+      )
+    );
 };
 
 export default post;
