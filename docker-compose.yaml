@@ -17,4 +17,4 @@ services:
     image: mongo:5.0
 secrets:
   auth_mongodb_url:
-    file: ./secrets/auth/mongodb-url.txt
+    file: ./secrets/docker/auth/mongodb-url.txt
