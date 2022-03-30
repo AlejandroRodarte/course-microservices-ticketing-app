@@ -4,21 +4,19 @@ import { ReturnTypes } from '../returns';
 import { DbModelTypes } from './models';
 
 export namespace DbHelpersTypes {
-  type UserExistsFunctionDataType = Pick<
-    Document<DbModelTypes.UserDocument, any, any>,
+  // Model.exists()
+  type ExistsDataType<DocumentType> = Pick<
+    Document<DocumentType, any, any>,
     '_id'
   > | null;
-  export type UserExistsFunction = (
-    filter: FilterQuery<DbModelTypes.UserDocument>
-  ) => ReturnTypes.AsyncTuple<
-    UserExistsFunctionDataType,
-    DatabaseOperationError
-  >;
-
-  export type UserSaveFunction = (
-    document: DbModelTypes.UserDocument
-  ) => ReturnTypes.AsyncTuple<
-    DbModelTypes.UserDocument,
-    DatabaseOperationError
-  >;
+  type ExistsFunction<DocumentType> = (
+    filter: FilterQuery<DocumentType>
+  ) => ReturnTypes.AsyncTuple<ExistsDataType<Document>, DatabaseOperationError>;
+  // Model.save()
+  type SaveFunction<DocumentType> = (
+    document: DocumentType
+  ) => ReturnTypes.AsyncTuple<DocumentType, DatabaseOperationError>;
+  // User model
+  export type UserExistsFunction = ExistsFunction<DbModelTypes.UserDocument>;
+  export type UserSaveFunction = SaveFunction<DbModelTypes.UserDocument>;
 }
