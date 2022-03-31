@@ -30,6 +30,11 @@ spec:
                 secretKeyRef:
                   name: auth-secret
                   key: MONGODB_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: common-secret
+                  key: JWT_SECRET
           startupProbe: # startup probe to check that pod kickstarted properly; will check on pod's port 3000
             failureThreshold: 3
             tcpSocket:

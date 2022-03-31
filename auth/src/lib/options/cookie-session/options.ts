@@ -1,6 +1,6 @@
 const cookieSessionOptions: CookieSessionInterfaces.CookieSessionOptions = {
   signed: false,
-  secure: true,
+  secure: false,
 };
 
 export default cookieSessionOptions;

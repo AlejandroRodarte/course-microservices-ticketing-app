@@ -9,6 +9,7 @@ services:
     environment:
       - NODE_ENV=production-docker
       - MONGODB_URL_FILE_PATH=/run/secrets/auth_mongodb_url
+      - JWT_SECRET_FILE_PATH=/run/secrets/jwt_secret
     secrets:
       - auth_mongodb_url
     depends_on:
@@ -18,3 +19,5 @@ services:
 secrets:
   auth_mongodb_url:
     file: ./secrets/docker/auth/mongodb-url.txt
+  jwt_secret:
+    file: ./secrets/docker/common/jwt-secret.txt

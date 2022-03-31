@@ -9,6 +9,7 @@ import BadEntityError from '../../../../../../lib/objects/errors/bad-entity-erro
 import ApplicationResponse from '../../../../../../lib/objects/application-response';
 import SignUpData from '../../../../../../lib/objects/data/users/sign-up-data';
 import BaseUserDto from '../../../../../../lib/objects/dto/users/base-user-dto';
+import jwt from '../../../../../../lib/jwt';
 
 const post = async (
   req: UsersRequestHandlers.PostSignUpExtendedRequest,
@@ -35,6 +36,13 @@ const post = async (
 
   if (typeof savedUser === 'undefined' && userSaveOperationError)
     throw userSaveOperationError;
+
+  req.session = {
+    jwt: jwt.sign({
+      id: savedUser!.id,
+      email: savedUser!.email,
+    }),
+  };
 
   return res
     .status(200)
