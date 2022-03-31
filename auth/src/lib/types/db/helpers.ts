@@ -16,7 +16,30 @@ export namespace DbHelpersTypes {
   type SaveFunction<DocumentType> = (
     document: DocumentType
   ) => ReturnTypes.AsyncTuple<DocumentType, DatabaseOperationError>;
+  // Model.findOneById()
+  type FindByIdDataType<DocumentType> =
+    | (DocumentType & {
+        _id: any;
+      })
+    | null;
+  type FindByIdFunction<DocumentType> = (
+    id: string
+  ) => ReturnTypes.AsyncTuple<
+    FindByIdDataType<DocumentType>,
+    DatabaseOperationError
+  >;
+  // Model.findOne()
+  type FindOneDataType<DocumentType> = FindByIdDataType<DocumentType>;
+  type FindOneFunction<DocumentType> = (
+    filter: FilterQuery<DocumentType>
+  ) => ReturnTypes.AsyncTuple<
+    FindOneDataType<DocumentType>,
+    DatabaseOperationError
+  >;
   // User model
   export type UserExistsFunction = ExistsFunction<DbModelTypes.UserDocument>;
   export type UserSaveFunction = SaveFunction<DbModelTypes.UserDocument>;
+  export type UserFindByIdFunction =
+    FindByIdFunction<DbModelTypes.UserDocument>;
+  export type UserFindOneFunction = FindOneFunction<DbModelTypes.UserDocument>;
 }

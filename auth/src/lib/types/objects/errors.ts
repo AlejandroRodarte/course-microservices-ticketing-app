@@ -3,7 +3,7 @@ export namespace ErrorObjectTypes {
     message: string;
     field?: string;
   }
-  export type DatabaseOperationErrorTypes = 'exists' | 'save';
+  export type DatabaseOperationErrorTypes = 'exists' | 'save' | 'find-by-id' | 'find-one';
   export type EntityErrorTypes = 'user';
   export type LibraryErrorTypes = 'bcrypt';
 }
