@@ -7,7 +7,10 @@ const verify: JwtTypes.VerifyFunction = (token: string) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET!);
     return [payload, undefined];
   } catch (e) {
-    return [undefined, new BadTokenError('The token was probably tampered.')];
+    return [
+      undefined,
+      new BadTokenError('The authentication token has been tampered.'),
+    ];
   }
 };
 

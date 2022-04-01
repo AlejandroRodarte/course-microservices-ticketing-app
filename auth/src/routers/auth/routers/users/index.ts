@@ -4,7 +4,7 @@ import { checkSchema } from 'express-validator';
 import handlers from './handlers';
 import usersSchemas from '../../../../lib/express-validator/schemas/users';
 import validateRequest from '../../../../middlewares/validation/validate-request';
-import verifyToken from '../../../../middlewares/auth/verify-token';
+import setUserData from '../../../../middlewares/auth/set-user-data';
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.post(
   validateRequest,
   handlers.signIn.post
 );
-router.post('/sign-out', verifyToken, handlers.signOut.post);
-router.get('/current-user', verifyToken, handlers.currentUser.get);
+router.post('/sign-out', setUserData, handlers.signOut.post);
+router.get('/current-user', setUserData, handlers.currentUser.get);
 
 export default router;

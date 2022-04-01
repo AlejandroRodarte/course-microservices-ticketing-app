@@ -4,7 +4,7 @@ import UnauthorizedError from '../../lib/objects/errors/unauthorized-error';
 import { JwtTypes } from '../../lib/types/jwt';
 import { MiddlewareTypes } from '../../lib/types/middlewares';
 
-const verifyToken = (
+const setUserData = (
   req: MiddlewareTypes.VerifyTokenExtendedRequest,
   res: Response,
   next: NextFunction
@@ -20,4 +20,4 @@ const verifyToken = (
   next();
 };
 
-export default verifyToken;
+export default setUserData;
