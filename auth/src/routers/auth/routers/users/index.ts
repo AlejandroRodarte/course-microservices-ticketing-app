@@ -20,7 +20,7 @@ router.post(
   validateRequest,
   handlers.signIn.post
 );
-router.post('/sign-out', handlers.signOut.post);
+router.post('/sign-out', verifyToken, handlers.signOut.post);
 router.get('/current-user', verifyToken, handlers.currentUser.get);
 
 export default router;
