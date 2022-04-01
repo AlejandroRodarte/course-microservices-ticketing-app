@@ -1,4 +1,5 @@
 import { DbModelTypes } from '../../../types/db/models';
+import { JwtTypes } from '../../../types/jwt';
 
 class BaseUserDto {
   private id: string;
@@ -11,6 +12,10 @@ class BaseUserDto {
 
   static fromUserDocument(userDocument: DbModelTypes.UserDocument) {
     return new BaseUserDto(userDocument._id, userDocument.email);
+  }
+
+  static fromJwtUserData(jwtUserData: JwtTypes.UserData) {
+    return new BaseUserDto(jwtUserData.id, jwtUserData.email);
   }
 }
 

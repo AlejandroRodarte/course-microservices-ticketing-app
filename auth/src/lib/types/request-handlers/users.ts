@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { JwtTypes } from '../jwt';
 
 export namespace UsersRequestHandlers {
   /**
@@ -30,5 +31,9 @@ export namespace UsersRequestHandlers {
 
   export interface PostSignInExtendedRequest extends Request {
     body: PostSignInBody;
+  }
+
+  export interface GetCurrentUserExtendedRequest extends Request {
+    ['jwt/user-data']?: JwtTypes.UserData;
   }
 }

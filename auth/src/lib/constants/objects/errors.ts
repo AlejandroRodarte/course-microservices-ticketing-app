@@ -6,3 +6,4 @@ export const ENTITY_NOT_FOUND_ERROR = 'EntityNotFoundError';
 export const BAD_ENTITY_ERROR = 'BadEntityError';
 export const LIBRARY_ERROR = 'LibraryError';
 export const BAD_CREDENTIALS_ERROR = 'BadCredentialsError';
+export const BAD_TOKEN_ERROR = 'BadTokenError';
