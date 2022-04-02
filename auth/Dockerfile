@@ -149,8 +149,8 @@ LABEL org.opencontainers.image.title "Production image for the authentication mi
 # stage label for this image
 LABEL com.rodarte.ms-node-react.ticketing.auth.stage prod
 
-# from build stage, copy /node/build files (compiled javascript code) to /node/src in prod stage
-COPY --chown=node:node --from=build /node/build ./src
+# from build stage, copy /node/build/src files (compiled javascript code) to /node/src in prod stage
+COPY --chown=node:node --from=build /node/build/src ./src
 
 # run healthcheck
 HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 CMD curl -f http://localhost:${PORT}/auth/health/healthz || exit 1
