@@ -82,6 +82,7 @@ jobs:
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env.test
 
       - name: Run tests
+        working-directory: auth
         run: npm run test
 
   # job 3: build Docker image for multiple stages
