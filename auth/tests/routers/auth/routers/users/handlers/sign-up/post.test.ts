@@ -24,6 +24,20 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
 
       expect(applicationResponse.status).toBe(201);
     });
+
+    it('Should set a cookie header after successgul sign-up.', async () => {
+      const body = {
+        data: {
+          credentials: {
+            email: 'test@test.com',
+            password: 'password',
+          },
+        },
+      };
+
+      const response = await request(app).post(route).send(body).expect(200);
+      expect(response.get('Set-Cookie')).toBeDefined();
+    });
   });
 
   describe('Validation errors', () => {
@@ -119,7 +133,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
     });
   });
 
-  describe('Handler logic', () => {
+  describe('Handler logic errors', () => {
     it('Should return a BadEntityError error in case of a duplicate email.', async () => {
       const body = {
         data: {
