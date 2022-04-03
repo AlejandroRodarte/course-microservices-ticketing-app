@@ -118,4 +118,42 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       expect(applicationResponse.status).toBe(422);
     });
   });
+
+  describe('Handler logic', () => {
+    it('Should return a BadEntityError error in case of a duplicate email.', async () => {
+      const body = {
+        data: {
+          credentials: {
+            email: 'test@test.com',
+            password: 'password',
+          },
+        },
+      };
+
+      const firstResponse = await request(app)
+        .post(route)
+        .send(body)
+        .expect(200);
+      const firstApplicationResponse =
+        firstResponse.body as ApplicationResponseTypes.Body<
+          SignUpData,
+          undefined
+        >;
+
+      expect(firstApplicationResponse.status).toBe(201);
+
+      const secondResponse = await request(app)
+        .post(route)
+        .send(body)
+        .expect(200);
+      const secondApplicationResponse =
+        secondResponse.body as ApplicationResponseTypes.Body<
+          undefined,
+          UniversalError
+        >;
+
+      expect(secondApplicationResponse.status).toBe(400);
+      expect(secondApplicationResponse.code).toBe('BAD_ENTITY_ERROR');
+    });
+  });
 });
