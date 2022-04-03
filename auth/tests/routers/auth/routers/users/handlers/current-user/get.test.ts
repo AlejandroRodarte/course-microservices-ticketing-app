@@ -1,6 +1,7 @@
 import request from 'supertest';
 import app from '../../../../../../../src/app';
-import helpers from '../../../../../../../src/lib/db/helpers';
+import dbHelpers from '../../../../../../../src/lib/db/helpers';
+import supertestHelpers from '../../../../../../lib/supertest/helpers';
 import CurrentUserData from '../../../../../../../src/lib/objects/data/users/current-user-data';
 import UniversalError from '../../../../../../../src/lib/objects/errors/universal-error';
 import { ApplicationResponseTypes } from '../../../../../../../src/lib/types/objects/application-response';
@@ -13,22 +14,11 @@ const routes = {
 describe('Tests for the GET /auth/users/current-user endpoint.', () => {
   describe('Success cases', () => {
     it('Should respond with 200 status, CURRENT_USER_FETCHED code, and user details when user accesses its own information.', async () => {
-      const body = {
-        data: {
-          credentials: {
-            email: 'test@test.com',
-            password: 'password',
-          },
-        },
-      };
-
-      const signUpResponse = await request(app)
-        .post(routes['sign-up'])
-        .send(body)
-        .expect(200);
+      const [signedUpUser, cookie] =
+        await supertestHelpers.auth.signUpAndGetCookie();
       const currentUserResponse = await request(app)
         .get(routes['current-user'])
-        .set('Cookie', signUpResponse.get('Set-Cookie'))
+        .set('Cookie', cookie)
         .expect(200);
       const applicationResponse =
         currentUserResponse.body as ApplicationResponseTypes.Body<
@@ -36,14 +26,14 @@ describe('Tests for the GET /auth/users/current-user endpoint.', () => {
           undefined
         >;
 
-      const [user] = await helpers.user.findOne({
-        email: body.data.credentials.email,
+      const [user] = await dbHelpers.user.findOne({
+        email: signedUpUser.email,
       });
 
       expect(applicationResponse.status).toBe(200);
       expect(applicationResponse.code).toBe('CURRENT_USER_FETCHED');
       expect(applicationResponse.data).toEqual({
-        user: { id: user?.id, email: body.data.credentials.email },
+        user: { id: user?.id, email: signedUpUser.email },
       });
     });
   });
