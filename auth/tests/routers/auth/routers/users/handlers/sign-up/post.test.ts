@@ -25,7 +25,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       expect(applicationResponse.status).toBe(201);
     });
 
-    it('Should set a cookie header after successgul sign-up.', async () => {
+    it('Should set a cookie header after successful sign-up.', async () => {
       const body = {
         data: {
           credentials: {
