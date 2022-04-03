@@ -58,6 +58,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: ./auth/package-lock.json
 
       - name: Cache node_modules
         uses: actions/cache@v3
@@ -68,9 +70,11 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
+        working-directory: auth
         run: npm ci
 
       - name: Create .env.test file
+        working-directory: auth
         run: |
           mkdir config
           cd config
