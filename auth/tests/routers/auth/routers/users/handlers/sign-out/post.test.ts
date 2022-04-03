@@ -49,7 +49,7 @@ describe('Tests for the POST /auth/users/sign-out endpoint.', () => {
     it('Should return a 401 status code if there is no logged in user', async () => {
       const response = await request(app).post(routes['sign-out']).expect(200);
       const applicationResponse =
-        response.body as ApplicationResponseTypes.Body<undefined, undefined>;
+        response.body as ApplicationResponseTypes.Body<undefined, UniversalError>;
 
       expect(applicationResponse.status).toBe(401);
       expect(applicationResponse.code).toBe('UNAUTHORIZED_ERROR');
