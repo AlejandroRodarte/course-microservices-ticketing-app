@@ -7,14 +7,15 @@
     "build": "tsc",
     "start": "tsc && node build/src/index.js",
     "start:dev": "env-cmd -f ./config/.env.development ts-node-dev src/index.ts",
-    "test": "jest --watchAll --no-cache"
+    "test": "env-cmd -f ./config/.env.test jest --watchAll --no-cache"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
       "./tests/setup.ts"
-    ]
+    ],
+    "modulePathIgnorePatterns": ["build"]
   },
   "keywords": [],
   "author": "Alejandro Rodarte",

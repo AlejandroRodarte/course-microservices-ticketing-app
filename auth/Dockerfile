@@ -1,5 +1,5 @@
 # stage 1: base image
-FROM node:14-alpine as base
+FROM node:16 as base
 
 # general labels (author email, image title/docker-hub-repo/github-repo and license)
 LABEL org.opencontainers.image.authors alejandrorodarte1@gmail.com
@@ -19,11 +19,10 @@ ARG SOURCE_COMMIT=not-set
 # environment variables: node environment and port
 ENV NODE_ENV production
 ENV PORT 3000
-ENV TINI_VERSION 0.19.0-r0
 
 # install tini
-RUN apk update \
-    && apk add tini=${TINI_VERSION} --no-cache
+RUN apt-get update \
+    && apt-get install tini
 
 # add node_modules binaries to PATH environment variable (to compile typescript code and run the dev server)
 ENV PATH /node/node_modules/.bin:$PATH
@@ -45,7 +44,7 @@ RUN npm config list \
 # document exposed port
 EXPOSE 3000
 
-ENTRYPOINT [ "/sbin/tini", "--" ]
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 
 # stage 2: base-dev image

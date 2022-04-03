@@ -41,7 +41,46 @@ jobs:
           echo "::set-output name=sha_short::$(git log -1 --format="%h")"
           echo "::set-output name=created_date::$(date "+%s")"
 
-  # job 2: build Docker image for multiple stages
+  # job 2: run tests
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      
+      - name: Setup node env
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies:
+        run: npm ci
+
+      - name: Create .env.test file
+        run: |
+          mkdir config
+          cd config
+          touch .env.test
+          echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env.test
+
+      - name: Run tests
+        run: npm run test
+
+  # job 3: build Docker image for multiple stages
   build:
     runs-on: ${{ matrix.os }}
     needs: build-vars
@@ -136,7 +175,7 @@ jobs:
             rodarte/msnr-ta-auth-skaffold:${{ steps.package-version.outputs.current-version }}
             rodarte/msnr-ta-auth-skaffold:latest
 
-  # job 3: edit ./infra/k8s/overlays/prod/kustomization.yaml file to recently created tag for
+  # job 4: edit ./infra/k8s/overlays/prod/kustomization.yaml file to recently created tag for
   # continuous deployment to ArgoCD
   deploy:
     runs-on: ${{ matrix.os }}
