@@ -88,7 +88,7 @@ jobs:
   # job 3: build Docker image for multiple stages
   build:
     runs-on: ${{ matrix.os }}
-    needs: build-vars
+    needs: [build-vars, test]
 
     # only runs when pushing/making a pull request to the master or development branch
     if: ${{ (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/development')) || (github.event_name == 'pull_request' && (github.base_ref == 'master' || github.base_ref == 'development')) }}
@@ -184,7 +184,7 @@ jobs:
   # continuous deployment to ArgoCD
   deploy:
     runs-on: ${{ matrix.os }}
-    needs: [build-vars, build]
+    needs: [build-vars, test, build]
 
     # only execute this job when pushing to master
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
