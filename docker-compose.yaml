@@ -17,6 +17,10 @@ services:
       - auth-mongodb
   auth-mongodb:
     image: mongo:5.0
+  front:
+    image: rodarte/msnr-ta-front-prod:latest
+    ports:
+      - '3001:3001'
 secrets:
   auth_mongodb_url:
     file: ./secrets/docker/auth/mongodb-url.txt

@@ -11,3 +11,8 @@ services:
       - NODE_ENV=development-docker
   auth-mongodb:
     image: mongo:latest
+  front:
+    image: rodarte/msnr-ta-front-dev:latest
+    volumes:
+      - ./client:/node/app
+      - /node/app/node_modules

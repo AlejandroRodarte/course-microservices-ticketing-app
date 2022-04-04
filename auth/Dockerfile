@@ -4,13 +4,13 @@ FROM node:16 as base
 # general labels (author email, image title/docker-hub-repo/github-repo and license)
 LABEL org.opencontainers.image.authors alejandrorodarte1@gmail.com
 LABEL org.opencontainers.image.title "Base image for the authentication microservice of a ticketing application"
-LABEL org.opencontainers.image.url https://hub.docker.com/r/rodarte/ms-node-react-ticketing-app-auth
+LABEL org.opencontainers.image.url https://hub.docker.com/repository/docker/rodarte/msnr-ta-auth-prod
 LABEL org.opencontainers.image.source https://github.com/AlejandroRodarte/course-microservices-ticketing-app/tree/master/auth
 LABEL org.opencontainers.image.licenses MIT
 
 # project labels (node version and stage)
-LABEL com.rodarte.ms-node-react.ticketing.auth.nodeversion $NODE_VERSION
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage base
+LABEL com.rodarte.msnr.ticketing.auth.nodeversion $NODE_VERSION
+LABEL com.rodarte.msnr.ticketing.auth.stage base
 
 # set image creation date and source commit build arguments
 ARG CREATED_DATE=not-set
@@ -54,7 +54,7 @@ FROM base as base-dev
 LABEL org.opencontainers.image.title "Base development image for the authentication microservice of a ticketing application"
 
 # stage label for this image
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage pre-build
+LABEL com.rodarte.msnr.ticketing.auth.stage base-dev
 
 # install development dependencies
 RUN npm config list \
@@ -69,7 +69,7 @@ FROM base-dev as dev
 LABEL org.opencontainers.image.title "Development image for the authentication microservice of a ticketing application"
 
 # stage label for this image
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage dev
+LABEL com.rodarte.msnr.ticketing.auth.stage dev
 
 # override node environment to development
 ENV NODE_ENV development
@@ -94,7 +94,7 @@ FROM base-dev as source
 LABEL org.opencontainers.image.title "Source image for the authentication microservice of a ticketing application"
 
 # stage label for this image
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage source
+LABEL com.rodarte.msnr.ticketing.auth.stage source
 
 # copy source (typescript) code
 COPY --chown=node:node . .
@@ -109,7 +109,7 @@ LABEL org.opencontainers.image.revision $SOURCE_COMMIT
 LABEL org.opencontainers.image.title "Skaffold image for the authentication microservice of a ticketing application"
 
 # stage label for this image
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage skaffold
+LABEL com.rodarte.msnr.ticketing.auth.stage skaffold
 
 # override node environment to development
 ENV NODE_ENV development
@@ -131,7 +131,7 @@ FROM source as build
 LABEL org.opencontainers.image.title "Build image for the authentication microservice of a ticketing application"
 
 # stage label for this image
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage build
+LABEL com.rodarte.msnr.ticketing.auth.stage build
 
 # run tsc to compile typescript code to javascript (dumped on /app/dist)
 RUN tsc
@@ -146,7 +146,7 @@ LABEL org.opencontainers.image.revision $SOURCE_COMMIT
 LABEL org.opencontainers.image.title "Production image for the authentication microservice of a ticketing application"
 
 # stage label for this image
-LABEL com.rodarte.ms-node-react.ticketing.auth.stage prod
+LABEL com.rodarte.msnr.ticketing.auth.stage prod
 
 # from build stage, copy /node/build/src files (compiled javascript code) to /node/src in prod stage
 COPY --chown=node:node --from=build /node/build/src ./src
