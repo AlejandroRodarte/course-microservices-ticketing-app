@@ -74,6 +74,9 @@ ENV NODE_ENV development
 # mkdir /node/app && cd /node/app to place src code here (node_modules will be extracted from /node)
 WORKDIR /node/app
 
+# run healthcheck
+HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/api/health/healthz || exit 1
+
 # switch to node user
 USER node
 
@@ -106,6 +109,9 @@ LABEL com.rodarte.msnr.ticketing.client.stage skaffold
 # set development env variables
 ENV NODE_ENV development
 
+# run healthcheck
+HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/api/health/healthz || exit 1
+
 # switch to node user
 USER node
 
@@ -137,6 +143,9 @@ LABEL com.rodarte.msnr.ticketing.client.stage prod
 
 # copy /node/.next compiled frontend from build stage to /node/.next in prod stage
 COPY --chown=node:node --from=build /node/.next ./.next
+
+# run healthcheck
+HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/api/health/healthz || exit 1
 
 # switch to node user
 USER node
