@@ -57,7 +57,7 @@ LABEL com.rodarte.msnr.ticketing.client.stage base-dev
 
 # install dev dependencies
 RUN npm config list \
-    && npm ci --also=development --fetch-timeout=10000000 \
+    && npm ci --also=development \
     && npm cache clean --force
 
 
