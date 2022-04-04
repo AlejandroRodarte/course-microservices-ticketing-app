@@ -2,3 +2,6 @@
 - op: replace
   path: /spec/rules/0/host
   value: ticketing-api.10.64.140.43.nip.io
+- op: replace
+  path: /spec/rules/1/host
+  value: ticketing.10.64.140.43.nip.io

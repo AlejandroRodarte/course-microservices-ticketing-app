@@ -8,6 +8,7 @@ patchesStrategicMerge:
 - 102-common-secret.yaml
 - 200-auth-deployment.yaml
 - 201-auth-mongodb-deployment.yaml
+- 202-front-deployment.yaml
 - 900-ticketing-ingress.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patches:
@@ -25,4 +26,7 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-skaffold
   newName: rodarte/msnr-ta-auth-skaffold
+  newTag: f3f0cef
+- name: rodarte/msnr-ta-front-skaffold
+  newName: rodarte/msnr-ta-front-skaffold
   newTag: f3f0cef

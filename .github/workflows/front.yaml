@@ -1,0 +1,155 @@
+name: front
+
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - 'client/**'
+  pull_request:
+    branches:
+      - '*'
+    paths:
+      - 'client/**'
+
+jobs:
+  build-vars:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    outputs:
+      sha-short: ${{ steps.vars.outputs.sha_short }}
+      created-date: ${{ steps.vars.outputs.created_date }}
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Get commit hash and date
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git log -1 --format="%h")"
+          echo "::set-output name=created_date::$(date "+%s")"
+
+  build:
+    runs-on: ${{ matrix.os }}
+    needs: build-vars
+
+    if: ${{ (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/development')) || (github.event_name == 'pull_request' && (github.base_ref == 'master' || github.base_ref == 'development')) }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Get npm package version
+        uses: martinbeentjes/npm-get-version-action@master
+        id: package-version
+        with:
+          path: ./client
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Setup production buildx
+        uses: docker/setup-buildx-action@v1
+        id: prodbuilder
+
+      - name: Setup development buildx
+        uses: docker/setup-buildx-action@v1
+        id: devbuilder
+
+      - name: Setup skaffold buildx
+        uses: docker/setup-buildx-action@v1
+        id: skaffoldbuilder
+
+      - name: Build against prodbuilder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./client
+          push: true
+          builder: ${{ steps.prodbuilder.output.name }}
+          target: prod
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-front-prod:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-front-prod:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-front-prod:latest
+
+      - name: Build against devbuilder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./client
+          push: true
+          builder: ${{ steps.devbuilder.output.name }}
+          target: dev
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-front-dev:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-front-dev:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-front-dev:latest
+
+      - name: Build against skaffoldbuilder
+        uses: docker/build-push-action@v2
+        with:
+          context: ./client
+          push: true
+          builder: ${{ steps.skaffoldbuilder.output.name }}
+          target: skaffold
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-front-skaffold:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-front-skaffold:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-front-skaffold:latest
+
+  deploy:
+    runs-on: ${{ matrix.os }}
+    needs: [build-vars, build]
+
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: '3.6.1'
+
+      - name: Update Kubernetes resources
+        run: |
+          cd infra/k8s/overlays/prod
+          kustomize edit set image rodarte/msnr-ta-front-prod=rodarte/msnr-ta-front-prod:${{ needs.build-vars.outputs.sha-short }}
+          cat kustomization.yaml
+
+      - name: Commit kustomization.yaml file
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git commit -am "Bump rodarte/msnr-ta-front-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

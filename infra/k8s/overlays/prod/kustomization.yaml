@@ -8,6 +8,7 @@ patchesStrategicMerge:
 - 102-common-secret.yaml
 - 200-auth-deployment.yaml
 - 201-auth-mongodb-deployment.yaml
+- 202-front-deployment.yaml
 - 900-ticketing-ingress.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patchesJson6902:
@@ -25,4 +26,7 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod
+  newTag: f409c03
+- name: rodarte/msnr-ta-front-prod
+  newName: rodarte/msnr-ta-front-prod
   newTag: f409c03

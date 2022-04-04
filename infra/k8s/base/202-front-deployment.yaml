@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+      namespace: ticketing
+    spec:
+      containers:
+        - name: next
+          image: rodarte/msnr-ta-front-prod
+          startupProbe:
+            failureThreshold: 3
+            tcpSocket:
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/health/healthz
+              port: 3001
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 20
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/health/healthz
+              port: 3001
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 20

@@ -4,10 +4,27 @@ metadata:
   name: ticketing
 ---
 apiVersion: v1
+data:
+  NODE_ENV: development-microk8s
 kind: ConfigMap
 metadata:
   name: auth-configmap
   namespace: ticketing
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-mongodb-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: db
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: auth-mongodb
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
@@ -22,6 +39,21 @@ spec:
     targetPort: 3000
   selector:
     app: auth
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: front
+    port: 3001
+    protocol: TCP
+    targetPort: 3001
+  selector:
+    app: front
   type: ClusterIP
 ---
 apiVersion: apps/v1
@@ -41,7 +73,23 @@ spec:
       namespace: ticketing
     spec:
       containers:
-      - image: localhost:32000/msnr-ta-auth-skaffold
+      - env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: auth-configmap
+        - name: MONGODB_URL
+          valueFrom:
+            secretKeyRef:
+              key: MONGODB_URL
+              name: auth-secret
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: JWT_SECRET
+              name: common-secret
+        image: localhost:32000/msnr-ta-auth-skaffold
         livenessProbe:
           failureThreshold: 5
           httpGet:
@@ -72,6 +120,100 @@ spec:
             port: 3000
           timeoutSeconds: 5
 ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mongodb-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-mongodb
+  template:
+    metadata:
+      labels:
+        app: auth-mongodb
+      namespace: ticketing
+    spec:
+      containers:
+      - image: mongo:latest
+        name: auth-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+      namespace: ticketing
+    spec:
+      containers:
+      - image: localhost:32000/msnr-ta-front-skaffold
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /api/health/healthz
+            port: 3001
+            scheme: HTTP
+          initialDelaySeconds: 25
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 20
+        name: next
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /api/health/healthz
+            port: 3001
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 20
+        startupProbe:
+          failureThreshold: 5
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          successThreshold: 1
+          tcpSocket:
+            port: 3001
+          timeoutSeconds: 5
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: auth-secret
+  namespace: ticketing
+spec:
+  encryptedData:
+    MONGODB_URL: AgCSiC9a1bgq8Ev0i+vYuyUfZ7y6uuXKXmUnN7ezWSKULLfj/BJdz8BuJyvfVJQ6yMQQnW7n6VL0H4Irkxzciy1GK9LeltyZPXliW4stVC5T5NMlwcolrLm7T9m/O39drbQMIxtZuGkak2uvM3cR9KLeV9/L1dgAQYpUz9Ks0gTIAGSLLpvGKtKGyNyv+K5Xtp7yuU4QYpZqlUS2UpCoXDdAs+05tSZDEG65Gqc8YB4aKx+oyON08gamswfB/SG1/REd18+vgTTwoGQiQfDlmBX4zH2Tg8ENhScOEOtpQUDzTuIifHfzioGvfDvUTJeWfKtuF3ob86WExC+D8BAQpoWDCqxlueIy0WgqezM4rAtQHdADYgIQjbkbbdvETF/POtwl8uAJTN4zo3q3KEo3T/NqqjQUFYYq5bdGHzsy0xqMqEsUr1tMHBlO97Tjd+/+NnNXjLbl8/gQnybtLaXN8IvjQUCJN29BS0gSTmlNfi1J3YSYAn5Tur+CEClDzFkliftO2RxeB43rKeOZ8SOUEEeg1ecil8sF7PtI3F8fwzOe4AcKiQgH9/TpOEMwfe1h9d1M1g0Z5xtsIqPYInBfcim+JXt5OK71F+qpOB5WSIksoW5TT+eLYIM8Y0NE/VPori+C9aRvDy/5FVhMsNwhhm/yO5msaMFc26Roi7e4nVSA/Hdi6CsdFmjqICHSUMwUQdR0z/0P64tXEcQb0C5/YcJcitEDSoXe39O8dTQpv9r26bIgFqiE/2INa4RVPfkvpcrW
+  template:
+    metadata:
+      name: auth-secret
+      namespace: ticketing
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: common-secret
+  namespace: ticketing
+spec:
+  encryptedData:
+    JWT_SECRET: AgChq4iG3mg/GNecWr9NzSoQkoYhv5E+OiM4gYXWqGlYGOefEl28wozXmHrKiBzfLo1O+0tOT2CJiC5L9Ys2kCbgQXxi2bKC7tVD8IOaI+dpV4WUTRr/UW8qT5eQtOdy/ScWFF533z2El+P7gClIaEfgVmOikWR72nSCkidcll5UgGuSJUcdtS8d4jA7wfxCQWrczHSn+u5jLKw+5+3QSXCvA/L5FvD5Ky6sQrLoBTNbtxnyl5GRvWXBVJb/tO/9f5aCII5PIvlEAapGnBGGPY8mzuu9gOWZmWhVs4MVTrAbh73lEpvavkCbqtnIn/DGi1nFilN440FnZqXO+xTd0hbnDUojIZjN2jDsDDl6HaFwPfredeDf3c8gWxrgGOzNhM5ImG8zJa229K3atc3XxNuHZ4bZCqscDHYr5OT6pd1OcntyfdJM62o9L4MYaZhxdi81lJyB5AqlErwppBdVuhN0kA0ny2J0OblqYW4/XpHQWO8rmY8//YTXwvy1YR//yN05GBHma+7P1fy+MwqrEdt9p3AHQAnazFIQAV+I64f7hTxW4Rgs79NowbGRWKLecPgex3HqFgZBhA63B9FcdfArk1i4zNdvDHVUqM+Z/mbxc30YUTnxA4S07ap9U2WnGxf876Qc63408CDrgT+FLySfwk0NmdYXkEYC11XqG+mMFyE6a6us2mPzlg/Hp/1+jQYTzXRM5RPKftxkWWKawqBC8mA0HXI3+NgaiyTt4LM=
+  template:
+    metadata:
+      name: common-secret
+      namespace: ticketing
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -89,4 +231,14 @@ spec:
             port:
               number: 3000
         path: /auth
+        pathType: Prefix
+  - host: ticketing.10.64.140.43.nip.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: front-service
+            port:
+              number: 3001
+        path: /
         pathType: Prefix

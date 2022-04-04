@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: next
+          image: localhost:32000/msnr-ta-front-skaffold
+          startupProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 15
+          readinessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 20
+          livenessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 25
