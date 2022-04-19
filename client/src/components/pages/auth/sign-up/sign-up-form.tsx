@@ -1,8 +1,11 @@
 import React, { useCallback, useState } from 'react';
+import { REQUEST_VALIDATION_ERROR } from '../../../../lib/constants/objects/errors';
+import UniversalError from '../../../../lib/objects/universal-error';
 import { FormTypes } from '../../../../lib/types/forms';
 
 interface SignUpFormProps {
   onSubmit: (form: FormTypes.SignUpForm) => void;
+  error: UniversalError | undefined;
 }
 
 const SignUpForm: React.FC<SignUpFormProps> = (props) => {
@@ -56,6 +59,16 @@ const SignUpForm: React.FC<SignUpFormProps> = (props) => {
           onChange={onInputChange}
         />
       </div>
+      {props.error && props.error.type === REQUEST_VALIDATION_ERROR && (
+        <div className="alert alert-danger">
+          <h4>Oops...</h4>
+          <ul className="my-0">
+            {props.error.errors.map((item) => (
+              <li key={item.field}>{item.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <button className="btn btn-primary">Sign Up</button>
     </form>
   );
