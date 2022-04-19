@@ -16,3 +16,5 @@ services:
     volumes:
       - ./client:/node/app
       - /node/app/node_modules
+    environment:
+      - NEXT_PUBLIC_ENV=development-docker

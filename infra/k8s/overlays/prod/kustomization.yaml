@@ -6,6 +6,7 @@ patchesStrategicMerge:
 - 100-auth-configmap.yaml
 - 101-auth-secret.yaml
 - 102-common-secret.yaml
+- 103-front-configmap.yaml
 - 200-auth-deployment.yaml
 - 201-auth-mongodb-deployment.yaml
 - 202-front-deployment.yaml

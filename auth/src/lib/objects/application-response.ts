@@ -1,16 +1,16 @@
-class ApplicationResponse<DataType = undefined, ErrorType = undefined> {
+class ApplicationResponse<DataType, ErrorType> {
   private status: number;
   private code: string;
   private message: string;
-  private data: DataType;
-  private error: ErrorType;
+  private data?: DataType;
+  private error?: ErrorType;
 
   constructor(
     status: number,
     code: string,
     message: string,
-    data: DataType,
-    error: ErrorType
+    data?: DataType,
+    error?: ErrorType
   ) {
     this.status = status;
     this.code = code;

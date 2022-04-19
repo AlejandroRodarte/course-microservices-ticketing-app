@@ -17,6 +17,17 @@ spec:
       containers:
         - name: next
           image: rodarte/msnr-ta-front-prod
+          env:
+            - name: NEXT_PUBLIC_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: front-configmap
+                  key: NEXT_PUBLIC_ENV
+            - name: NEXT_PUBLIC_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: front-configmap
+                  key: NEXT_PUBLIC_API_URL
           startupProbe:
             failureThreshold: 3
             tcpSocket:

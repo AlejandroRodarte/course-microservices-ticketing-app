@@ -10,6 +10,7 @@ services:
       - NODE_ENV=production-docker
       - MONGODB_URL_FILE_PATH=/run/secrets/auth_mongodb_url
       - JWT_SECRET_FILE_PATH=/run/secrets/jwt_secret
+      - CORS_ORIGIN=http://localhost:3001
     secrets:
       - auth_mongodb_url
       - jwt_secret
@@ -21,6 +22,10 @@ services:
     image: rodarte/msnr-ta-front-prod:latest
     ports:
       - '3001:3001'
+    environment:
+      - NEXT_PUBLIC_ENV=production-docker
+      - NEXT_PUBLIC_API_URL=http://localhost
+      - NEXT_PUBLIC_AUTH_MICROSERVICE_PORT=3000
 secrets:
   auth_mongodb_url:
     file: ./secrets/docker/auth/mongodb-url.txt

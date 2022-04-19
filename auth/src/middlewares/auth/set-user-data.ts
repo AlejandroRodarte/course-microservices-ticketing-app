@@ -9,6 +9,7 @@ const setUserData = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.session);
   if (!req.session?.jwt)
     return next(new UnauthorizedError('There is no token in the request.'));
 

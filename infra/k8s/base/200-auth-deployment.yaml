@@ -25,6 +25,11 @@ spec:
                 configMapKeyRef:
                   name: auth-configmap
                   key: NODE_ENV
+            - name: CORS_ORIGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-configmap
+                  key: CORS_ORIGIN
             - name: MONGODB_URL
               valueFrom:
                 secretKeyRef:

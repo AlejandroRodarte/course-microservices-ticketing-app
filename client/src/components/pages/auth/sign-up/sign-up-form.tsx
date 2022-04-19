@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { FormTypes } from '../../../../types/forms';
+import { FormTypes } from '../../../../lib/types/forms';
 
 interface SignUpFormProps {
   onSubmit: (form: FormTypes.SignUpForm) => void;
