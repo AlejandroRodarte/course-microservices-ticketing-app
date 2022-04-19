@@ -5,7 +5,7 @@ import { FormTypes } from './forms';
 import { ReturnTypes } from './returns';
 
 export namespace RequestTypes {
-  type AxiosResponse<DataType> = ReturnTypes.AsyncTuple<
+  export type AxiosResponse<DataType> = ReturnTypes.AsyncTuple<
     ApplicationResponse<DataType, UniversalError>,
     UniversalError
   >;
@@ -13,4 +13,9 @@ export namespace RequestTypes {
     form: FormTypes.SignUpForm
   ) => AxiosResponse<SignUpData>;
   export type AuthSignOutFunction = () => AxiosResponse<undefined>;
+  export interface SignUpRequestBody {
+    data: {
+      credentials: FormTypes.SignUpForm;
+    };
+  }
 }

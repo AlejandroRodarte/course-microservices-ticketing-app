@@ -1,28 +1,30 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import SignUpForm from '../../../components/pages/auth/sign-up/sign-up-form';
-import requests from '../../../lib/requests';
 import { FormTypes } from '../../../lib/types/forms';
-import { PagesTypes } from '../../../lib/types/pages';
+import useRequest from '../../../lib/hooks/use-request';
+import SignUpData from '../../../lib/objects/data/auth/sign-up-data';
+import { RequestTypes } from '../../../lib/types/requests';
 
-type SignUpPageRequestErrorKeys = 'auth/sign-up';
 interface SignUpPageProps {}
 
 const SignUpPage: React.FC<SignUpPageProps> = (props) => {
-  const [errors, setErrors] = useState<
-    PagesTypes.RequestErrors<SignUpPageRequestErrorKeys>
+  const { doRequest, errors } = useRequest<
+    RequestTypes.SignUpRequestBody,
+    SignUpData
   >({
-    'auth/sign-up': undefined,
+    endpoint: 'auth/users/sign-up',
+    microservice: 'auth',
+    method: 'post',
+    config: {
+      withCredentials: true,
+    },
   });
 
   const onSubmit = useCallback(async (form: FormTypes.SignUpForm) => {
-    const [response, error] = await requests.auth.signUp(form);
-    if (!response || error) return;
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      'auth/sign-up': response.error,
-    }));
+    const [response, error] = await doRequest({ data: { credentials: form } });
+    if (response && response.status === 201) console.log('User got signed in.');
   }, []);
-  return <SignUpForm onSubmit={onSubmit} error={errors['auth/sign-up']} />;
+  return <SignUpForm onSubmit={onSubmit} errors={errors} />;
 };
 
 export default SignUpPage;
