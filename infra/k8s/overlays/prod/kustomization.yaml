@@ -30,4 +30,4 @@ images:
   newTag: "7537359"
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
-  newTag: b80b68f
+  newTag: 00875a3
