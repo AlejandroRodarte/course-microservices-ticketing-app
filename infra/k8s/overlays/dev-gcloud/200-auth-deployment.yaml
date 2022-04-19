@@ -11,6 +11,12 @@ spec:
           # use skaffold version of the image instead and provide more failure/delay tolerance
           # since it takes more time to boot up
           image: us.gcr.io/prime-byway-274602/msnr-ta-auth-skaffold
+          env:
+            - name: FORCE_INSECURE_COOKIE
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-configmap
+                  key: FORCE_INSECURE_COOKIE
           startupProbe:
             failureThreshold: 5
             initialDelaySeconds: 10

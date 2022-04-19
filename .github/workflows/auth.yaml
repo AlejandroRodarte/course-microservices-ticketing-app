@@ -216,8 +216,8 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          git pull origin master
           git commit -am "Bump rodarte/msnr-ta-auth-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
+          git pull origin master
 
       # step 5 of job 3: push changes to GitHub
       - name: Push changes

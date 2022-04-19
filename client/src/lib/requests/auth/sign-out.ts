@@ -1,14 +1,12 @@
-import api from '../../axios/api';
 import ApplicationResponse from '../../objects/application-response';
 import UniversalError from '../../objects/universal-error';
 import { RequestTypes } from '../../types/requests';
-import { IS_DOCKER } from '../../constants/env';
+import getUrl from '../../axios/get-url';
+import api from '../../axios/api';
 
 const signOut: RequestTypes.AuthSignOutFunction = async () => {
   try {
-    const url = IS_DOCKER
-      ? `:${process.env.NEXT_PUBLIC_AUTH_MICROSERVICE_PORT}/auth/users/sign-out`
-      : '/auth/users/sign-out';
+    const url = getUrl('auth/users/sign-out');
     const response = await api.post(
       url,
       {},

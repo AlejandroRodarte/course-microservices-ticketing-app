@@ -4,16 +4,14 @@ import ApplicationResponse from '../../objects/application-response';
 import SignUpData from '../../objects/data/auth/sign-up-data';
 import UniversalError from '../../objects/universal-error';
 import { RequestTypes } from '../../types/requests';
-import { IS_DOCKER } from '../../constants/env';
+import getUrl from '../../axios/get-url';
 
 const signUp: RequestTypes.AuthSignUpFunction = async (
   form: FormTypes.SignUpForm
 ) => {
   const body = { data: { credentials: form } };
   try {
-    const url = IS_DOCKER
-      ? `:${process.env.NEXT_PUBLIC_AUTH_MICROSERVICE_PORT}/auth/users/sign-up`
-      : '/auth/users/sign-up';
+    const url = getUrl('auth/users/sign-up');
     const response = await api.post(url, body, {
       withCredentials: true,
     });

@@ -29,7 +29,7 @@ describe('Tests for the POST /auth/users/sign-out endpoint.', () => {
       expect(applicationResponse.status).toBe(204);
       expect(applicationResponse.code).toBe('USER_LOGGED_OUT');
       expect(logoutCookie).toBe(
-        'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=none; httponly'
+        'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=lax; httponly'
       );
     });
   });

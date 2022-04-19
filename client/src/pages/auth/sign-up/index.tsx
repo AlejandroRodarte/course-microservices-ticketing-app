@@ -9,10 +9,8 @@ const SignUpPage: React.FC<SignUpPageProps> = (props) => {
   const onSubmit = useCallback(async (form: FormTypes.SignUpForm) => {
     const [response, error] = await requests.auth.signUp(form);
     if (error) return;
-    if (response && response.status === 201) {
+    if (response && response.status === 201)
       console.log('The user got signed up.');
-      await requests.auth.signOut();
-    }
   }, []);
   return <SignUpForm onSubmit={onSubmit} />;
 };
