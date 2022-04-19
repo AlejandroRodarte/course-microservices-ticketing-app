@@ -1,7 +1,18 @@
-import type { NextPage } from 'next';
+import type { GetServerSideProps } from 'next';
 
-const HomePage: NextPage = () => {
-  return <div>HomePage</div>;
+interface HomePageProps {
+  name: string;
+}
+
+const HomePage: React.FC<HomePageProps> = (props) => {
+  return <div>HomePage: {props.name}</div>;
+};
+
+export const getServerSideProps: GetServerSideProps<HomePageProps> = async (
+  ctx
+) => {
+  console.log('pages/index.tsx/getServerSideProps');
+  return { props: { name: 'Alejandro' } };
 };
 
 export default HomePage;
