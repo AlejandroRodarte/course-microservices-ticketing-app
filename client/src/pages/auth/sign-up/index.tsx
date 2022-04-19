@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useRouter } from 'next/router';
 import SignUpForm from '../../../components/pages/auth/sign-up/sign-up-form';
 import { FormTypes } from '../../../lib/types/forms';
 import useRequest from '../../../lib/hooks/use-request';
@@ -8,6 +9,7 @@ import { RequestTypes } from '../../../lib/types/requests';
 interface SignUpPageProps {}
 
 const SignUpPage: React.FC<SignUpPageProps> = (props) => {
+  const router = useRouter();
   const { doRequest, errors } = useRequest<
     RequestTypes.SignUpRequestBody,
     SignUpData
@@ -20,10 +22,15 @@ const SignUpPage: React.FC<SignUpPageProps> = (props) => {
     },
   });
 
-  const onSubmit = useCallback(async (form: FormTypes.SignUpForm) => {
-    const [response, error] = await doRequest({ data: { credentials: form } });
-    if (response && response.status === 201) console.log('User got signed in.');
-  }, []);
+  const onSubmit = useCallback(
+    async (form: FormTypes.SignUpForm) => {
+      const [response, error] = await doRequest({
+        data: { credentials: form },
+      });
+      if (response && response.status === 201) router.replace('/');
+    },
+    [router, doRequest]
+  );
   return <SignUpForm onSubmit={onSubmit} errors={errors} />;
 };
 
