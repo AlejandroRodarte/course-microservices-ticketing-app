@@ -11,7 +11,7 @@ const signUp: RequestTypes.AuthSignUpFunction = async (
 ) => {
   const body = { data: { credentials: form } };
   try {
-    const url = getUrl('auth/users/sign-up');
+    const url = getUrl('auth/users/sign-up', 'auth');
     const response = await api.post(url, body, {
       withCredentials: true,
     });

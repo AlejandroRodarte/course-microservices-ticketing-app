@@ -6,7 +6,7 @@ import api from '../../axios/api';
 
 const signOut: RequestTypes.AuthSignOutFunction = async () => {
   try {
-    const url = getUrl('auth/users/sign-out');
+    const url = getUrl('auth/users/sign-out', 'auth');
     const response = await api.post(
       url,
       {},
