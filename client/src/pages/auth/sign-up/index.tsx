@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
-import SignUpForm from '../../../components/pages/auth/sign-up/sign-up-form';
 import { FormTypes } from '../../../lib/types/forms';
 import useRequest from '../../../lib/hooks/use-request';
 import SignUpData from '../../../lib/objects/data/auth/sign-up-data';
 import { RequestTypes } from '../../../lib/types/requests';
+import CredentialsForm from '../../../components/pages/auth/credentials-form';
 
 interface SignUpPageProps {}
 
@@ -23,7 +23,7 @@ const SignUpPage: React.FC<SignUpPageProps> = (props) => {
   });
 
   const onSubmit = useCallback(
-    async (form: FormTypes.SignUpForm) => {
+    async (form: FormTypes.CredentialsForm) => {
       const [response, error] = await doRequest({
         data: { credentials: form },
       });
@@ -31,7 +31,7 @@ const SignUpPage: React.FC<SignUpPageProps> = (props) => {
     },
     [router, doRequest]
   );
-  return <SignUpForm onSubmit={onSubmit} errors={errors} />;
+  return <CredentialsForm type="Sign Up" onSubmit={onSubmit} errors={errors} />;
 };
 
 export default SignUpPage;

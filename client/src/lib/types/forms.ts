@@ -1,7 +1,7 @@
 export namespace FormTypes {
-  export interface SignUpForm {
+  export interface CredentialsForm {
     email: string;
     password: string;
   }
-  export type SignUpFormKeys = keyof SignUpForm;
+  export type CredentialsFormKeys = keyof CredentialsForm;
 }

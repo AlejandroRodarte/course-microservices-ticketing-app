@@ -11,13 +11,15 @@ export namespace RequestTypes {
     UniversalError
   >;
   export type AuthSignUpFunction = (
-    form: FormTypes.SignUpForm
+    form: FormTypes.CredentialsForm
   ) => AxiosResponse<SignUpData>;
   export type AuthSignOutFunction = () => AxiosResponse<undefined>;
-  export type AuthCurrentUserFunction = (cookie?: string) => AxiosResponse<CurrentUserData>;
+  export type AuthCurrentUserFunction = (
+    cookie?: string
+  ) => AxiosResponse<CurrentUserData>;
   export interface SignUpRequestBody {
     data: {
-      credentials: FormTypes.SignUpForm;
+      credentials: FormTypes.CredentialsForm;
     };
   }
 }
