@@ -9,9 +9,7 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
-  return (
-    <div>HomePage: {props.user ? props.user.email : 'Not logged in.'}</div>
-  );
+  return <h1> You are {props.user ? '' : 'NOT'} signed in.</h1>;
 };
 
 export const getServerSideProps: GetServerSideProps<HomePageProps> = async (
