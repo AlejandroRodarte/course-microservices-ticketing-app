@@ -6,4 +6,5 @@ metadata:
 data:
   NODE_ENV: development-gcloud
   CORS_ORIGIN: https://ticketing.104.197.128.80.nip.io
-  FORCE_INSECURE_COOKIE: "true"
+  FORCE_INSECURE_COOKIE: 'true'
+  COOKIE_SESSION_DOMAIN: .104.197.128.80.nip.io

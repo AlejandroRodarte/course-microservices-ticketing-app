@@ -30,6 +30,11 @@ spec:
                 configMapKeyRef:
                   name: auth-configmap
                   key: CORS_ORIGIN
+            - name: COOKIE_SESSION_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-configmap
+                  key: COOKIE_SESSION_DOMAIN
             - name: MONGODB_URL
               valueFrom:
                 secretKeyRef:

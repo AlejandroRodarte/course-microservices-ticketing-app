@@ -3,3 +3,6 @@ kind: ConfigMap
 metadata:
   name: front-configmap
   namespace: ticketing
+data:
+  AUTH_MICROSERVICE_NAME: auth-service
+  AUTH_MICROSERVICE_PORT: '3000'

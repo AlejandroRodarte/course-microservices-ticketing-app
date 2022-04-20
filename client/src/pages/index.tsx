@@ -1,18 +1,27 @@
 import type { GetServerSideProps } from 'next';
+import BaseUserDto from '../lib/objects/dto/auth/base-user-dto';
+import requests from '../lib/requests';
 
 interface HomePageProps {
-  name: string;
+  user: BaseUserDto | null;
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
-  return <div>HomePage: {props.name}</div>;
+  return (
+    <div>HomePage: {props.user ? props.user.email : 'Not logged in.'}</div>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps<HomePageProps> = async (
   ctx
 ) => {
-  console.log('pages/index.tsx/getServerSideProps');
-  return { props: { name: 'Alejandro' } };
+  const [response, error] = await requests.auth.currentUser({
+    isServer: true,
+    cookie: ctx.req.headers.cookie,
+  });
+  if (response && response.status === 200 && response.data)
+    return { props: { user: response.data.user } };
+  return { props: { user: null } };
 };
 
 export default HomePage;

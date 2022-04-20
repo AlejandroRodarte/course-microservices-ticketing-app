@@ -5,3 +5,6 @@ metadata:
   namespace: ticketing
 data:
   NODE_ENV: development-microk8s
+  CORS_ORIGIN: https://ticketing.10.64.140.43.nip.io
+  FORCE_INSECURE_COOKIE: 'true'
+  COOKIE_SESSION_DOMAIN: .10.64.140.43.nip.io

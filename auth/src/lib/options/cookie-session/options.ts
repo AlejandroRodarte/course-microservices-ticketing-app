@@ -8,6 +8,7 @@ const cookieSessionOptions: CookieSessionInterfaces.CookieSessionOptions = {
   signed: false,
   secure,
   sameSite,
+  domain: process.env.COOKIE_SESSION_DOMAIN,
 };
 
 export default cookieSessionOptions;

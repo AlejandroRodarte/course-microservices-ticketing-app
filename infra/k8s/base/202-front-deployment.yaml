@@ -28,6 +28,16 @@ spec:
                 configMapKeyRef:
                   name: front-configmap
                   key: NEXT_PUBLIC_API_URL
+            - name: AUTH_MICROSERVICE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: front-configmap
+                  key: AUTH_MICROSERVICE_NAME
+            - name: AUTH_MICROSERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: front-configmap
+                  key: AUTH_MICROSERVICE_PORT
           startupProbe:
             failureThreshold: 3
             tcpSocket:
