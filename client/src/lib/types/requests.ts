@@ -1,7 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import ApplicationResponse from '../objects/application-response';
-import CurrentUserData from '../objects/data/auth/current-user-data';
-import SignUpData from '../objects/data/auth/sign-up-data';
+import BaseUserDto from '../objects/dto/auth/base-user-dto';
 import UniversalError from '../objects/universal-error';
 import { AxiosTypes } from './axios';
 import { FormTypes } from './forms';
@@ -12,13 +11,9 @@ export namespace RequestTypes {
     ApplicationResponse<DataType, UniversalError>,
     UniversalError
   >;
-  export type AuthSignUpFunction = (
-    form: FormTypes.CredentialsForm
-  ) => AxiosResponse<SignUpData>;
-  export type AuthSignOutFunction = () => AxiosResponse<undefined>;
   export type AuthCurrentUserFunction = (
     cookie?: string
-  ) => AxiosResponse<CurrentUserData>;
+  ) => Promise<BaseUserDto | null>;
   export interface SignUpRequestBody {
     data: {
       credentials: FormTypes.CredentialsForm;
