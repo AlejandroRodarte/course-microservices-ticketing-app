@@ -6,12 +6,9 @@ import { RequestTypes } from '../../types/requests';
 import getUrl from '../../axios/get-url';
 import CurrentUserData from '../../objects/data/auth/current-user-data';
 
-const currentUser: RequestTypes.AuthCurrentUserFunction = async ({
-  isServer,
-  cookie,
-}) => {
+const currentUser: RequestTypes.AuthCurrentUserFunction = async (cookie) => {
   try {
-    const url = getUrl('auth/users/current-user', 'auth', isServer);
+    const url = getUrl('auth/users/current-user', 'auth', true);
     const response = await api.get(url, {
       withCredentials: true,
       httpsAgent: new https.Agent({

@@ -14,7 +14,7 @@ export namespace RequestTypes {
     form: FormTypes.SignUpForm
   ) => AxiosResponse<SignUpData>;
   export type AuthSignOutFunction = () => AxiosResponse<undefined>;
-  export type AuthCurrentUserFunction = (args: { isServer: boolean; cookie?: string }) => AxiosResponse<CurrentUserData>;
+  export type AuthCurrentUserFunction = (cookie?: string) => AxiosResponse<CurrentUserData>;
   export interface SignUpRequestBody {
     data: {
       credentials: FormTypes.SignUpForm;

@@ -15,10 +15,9 @@ const HomePage: React.FC<HomePageProps> = (props) => {
 export const getServerSideProps: GetServerSideProps<HomePageProps> = async (
   ctx
 ) => {
-  const [response, error] = await requests.auth.currentUser({
-    isServer: true,
-    cookie: ctx.req.headers.cookie,
-  });
+  const [response, error] = await requests.auth.currentUser(
+    ctx.req.headers.cookie
+  );
   if (response && response.status === 200 && response.data)
     return { props: { user: response.data.user } };
   return { props: { user: null } };
