@@ -11,7 +11,7 @@ export namespace HooksTypes {
   }
 
   export interface UseRequestReturns<BodyType, DataType> {
-    doRequest: (body: BodyType) => RequestTypes.AxiosResponse<DataType>;
+    doRequest: (body?: BodyType) => RequestTypes.AxiosResponse<DataType>;
     errors: JSX.Element | undefined;
   }
 }

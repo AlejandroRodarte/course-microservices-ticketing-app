@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import api from '../axios/api';
 import getUrl from '../axios/get-url';
@@ -16,22 +17,29 @@ function useRequest<BodyType, DataType>(
   const doRequest: HooksTypes.UseRequestReturns<
     BodyType,
     DataType
-  >['doRequest'] = async (body: BodyType) => {
+  >['doRequest'] = async (body?: BodyType) => {
     try {
       const url = getUrl(args.endpoint, args.microservice);
-      const response = await api[args.method](url, body, args.config);
-      const data = response.data as ApplicationResponse<
-        DataType,
-        UniversalError
-      >;
-      if (!data.error) setErrors(() => undefined);
-      switch (data.status) {
+      let response:
+        | AxiosResponse<ApplicationResponse<DataType, UniversalError>>
+        | undefined = undefined;
+      if (args.method === 'get')
+        response = await api.get<ApplicationResponse<DataType, UniversalError>>(
+          url,
+          args.config
+        );
+      else
+        response = await api[args.method]<
+          ApplicationResponse<DataType, UniversalError>
+        >(url, body || {}, args.config);
+      if (!response.data.error) setErrors(() => undefined);
+      switch (response.data.status) {
         case 422: {
           setErrors(() => (
             <div className="alert alert-danger">
               <h4>Oops...</h4>
               <ul className="my-0">
-                {data.error!.errors.map((item) => (
+                {response!.data.error!.errors.map((item) => (
                   <li key={item.field}>{item.message}</li>
                 ))}
               </ul>
@@ -40,7 +48,7 @@ function useRequest<BodyType, DataType>(
           break;
         }
       }
-      return [data, undefined];
+      return [response.data, undefined];
     } catch (e) {
       return [
         undefined,

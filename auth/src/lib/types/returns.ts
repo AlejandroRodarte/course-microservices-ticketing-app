@@ -1,5 +1,5 @@
 export namespace ReturnTypes {
   export type AsyncTuple<DataType, ErrorType> = Promise<
-    [DataType | undefined, ErrorType | undefined]
+    [DataType, undefined] | [undefined, ErrorType]
   >;
 }
