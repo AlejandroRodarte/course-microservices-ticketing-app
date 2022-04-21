@@ -5,8 +5,14 @@ import useRequest from '../../../lib/hooks/use-request';
 import SignUpData from '../../../lib/objects/data/auth/sign-up-data';
 import { RequestTypes } from '../../../lib/types/requests';
 import CredentialsForm from '../../../components/pages/auth/credentials-form';
+import { GetServerSideProps } from 'next';
+import BaseUserDto from '../../../lib/objects/dto/auth/base-user-dto';
+import requests from '../../../lib/requests';
+import DefaultLayout from '../../../components/layouts/default-layout';
 
-interface SignInPageProps {}
+interface SignInPageProps {
+  user: BaseUserDto | null;
+}
 
 const SignInPage: React.FC<SignInPageProps> = (props) => {
   const router = useRouter();
@@ -31,7 +37,18 @@ const SignInPage: React.FC<SignInPageProps> = (props) => {
     },
     [router, doRequest]
   );
-  return <CredentialsForm type="Sign In" onSubmit={onSubmit} errors={errors} />;
+  return (
+    <DefaultLayout user={props.user}>
+      <CredentialsForm type="Sign In" onSubmit={onSubmit} errors={errors} />
+    </DefaultLayout>
+  )
+};
+
+export const getServerSideProps: GetServerSideProps<SignInPageProps> = async (
+  ctx
+) => {
+  const user = await requests.auth.currentUser(ctx.req.headers.cookie);
+  return { props: { user } };
 };
 
 export default SignInPage;
