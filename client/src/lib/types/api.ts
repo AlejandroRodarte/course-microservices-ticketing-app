@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { UniversalObjectTypes } from './objects/universal';
 
 export namespace ApiTypes {
   /**
@@ -20,7 +21,12 @@ export namespace ApiTypes {
   export type RunFunction = (index?: number) => Promise<void>;
   export type RootHandlerFunction = (
     req: NextApiRequest,
-    res: NextApiResponse
+    res: NextApiResponse<
+      UniversalObjectTypes.ApplicationResponse<
+        any,
+        UniversalObjectTypes.UniversalError
+      >
+    >
   ) => Promise<void>;
   export type CreateRouteFunction = () => {
     get: (...handlers: HandlerFunction<any, any>[]) => void;

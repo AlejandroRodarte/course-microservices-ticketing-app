@@ -1,14 +1,14 @@
 import https from 'https';
-import CurrentUserData from '../../objects/data/auth/current-user-data';
-import { RequestTypes } from '../../types/requests';
 import doServerSideRequest from '../do-server-side-request';
+import { RequestTypes } from '../../types/requests';
+import { AuthObjectDataTypes } from '../../types/objects/data/auth';
 
 const currentUser: RequestTypes.AuthCurrentUserFunction = async (
   cookie?: string
 ) => {
   const [response, error] = await doServerSideRequest<
     undefined,
-    CurrentUserData
+    AuthObjectDataTypes.CurrentUserData
   >({
     endpoint: 'auth/users/current-user',
     microservice: 'auth',

@@ -2,23 +2,23 @@ import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { FormTypes } from '../../../lib/types/forms';
 import useRequest from '../../../lib/hooks/use-request';
-import SignUpData from '../../../lib/objects/data/auth/sign-up-data';
 import { RequestTypes } from '../../../lib/types/requests';
 import CredentialsForm from '../../../components/pages/auth/credentials-form';
 import { GetServerSideProps } from 'next';
-import BaseUserDto from '../../../lib/objects/dto/auth/base-user-dto';
 import requests from '../../../lib/requests';
 import DefaultLayout from '../../../components/layouts/default-layout';
+import { AuthObjectDataTypes } from '../../../lib/types/objects/data/auth';
+import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 
 interface SignInPageProps {
-  user: BaseUserDto | null;
+  user: AuthObjectDtoTypes.BaseUserDto | null;
 }
 
 const SignInPage: React.FC<SignInPageProps> = (props) => {
   const router = useRouter();
   const { doRequest, errors } = useRequest<
     RequestTypes.SignUpRequestBody,
-    SignUpData
+    AuthObjectDataTypes.SignUpData
   >({
     endpoint: 'auth/users/sign-in',
     microservice: 'auth',

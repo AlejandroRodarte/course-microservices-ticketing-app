@@ -2,9 +2,8 @@ import { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import api from '../axios/api';
 import getUrl from '../axios/get-url';
-import ApplicationResponse from '../objects/application-response';
-import UniversalError from '../objects/universal-error';
 import { HooksTypes } from '../types/hooks';
+import { UniversalObjectTypes } from '../types/objects/universal';
 
 function useRequest<BodyType, DataType>(
   args: HooksTypes.UseRequestArgs
@@ -21,16 +20,26 @@ function useRequest<BodyType, DataType>(
     try {
       const url = getUrl(args.endpoint, args.microservice);
       let response:
-        | AxiosResponse<ApplicationResponse<DataType, UniversalError>>
+        | AxiosResponse<
+            UniversalObjectTypes.ApplicationResponse<
+              DataType,
+              UniversalObjectTypes.UniversalError
+            >
+          >
         | undefined = undefined;
       if (args.method === 'get')
-        response = await api.get<ApplicationResponse<DataType, UniversalError>>(
-          url,
-          args.config
-        );
+        response = await api.get<
+          UniversalObjectTypes.ApplicationResponse<
+            DataType,
+            UniversalObjectTypes.UniversalError
+          >
+        >(url, args.config);
       else
         response = await api[args.method]<
-          ApplicationResponse<DataType, UniversalError>
+          UniversalObjectTypes.ApplicationResponse<
+            DataType,
+            UniversalObjectTypes.UniversalError
+          >
         >(url, body || {}, args.config);
       if (!response.data.error) setErrors(() => undefined);
       switch (response.data.status) {
@@ -52,9 +61,14 @@ function useRequest<BodyType, DataType>(
     } catch (e) {
       return [
         undefined,
-        new UniversalError('RequestError', [
-          { message: 'A network error occured during the request.' },
-        ]),
+        {
+          type: 'RequestError',
+          errors: [
+            {
+              message: 'A network error occured during the request.',
+            },
+          ],
+        },
       ];
     }
   };

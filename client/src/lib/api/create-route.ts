@@ -1,4 +1,3 @@
-import ApplicationResponse from '../objects/application-response';
 import { ApiTypes } from '../types/api';
 
 const createRoute: ApiTypes.CreateRouteFunction = () => {
@@ -21,17 +20,13 @@ const createRoute: ApiTypes.CreateRouteFunction = () => {
     const method = req.method?.toLowerCase() as ApiTypes.HttpVerbs;
     if (method && methodHandlers[method])
       return methodHandlers[method]!(req, res);
-    return res
-      .status(200)
-      .send(
-        new ApplicationResponse(
-          404,
-          'ROUTE_NOT_FOUND',
-          'This route does not exist in the application.',
-          undefined,
-          undefined
-        )
-      );
+    return res.status(200).send({
+      status: 404,
+      code: 'ROUTE_NOT_FOUND',
+      message: 'This route does not exist in the application.',
+      data: undefined,
+      error: undefined,
+    });
   };
 
   return {

@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import BaseUserDto from '../../../lib/objects/dto/auth/base-user-dto';
+import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 import { UIComponentTypes } from '../../../lib/types/components/ui';
 
 interface MainHeaderProps {
-  user: BaseUserDto | null;
+  user: AuthObjectDtoTypes.BaseUserDto | null;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = (props) => {

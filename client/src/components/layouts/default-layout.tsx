@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
-import BaseUserDto from '../../lib/objects/dto/auth/base-user-dto';
 import MainHeader from '../ui/headers/main-header';
+import { AuthObjectDtoTypes } from '../../lib/types/objects/dto/auth';
 
 interface DefaultLayoutProps {
-  user: BaseUserDto | null;
+  user: AuthObjectDtoTypes.BaseUserDto | null;
 }
 
 const DefaultLayout: React.FC<DefaultLayoutProps> = (props) => {

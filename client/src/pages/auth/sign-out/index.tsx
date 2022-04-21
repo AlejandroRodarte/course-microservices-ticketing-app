@@ -2,10 +2,10 @@ import React, { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import useRequest from '../../../lib/hooks/use-request';
 import { RequestTypes } from '../../../lib/types/requests';
-import BaseUserDto from '../../../lib/objects/dto/auth/base-user-dto';
+import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 
 interface SignOutPageProps {
-  user: BaseUserDto | null;
+  user: AuthObjectDtoTypes.BaseUserDto | null;
 }
 
 const SignOutPage: React.FC<SignOutPageProps> = (props) => {

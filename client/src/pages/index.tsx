@@ -1,10 +1,10 @@
 import type { GetServerSideProps } from 'next';
 import DefaultLayout from '../components/layouts/default-layout';
-import BaseUserDto from '../lib/objects/dto/auth/base-user-dto';
 import requests from '../lib/requests';
+import { AuthObjectDtoTypes } from '../lib/types/objects/dto/auth';
 
 interface HomePageProps {
-  user: BaseUserDto | null;
+  user: AuthObjectDtoTypes.BaseUserDto | null;
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {

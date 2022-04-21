@@ -1,19 +1,21 @@
 import { AxiosRequestConfig } from 'axios';
-import ApplicationResponse from '../objects/application-response';
-import BaseUserDto from '../objects/dto/auth/base-user-dto';
-import UniversalError from '../objects/universal-error';
 import { AxiosTypes } from './axios';
 import { FormTypes } from './forms';
 import { ReturnTypes } from './returns';
+import { UniversalObjectTypes } from './objects/universal';
+import { AuthObjectDtoTypes } from './objects/dto/auth';
 
 export namespace RequestTypes {
   export type AxiosResponse<DataType> = ReturnTypes.AsyncTuple<
-    ApplicationResponse<DataType, UniversalError>,
-    UniversalError
+    UniversalObjectTypes.ApplicationResponse<
+      DataType,
+      UniversalObjectTypes.UniversalError
+    >,
+    UniversalObjectTypes.UniversalError
   >;
   export type AuthCurrentUserFunction = (
     cookie?: string
-  ) => Promise<BaseUserDto | null>;
+  ) => Promise<AuthObjectDtoTypes.BaseUserDto | null>;
   export interface SignUpRequestBody {
     data: {
       credentials: FormTypes.CredentialsForm;
