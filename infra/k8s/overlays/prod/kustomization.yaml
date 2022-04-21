@@ -27,7 +27,7 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod
-  newTag: "7537359"
+  newTag: f8ce26e
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
   newTag: 7d9bc34
