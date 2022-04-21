@@ -41,7 +41,7 @@ const SignInPage: React.FC<SignInPageProps> = (props) => {
     <DefaultLayout user={props.user}>
       <CredentialsForm type="Sign In" onSubmit={onSubmit} errors={errors} />
     </DefaultLayout>
-  )
+  );
 };
 
 export const getServerSideProps: GetServerSideProps<SignInPageProps> = async (

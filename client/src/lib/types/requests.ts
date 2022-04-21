@@ -19,6 +19,8 @@ export namespace RequestTypes {
       credentials: FormTypes.CredentialsForm;
     };
   }
+  export type SignInRequestBody = SignUpRequestBody;
+  export interface SignOutRequestBody {}
   export interface DoServerSideRequestArgs<BodyType> {
     endpoint: string;
     microservice: AxiosTypes.MicroServices;
