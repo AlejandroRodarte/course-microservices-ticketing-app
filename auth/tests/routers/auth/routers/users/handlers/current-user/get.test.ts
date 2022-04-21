@@ -1,10 +1,9 @@
 import request from 'supertest';
+import { objects, ApplicationResponseTypes } from '@msnr-ticketing-app/common';
 import app from '../../../../../../../src/app';
 import dbHelpers from '../../../../../../../src/lib/db/helpers';
 import supertestHelpers from '../../../../../../lib/supertest/helpers';
 import CurrentUserData from '../../../../../../../src/lib/objects/data/users/current-user-data';
-import UniversalError from '../../../../../../../src/lib/objects/errors/universal-error';
-import { ApplicationResponseTypes } from '../../../../../../../src/lib/types/objects/application-response';
 
 const routes = {
   'sign-up': '/auth/users/sign-up',
@@ -46,7 +45,7 @@ describe('Tests for the GET /auth/users/current-user endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
       expect(applicationResponse.status).toBe(401);
       expect(applicationResponse.code).toBe('UNAUTHORIZED_ERROR');

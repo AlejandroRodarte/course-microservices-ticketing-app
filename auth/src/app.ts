@@ -3,10 +3,9 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import cors from 'cors';
+import { routes, objects } from '@msnr-ticketing-app/common';
 
 import routers from './routers';
-import errorHandler from './middlewares/errors/error-handler';
-import RouteNotFoundError from './lib/objects/errors/route-not-found-error';
 import cookieSessionOptions from './lib/options/cookie-session/options';
 import corsOptions from './lib/options/cors/options';
 
@@ -21,8 +20,8 @@ app.use(cookieSession(cookieSessionOptions));
 
 app.use('/auth', routers.auth);
 app.all('*', () => {
-  throw new RouteNotFoundError();
+  throw new objects.errors.RouteNotFoundError();
 });
-app.use(errorHandler);
+app.use(routes.middlewares.errors.errorHandler);
 
 export default app;

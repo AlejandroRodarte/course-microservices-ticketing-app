@@ -1,5 +1,5 @@
+import { JwtTypes } from '@msnr-ticketing-app/common';
 import { DbModelTypes } from '../../../types/db/models';
-import { JwtTypes } from '../../../types/jwt';
 
 class BaseUserDto {
   private id: string;

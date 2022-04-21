@@ -1,9 +1,8 @@
 import { Server } from 'http';
-import DatabaseConnectionError from '../objects/errors/database-connection-error';
-import { ReturnTypes } from './returns';
+import { objects, ReturnTypes } from '@msnr-ticketing-app/common';
 
 export namespace MainTypes {
-  type MainFunctionError = DatabaseConnectionError;
+  type MainFunctionError = InstanceType<typeof objects.errors.DatabaseConnectionError>;
   export type MainFunction = () => ReturnTypes.AsyncTuple<
     Server,
     MainFunctionError

@@ -1,4 +1,4 @@
-import DatabaseOperationError from '../../../objects/errors/database-operation-error';
+import { objects } from '@msnr-ticketing-app/common';
 import { DbHelpersTypes } from '../../../types/db/helpers';
 
 const save: DbHelpersTypes.UserSaveFunction = async (user) => {
@@ -8,7 +8,7 @@ const save: DbHelpersTypes.UserSaveFunction = async (user) => {
   } catch (e) {
     return [
       undefined,
-      new DatabaseOperationError(
+      new objects.errors.DatabaseOperationError(
         'save',
         'There was a problem saving the user into the database.'
       ),

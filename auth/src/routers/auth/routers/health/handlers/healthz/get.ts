@@ -1,11 +1,11 @@
 import { RequestHandler } from 'express';
-import ApplicationResponse from '../../../../../../lib/objects/application-response';
+import { objects } from '@msnr-ticketing-app/common';
 
 const get: RequestHandler = (req, res) => {
   return res
     .status(200)
     .send(
-      new ApplicationResponse<undefined, undefined>(
+      new objects.ApplicationResponse<undefined, undefined>(
         200,
         'APPLICATION_HEALTHY',
         'The application is healthy.',

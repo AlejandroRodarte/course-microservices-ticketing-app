@@ -1,4 +1,4 @@
-import DatabaseOperationError from '../../../objects/errors/database-operation-error';
+import { objects } from '@msnr-ticketing-app/common';
 import { DbHelpersTypes } from '../../../types/db/helpers';
 import User from '../../models/user';
 
@@ -9,7 +9,7 @@ const exists: DbHelpersTypes.UserExistsFunction = async (filter) => {
   } catch (e) {
     return [
       undefined,
-      new DatabaseOperationError(
+      new objects.errors.DatabaseOperationError(
         'exists',
         'An error occured while trying to check that the user existed in the database.'
       ),

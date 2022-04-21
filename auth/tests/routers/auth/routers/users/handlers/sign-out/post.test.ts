@@ -1,7 +1,6 @@
 import request from 'supertest';
+import { objects, ApplicationResponseTypes } from '@msnr-ticketing-app/common';
 import app from '../../../../../../../src/app';
-import UniversalError from '../../../../../../../src/lib/objects/errors/universal-error';
-import { ApplicationResponseTypes } from '../../../../../../../src/lib/types/objects/application-response';
 import helpers from '../../../../../../lib/supertest/helpers';
 
 const routes = {
@@ -40,7 +39,7 @@ describe('Tests for the POST /auth/users/sign-out endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(401);

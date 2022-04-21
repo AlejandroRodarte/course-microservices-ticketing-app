@@ -1,4 +1,4 @@
-import DatabaseOperationError from '../../../objects/errors/database-operation-error';
+import { objects } from '@msnr-ticketing-app/common';
 import { DbHelpersTypes } from '../../../types/db/helpers';
 import User from '../../models/user';
 
@@ -9,7 +9,7 @@ const findById: DbHelpersTypes.UserFindByIdFunction = async (id: string) => {
   } catch (e) {
     return [
       undefined,
-      new DatabaseOperationError(
+      new objects.errors.DatabaseOperationError(
         'find-by-id',
         'There was an error trying to find a user by its id.'
       ),

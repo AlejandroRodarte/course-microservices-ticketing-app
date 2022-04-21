@@ -1,4 +1,4 @@
-import DatabaseOperationError from '../../../objects/errors/database-operation-error';
+import { objects } from '@msnr-ticketing-app/common';
 import { DbHelpersTypes } from '../../../types/db/helpers';
 import User from '../../models/user';
 
@@ -9,7 +9,7 @@ const findOne: DbHelpersTypes.UserFindOneFunction = async (filters) => {
   } catch (e) {
     return [
       undefined,
-      new DatabaseOperationError(
+      new objects.errors.DatabaseOperationError(
         'find-one',
         'There was an error trying to find a user by its unique filter criteria.'
       ),

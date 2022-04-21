@@ -1,11 +1,9 @@
 import { Response } from 'express';
+import { objects, jwt } from '@msnr-ticketing-app/common';
 import bcrypt from '../../../../../../lib/bcrypt';
 import helpers from '../../../../../../lib/db/helpers';
-import jwt from '../../../../../../lib/jwt';
-import ApplicationResponse from '../../../../../../lib/objects/application-response';
 import SignInData from '../../../../../../lib/objects/data/users/sign-in-data';
 import BaseUserDto from '../../../../../../lib/objects/dto/users/base-user-dto';
-import BadCredentialsError from '../../../../../../lib/objects/errors/bad-credentials-error';
 import { UsersRequestHandlers } from '../../../../../../lib/types/request-handlers/users';
 
 const post = async (
@@ -19,7 +17,7 @@ const post = async (
   });
   if (typeof user === 'undefined' && databaseOperationError)
     throw databaseOperationError;
-  if (!user) throw new BadCredentialsError('Wrong credentials.');
+  if (!user) throw new objects.errors.BadCredentialsError('Wrong credentials.');
 
   const [arePasswordsEqual, bcryptLibraryError] = await bcrypt.compare(
     user.password,
@@ -27,19 +25,23 @@ const post = async (
   );
   if (typeof arePasswordsEqual === 'undefined' && bcryptLibraryError)
     throw bcryptLibraryError;
-  if (!arePasswordsEqual) throw new BadCredentialsError('Wrong credentials.');
+  if (!arePasswordsEqual)
+    throw new objects.errors.BadCredentialsError('Wrong credentials.');
 
   req.session = {
     jwt: jwt.sign({
-      id: user.id,
-      email: user.email,
+      payload: {
+        id: user.id,
+        email: user.email,
+      },
+      secret: process.env.JWT_SECRET!,
     }),
   };
 
   return res
     .status(200)
     .send(
-      new ApplicationResponse<SignInData, undefined>(
+      new objects.ApplicationResponse<SignInData, undefined>(
         200,
         'USER_LOGGED_IN',
         'The user has logged in succesfully.',

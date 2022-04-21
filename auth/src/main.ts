@@ -1,7 +1,24 @@
+import { db } from '@msnr-ticketing-app/common';
 import app from './app';
-import connection from './lib/db/mongoose/connection';
+import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
 import { MainTypes } from './lib/types/main';
 
+const connection = db.mongoose.createConnection({
+  microservice: {
+    name: {
+      short: 'auth',
+      long: 'authentication',
+    },
+  },
+  environment: {
+    nodeEnv: 'NODE_ENV',
+    mongoDbUrl: 'MONGODB_URL',
+  },
+  setter: {
+    list: ['production-docker', 'development-docker'],
+    fn: setFromDockerSecrets,
+  },
+});
 const port = process.env.PORT || 3000;
 
 const start: MainTypes.MainFunction = async () => {

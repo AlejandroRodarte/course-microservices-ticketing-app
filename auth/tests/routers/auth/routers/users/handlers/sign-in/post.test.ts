@@ -1,8 +1,7 @@
 import request from 'supertest';
+import { objects, ApplicationResponseTypes } from '@msnr-ticketing-app/common';
 import app from '../../../../../../../src/app';
 import SignInData from '../../../../../../../src/lib/objects/data/users/sign-in-data';
-import UniversalError from '../../../../../../../src/lib/objects/errors/universal-error';
-import { ApplicationResponseTypes } from '../../../../../../../src/lib/types/objects/application-response';
 
 const routes = {
   'sign-in': '/auth/users/sign-in',
@@ -72,7 +71,7 @@ describe('Tests for the POST /auth/users/sign-in endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(401);
@@ -96,7 +95,7 @@ describe('Tests for the POST /auth/users/sign-in endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(401);

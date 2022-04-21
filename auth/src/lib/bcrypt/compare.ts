@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import LibraryError from '../objects/errors/library-error';
+import { objects } from '@msnr-ticketing-app/common';
 import { BCryptTypes } from '../types/bcrypt';
 
 const compare: BCryptTypes.CompareFunction = async (
@@ -15,7 +15,7 @@ const compare: BCryptTypes.CompareFunction = async (
   } catch (e) {
     return [
       undefined,
-      new LibraryError(
+      new objects.errors.LibraryError(
         'bcrypt',
         'There was an error comparing the stored and provided passwords.'
       ),

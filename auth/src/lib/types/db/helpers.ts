@@ -1,6 +1,5 @@
 import { FilterQuery, Document } from 'mongoose';
-import DatabaseOperationError from '../../objects/errors/database-operation-error';
-import { ReturnTypes } from '../returns';
+import { objects, ReturnTypes } from '@msnr-ticketing-app/common';
 import { DbModelTypes } from './models';
 
 export namespace DbHelpersTypes {
@@ -11,11 +10,17 @@ export namespace DbHelpersTypes {
   > | null;
   type ExistsFunction<DocumentType> = (
     filter: FilterQuery<DocumentType>
-  ) => ReturnTypes.AsyncTuple<ExistsDataType<Document>, DatabaseOperationError>;
+  ) => ReturnTypes.AsyncTuple<
+    ExistsDataType<Document>,
+    InstanceType<typeof objects.errors.DatabaseOperationError>
+  >;
   // Model.save()
   type SaveFunction<DocumentType> = (
     document: DocumentType
-  ) => ReturnTypes.AsyncTuple<DocumentType, DatabaseOperationError>;
+  ) => ReturnTypes.AsyncTuple<
+    DocumentType,
+    InstanceType<typeof objects.errors.DatabaseOperationError>
+  >;
   // Model.findOneById()
   type FindByIdDataType<DocumentType> =
     | (DocumentType & {
@@ -26,7 +31,7 @@ export namespace DbHelpersTypes {
     id: string
   ) => ReturnTypes.AsyncTuple<
     FindByIdDataType<DocumentType>,
-    DatabaseOperationError
+    InstanceType<typeof objects.errors.DatabaseOperationError>
   >;
   // Model.findOne()
   type FindOneDataType<DocumentType> = FindByIdDataType<DocumentType>;
@@ -34,7 +39,7 @@ export namespace DbHelpersTypes {
     filter: FilterQuery<DocumentType>
   ) => ReturnTypes.AsyncTuple<
     FindOneDataType<DocumentType>,
-    DatabaseOperationError
+    InstanceType<typeof objects.errors.DatabaseOperationError>
   >;
   // User model
   export type UserExistsFunction = ExistsFunction<DbModelTypes.UserDocument>;

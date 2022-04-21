@@ -1,12 +1,17 @@
-import LibraryError from '../objects/errors/library-error';
-import { ReturnTypes } from './returns';
+import { objects, ReturnTypes } from '@msnr-ticketing-app/common';
 
 export namespace BCryptTypes {
   export type HashFunction = (
     password: string
-  ) => ReturnTypes.AsyncTuple<string, LibraryError>;
+  ) => ReturnTypes.AsyncTuple<
+    string,
+    InstanceType<typeof objects.errors.LibraryError>
+  >;
   export type CompareFunction = (
     storedPassword: string,
     providedPassword: string
-  ) => ReturnTypes.AsyncTuple<boolean, LibraryError>;
+  ) => ReturnTypes.AsyncTuple<
+    boolean,
+    InstanceType<typeof objects.errors.LibraryError>
+  >;
 }

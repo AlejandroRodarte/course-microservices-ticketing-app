@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { JwtTypes } from '../jwt';
+import { JwtTypes } from '@msnr-ticketing-app/common';
 
 export namespace UsersRequestHandlers {
   /**

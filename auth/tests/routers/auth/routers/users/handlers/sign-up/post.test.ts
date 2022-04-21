@@ -1,8 +1,7 @@
 import request from 'supertest';
+import { objects, ApplicationResponseTypes } from '@msnr-ticketing-app/common';
 import app from '../../../../../../../src/app';
 import SignUpData from '../../../../../../../src/lib/objects/data/users/sign-up-data';
-import UniversalError from '../../../../../../../src/lib/objects/errors/universal-error';
-import { ApplicationResponseTypes } from '../../../../../../../src/lib/types/objects/application-response';
 
 const route = '/auth/users/sign-up';
 
@@ -55,7 +54,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(422);
@@ -75,7 +74,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(422);
@@ -94,7 +93,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(422);
@@ -113,7 +112,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(422);
@@ -126,7 +125,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(applicationResponse.status).toBe(422);
@@ -163,7 +162,7 @@ describe('Tests for the POST /auth/users/sign-up endpoint.', () => {
       const secondApplicationResponse =
         secondResponse.body as ApplicationResponseTypes.Body<
           undefined,
-          UniversalError
+          InstanceType<typeof objects.errors.UniversalError>
         >;
 
       expect(secondApplicationResponse.status).toBe(400);

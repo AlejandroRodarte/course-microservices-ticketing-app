@@ -1,6 +1,6 @@
 import request from 'supertest';
+import { ApplicationResponseTypes } from '@msnr-ticketing-app/common';
 import app from '../../../../../../../src/app';
-import { ApplicationResponseTypes } from '../../../../../../../src/lib/types/objects/application-response';
 
 const route = '/auth/health/healthz';
 

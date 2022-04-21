@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import LibraryError from '../objects/errors/library-error';
+import { objects } from '@msnr-ticketing-app/common';
 import { BCryptTypes } from '../types/bcrypt';
 
 const hash: BCryptTypes.HashFunction = async (password) => {
@@ -9,7 +9,10 @@ const hash: BCryptTypes.HashFunction = async (password) => {
   } catch (e) {
     return [
       undefined,
-      new LibraryError('bcrypt', 'There was an error hashing the password.'),
+      new objects.errors.LibraryError(
+        'bcrypt',
+        'There was an error hashing the password.'
+      ),
     ];
   }
 };
