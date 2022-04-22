@@ -3,7 +3,7 @@ version: '3.4'
 # base version of compose files
 services:
   auth:
-    image: rodarte/msnr-ta-auth-prod:7537359 # use latest image built by CI/CD pipeline (prod stage)
+    image: rodarte/msnr-ta-auth-prod:f8ce26e # use latest image built by CI/CD pipeline (prod stage)
     ports:
       - '3000:3000' # publish port 3000 of container to port 3000 of virtual computer
     environment:
@@ -20,7 +20,7 @@ services:
   auth-mongodb:
     image: mongo:5.0
   front:
-    image: rodarte/msnr-ta-front-prod:7537359
+    image: rodarte/msnr-ta-front-prod:8a9770d
     ports:
       - '3001:3001'
     environment:

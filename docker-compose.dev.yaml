@@ -3,7 +3,7 @@ version: '3.4'
 
 services:
   auth:
-    image: rodarte/msnr-ta-auth-dev:7537359 # use latest image built by CI/CD pipeline (dev stage)
+    image: rodarte/msnr-ta-auth-dev:f8ce26e # use latest image built by CI/CD pipeline (dev stage)
     volumes:
       - ./auth:/node/app # dev stage sets WORKDIR on /node/app to bindmount local source code there
       - /node/app/node_modules # bind /node/app/node_modules to an empty volume (node_modules will be grabbed on parent folder: /node/node_modules)
@@ -12,7 +12,7 @@ services:
   auth-mongodb:
     image: mongo:latest
   front:
-    image: rodarte/msnr-ta-front-dev:7537359
+    image: rodarte/msnr-ta-front-dev:8a9770d
     volumes:
       - ./client:/node/app
       - /node/app/node_modules
