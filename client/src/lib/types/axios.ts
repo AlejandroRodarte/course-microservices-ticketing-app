@@ -1,5 +1,5 @@
 export namespace AxiosTypes {
-  export type MicroServices = 'auth';
+  export type MicroServices = 'auth' | 'tickets';
   export type MicroserviceToPortMapper = {
     [K in MicroServices]: string;
   };
