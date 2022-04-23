@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tickets-service
+  namespace: ticketing
+spec:
+  type: ClusterIP
+  selector:
+    app: tickets
+  ports:
+    - name: tickets
+      port: 3002
+      protocol: TCP
+      targetPort: 3002

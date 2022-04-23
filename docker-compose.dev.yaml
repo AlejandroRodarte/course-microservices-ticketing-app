@@ -11,6 +11,15 @@ services:
       - NODE_ENV=development-docker
   auth-mongodb:
     image: mongo:latest
+  tickets:
+    image: rodarte/msnr-ta-tickets-dev:latest
+    volumes:
+      - ./tickets:/node/app
+      - /node/app/node_modules
+    environment:
+      - NODE_ENV=development-docker
+  tickets-mongodb:
+    image: mongo:latest
   front:
     image: rodarte/msnr-ta-front-dev:8a9770d
     volumes:

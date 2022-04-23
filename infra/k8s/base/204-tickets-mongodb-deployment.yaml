@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-mongodb-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets-mongodb
+  template:
+    metadata:
+      labels:
+        app: tickets-mongodb
+      namespace: ticketing
+    spec:
+      containers:
+        - name: tickets-mongodb
+          image: mongo:5.0

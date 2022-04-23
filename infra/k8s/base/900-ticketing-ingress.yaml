@@ -16,6 +16,13 @@ spec:
                 name: auth-service
                 port:
                   number: 3000
+          - path: /tickets # http://ticketing-api.dummy-value.com/tickets redirects traffic to our tickets-service Service resource, located on port 3002 within the cluster
+            pathType: Prefix
+            backend:
+              service:
+                name: tickets-service
+                port:
+                  number: 3002
     - host: ticketing.dummy-value.com
       http:
         paths:

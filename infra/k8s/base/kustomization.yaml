@@ -7,10 +7,17 @@ resources:
   - 101-auth-secret.yaml
   - 102-common-secret.yaml
   - 103-front-configmap.yaml
+  - 104-common-configmap.yaml
+  - 105-tickets-configmap.yaml
+  - 106-tickets-secret.yaml
   - 200-auth-deployment.yaml
   - 201-auth-mongodb-deployment.yaml
   - 202-front-deployment.yaml
+  - 203-tickets-deployment.yaml
+  - 204-tickets-mongodb-deployment.yaml
   - 300-auth-service.yaml
   - 301-auth-mongodb-service.yaml
   - 302-front-service.yaml
+  - 303-tickets-service.yaml
+  - 304-tickets-mongodb-service.yaml
   - 900-ticketing-ingress.yaml

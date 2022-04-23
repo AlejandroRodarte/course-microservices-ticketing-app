@@ -23,17 +23,17 @@ spec:
             - name: NODE_ENV
               valueFrom:
                 configMapKeyRef:
-                  name: auth-configmap
+                  name: common-configmap
                   key: NODE_ENV
             - name: CORS_ORIGIN
               valueFrom:
                 configMapKeyRef:
-                  name: auth-configmap
+                  name: common-configmap
                   key: CORS_ORIGIN
             - name: COOKIE_SESSION_DOMAIN
               valueFrom:
                 configMapKeyRef:
-                  name: auth-configmap
+                  name: common-configmap
                   key: COOKIE_SESSION_DOMAIN
             - name: MONGODB_URL
               valueFrom:

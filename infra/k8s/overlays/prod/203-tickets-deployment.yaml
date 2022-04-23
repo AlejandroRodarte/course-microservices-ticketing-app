@@ -1,0 +1,7 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-deployment
+  namespace: ticketing
+spec:
+  replicas: 3

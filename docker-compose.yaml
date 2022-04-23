@@ -19,6 +19,23 @@ services:
       - auth-mongodb
   auth-mongodb:
     image: mongo:5.0
+  tickets:
+    image: rodarte/msnr-ta-tickets-prod:latest
+    ports:
+      - '3002:3002'
+    environment:
+      - NODE_ENV=production-docker
+      - MONGODB_URL_FILE_PATH=/run/secrets/tickets_mongodb_url
+      - JWT_SECRET_FILE_PATH=/run/secrets/jwt_secret
+      - CORS_ORIGIN=http://localhost:3001
+      - COOKIE_SESSION_DOMAIN=localhost
+    secrets:
+      - tickets_mongodb_url
+      - jwt_secret
+    depends_on:
+      - tickets-mongodb
+  tickets-mongodb:
+    image: mongo:5.0
   front:
     image: rodarte/msnr-ta-front-prod:8a9770d
     ports:
@@ -28,8 +45,12 @@ services:
       - NEXT_PUBLIC_API_URL=http://localhost
       - AUTH_MICROSERVICE_NAME=auth
       - NEXT_PUBLIC_AUTH_MICROSERVICE_PORT=3000
+      - TICKETS_MICROSERVICE_NAME=tickets
+      - NEXT_PUBLIC_TICKETS_MICROSERVICE_PORT=3002
 secrets:
   auth_mongodb_url:
     file: ./secrets/docker/auth/mongodb-url.txt
+  tickets_mongodb_url:
+    file: ./secrets/docker/tickets/mongodb-url.txt
   jwt_secret:
     file: ./secrets/docker/common/jwt-secret.txt

@@ -3,13 +3,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 # override these resources
 patchesStrategicMerge:
-- 100-auth-configmap.yaml
 - 101-auth-secret.yaml
 - 102-common-secret.yaml
 - 103-front-configmap.yaml
+- 104-common-configmap.yaml
+- 106-tickets-secret.yaml
 - 200-auth-deployment.yaml
 - 201-auth-mongodb-deployment.yaml
 - 202-front-deployment.yaml
+- 203-tickets-deployment.yaml
+- 204-tickets-mongodb-deployment.yaml
 - 900-ticketing-ingress.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patches:
@@ -27,6 +30,9 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-skaffold
   newName: rodarte/msnr-ta-auth-skaffold
+  newTag: f3f0cef
+- name: rodarte/msnr-ta-tickets-skaffold
+  newName: rodarte/msnr-ta-tickets-skaffold
   newTag: f3f0cef
 - name: rodarte/msnr-ta-front-skaffold
   newName: rodarte/msnr-ta-front-skaffold
