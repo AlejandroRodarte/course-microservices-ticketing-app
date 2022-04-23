@@ -1,6 +1,6 @@
 import { objects } from '@msnr-ticketing-app/common';
 import { Response } from 'express';
-import { TicketsRequestHandlers } from '../../../../../lib/types/request-handlers/tickets';
+import { TicketsRequestHandlers } from '../../../lib/types/request-handlers/tickets';
 
 const post = (
   req: TicketsRequestHandlers.PostTicketsIdExtendedRequest,
@@ -12,7 +12,7 @@ const post = (
       new objects.ApplicationResponse<undefined, undefined>(
         200,
         'ROUTE_FOUND',
-        `Route POST /tickets/${req.params.id} found.`,
+        'Route POST /tickets found.',
         undefined,
         undefined
       )
