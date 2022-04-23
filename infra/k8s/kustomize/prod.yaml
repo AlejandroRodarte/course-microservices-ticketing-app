@@ -4,250 +4,6 @@ metadata:
   name: ticketing
 ---
 apiVersion: v1
-data:
-  NODE_ENV: production
-kind: ConfigMap
-metadata:
-  name: auth-configmap
-  namespace: ticketing
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: auth-mongodb-service
-  namespace: ticketing
-spec:
-  ports:
-  - name: db
-    port: 27017
-    protocol: TCP
-    targetPort: 27017
-  selector:
-    app: auth-mongodb
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: auth-service
-  namespace: ticketing
-spec:
-  ports:
-  - name: auth
-    port: 3000
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    app: auth
-  type: ClusterIP
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: front-service
-  namespace: ticketing
-spec:
-  ports:
-  - name: front
-    port: 3001
-    protocol: TCP
-    targetPort: 3001
-  selector:
-    app: front
-  type: ClusterIP
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: auth-deployment
-  namespace: ticketing
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: auth
-  template:
-    metadata:
-      labels:
-        app: auth
-      namespace: ticketing
-    spec:
-      containers:
-      - env:
-        - name: NODE_ENV
-          valueFrom:
-            configMapKeyRef:
-              key: NODE_ENV
-              name: auth-configmap
-        - name: MONGODB_URL
-          valueFrom:
-            secretKeyRef:
-              key: MONGODB_URL
-              name: auth-secret
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              key: JWT_SECRET
-              name: common-secret
-        image: rodarte/msnr-ta-auth-prod:f409c03
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /auth/health/healthz
-            port: 3000
-            scheme: HTTP
-          initialDelaySeconds: 15
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 10
-        name: auth
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /auth/health/healthz
-            port: 3000
-            scheme: HTTP
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 10
-        startupProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          successThreshold: 1
-          tcpSocket:
-            port: 3000
-          timeoutSeconds: 5
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: auth-mongodb-deployment
-  namespace: ticketing
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: auth-mongodb
-  template:
-    metadata:
-      labels:
-        app: auth-mongodb
-      namespace: ticketing
-    spec:
-      containers:
-      - image: mongo:5.0
-        name: auth-mongodb
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: front-deployment
-  namespace: ticketing
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: front
-  template:
-    metadata:
-      labels:
-        app: front
-      namespace: ticketing
-    spec:
-      containers:
-      - image: rodarte/msnr-ta-front-prod:f409c03
-        livenessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /api/health/healthz
-            port: 3001
-            scheme: HTTP
-          initialDelaySeconds: 20
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 20
-        name: next
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /api/health/healthz
-            port: 3001
-            scheme: HTTP
-          initialDelaySeconds: 15
-          periodSeconds: 15
-          successThreshold: 1
-          timeoutSeconds: 20
-        startupProbe:
-          failureThreshold: 3
-          initialDelaySeconds: 10
-          periodSeconds: 15
-          successThreshold: 1
-          tcpSocket:
-            port: 3001
-          timeoutSeconds: 5
----
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  name: auth-secret
-  namespace: ticketing
-spec:
-  encryptedData:
-    MONGODB_URL: AgApHTmSwsPRpYwRG34wnXonRlyBA3xH/DTkiySy72pZY9l+o+cqCSU28Rgo2a1AhNAEr2lihaPsZZu8v7eYM5SI2xkSvAnNklkuqwloUTSls1euIRe5fD9IFBMkyQyCkuS8zQ1e/lRp+fsM/gZ7/qTznY/PELPf/luMaPDIg4PAXD9zccu9hQYjRB6TAC6fq/flNVBAqmolJWn1LZApWoBxC6nc91iPp6ia9/5pwYWsgbSf/++maaznyYcRWIgRYCZ2A9JiWnvdwy7zYXC7y3yu0fet/As72enb6Jkq99brDQrGEpXFXgelrc6tQFATeFDbj9g5g22YaWz5LK5ys4lWAR2ABypxDN+e6T+a7Kf+lcHxSdPTjYQWflzv/+ru1+igWiGg6IDsysewZgbwszJ8f5s/ohY6vpmjItHiXbhjy7zsx3Qh256IexyUV0lpNAK7nf2btsrI+ep37LPBjZDoAvoDlGu8zi3cmRsb+khL49T8J6a9EpmxQRY1imqOUgeJQ8HlfJByCmTcF42bodnorDehiZfuecy5hl6Lx64YnLG/HpxzSLRitseUxCtJIuvwRCIa2WeXLPsvIOXS7+O9v6VBafqivrCOyqR82P9i1khcVUTJDW2F++mQlj5VSVijLOHiXn8gC+njBC+ZUFINNxm3gyKfNR5AuxU6SB2AHMmQclPfnPlM5hnuvwtConU4fnpLN0a30Dg3Ywwab3TSvFkyWJSH0mA+apuuEqF13GnGGG31R1MAb+c9cK2oRSFl
-  template:
-    metadata:
-      name: auth-secret
-      namespace: ticketing
----
-apiVersion: bitnami.com/v1alpha1
-kind: SealedSecret
-metadata:
-  name: common-secret
-  namespace: ticketing
-spec:
-  encryptedData:
-    JWT_SECRET: AgB5HYnm9Q5su7WAEJJGdxEw9lsB8VpOWl+xWr5DrngA3GjukgMWEUSdlqkyDSUB94MfICi4mCQ0wbOgqF3ThPrbI7yDZ90cZT/lXXoFCuPRIPm5hCFdW/rI4plgoSBXJcCFsaPjbgYrvfThSP/Gvw2vFdODpBAqb6Kv/yBf4Q8aRhPSlDzNGxtzSu/ER72XA6RngH0PN3yi57SJbbswIFyhqbO6gy9fMr04N/Q0VYzlAAyCh6eaG8w6n8V5CspNWfWevmMJnZqOT2VWQCH7T7CWPS2z8Wr1Tm3pGTFIaur994MtWcgeRCeRtFZoaLpXjgduHfchzbQbItD/PntzpHcSwV2v50CJvKq3OYDTaApWezt+GWMv1VuGccExGrl4LS2mZDhk/U31KewXW+V1CgYiE/pjpbWdGC8huaYUWAqtAvdrVo+/BRR1av8mY4zJVGl8X/qqdW6aENSuWqGoNDcrcXAT09o1os/NtONLp48/EnSpwi+lHziek8EeF5xSJoYps05w+PqqswXedDD2TsriImaV1R+tSEXSFOeKqAj2sW7mM6PBA7hxs9HRHZzRWItKqP4t06EuSD0q1OR8XZgAQnFFuYGxh7D4tB57oHJOUzTzpLAsRP1k5l649LwMQELRwCjQmv5tFcxymx9HlERTpUscPo6PM8xvs4rSk/B/MOUW85lHTaqdZ8vqIiuw72SdTFuIQmrrx69C/WvtLQywbZQRqYBNLDlgnAuFpe4=
-  template:
-    metadata:
-      name: common-secret
-      namespace: ticketing
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ticketing-ingress
-  namespace: ticketing
-spec:
-  ingressClassName: public
-  rules:
-  - host: ticketing-api.10.64.140.43.nip.io
-    http:
-      paths:
-      - backend:
-          service:
-            name: auth-service
-            port:
-              number: 3000
-        path: /auth
-        pathType: Prefix
-  - host: ticketing.10.64.140.43.nip.io
-    http:
-      paths:
-      - backend:
-          service:
-            name: front-service
-            port:
-              number: 3001
-        path: /
-        pathType: Prefix
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ticketing
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: auth-configmap
@@ -564,12 +320,12 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-tickets-prod:f8ce26e
+        image: rodarte/msnr-ta-tickets-prod:b2f68c6
         livenessProbe:
           failureThreshold: 3
           httpGet:
             path: /tickets/health/healthz
-            port: 3000
+            port: 3002
             scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 10
@@ -580,7 +336,7 @@ spec:
           failureThreshold: 3
           httpGet:
             path: /tickets/health/healthz
-            port: 3000
+            port: 3002
             scheme: HTTP
           initialDelaySeconds: 10
           periodSeconds: 10
@@ -592,7 +348,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           tcpSocket:
-            port: 3000
+            port: 3002
           timeoutSeconds: 5
 ---
 apiVersion: apps/v1

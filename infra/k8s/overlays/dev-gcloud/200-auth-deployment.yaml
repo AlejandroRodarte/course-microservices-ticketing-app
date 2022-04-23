@@ -15,7 +15,7 @@ spec:
             - name: FORCE_INSECURE_COOKIE
               valueFrom:
                 configMapKeyRef:
-                  name: auth-configmap
+                  name: common-configmap
                   key: FORCE_INSECURE_COOKIE
           startupProbe:
             failureThreshold: 5

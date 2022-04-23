@@ -12,7 +12,7 @@ services:
   auth-mongodb:
     image: mongo:latest
   tickets:
-    image: rodarte/msnr-ta-tickets-dev:latest
+    image: rodarte/msnr-ta-tickets-dev:b2f68c6
     volumes:
       - ./tickets:/node/app
       - /node/app/node_modules
@@ -21,7 +21,7 @@ services:
   tickets-mongodb:
     image: mongo:latest
   front:
-    image: rodarte/msnr-ta-front-dev:8a9770d
+    image: rodarte/msnr-ta-front-dev:b89cc02
     volumes:
       - ./client:/node/app
       - /node/app/node_modules
