@@ -33,7 +33,7 @@ images:
   newTag: f8ce26e
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
-  newTag: 8a9770d
+  newTag: b89cc02
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
   newTag: b2f68c6
