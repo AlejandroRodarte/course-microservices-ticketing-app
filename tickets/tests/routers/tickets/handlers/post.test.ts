@@ -1,6 +1,7 @@
 import { ApplicationResponseTypes, objects } from '@msnr-ticketing-app/common';
 import request from 'supertest';
 import app from '../../../../src/app';
+import cookies from '../../../lib/cookies';
 
 const route = '/tickets';
 
@@ -16,7 +17,24 @@ describe('Tests for the POST /tickets endpoint.', () => {
       expect(applicationResponse.status).not.toBe(404);
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
-    it('Should persist a new ticket if all parameters are valid', async () => {});
+
+    it('Should not return a 401 status if the user performs an authenticated request.', async () => {
+      const [, cookie] = cookies.helpers.createUserAndCookie();
+      const response = await request(app)
+        .post(route)
+        .set('Cookie', cookie)
+        .send({})
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          undefined,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+      expect(applicationResponse.status).not.toBe(401);
+      expect(applicationResponse.code).not.toBe('UNAUTHORIZED_ERROR');
+    });
+
+    it('Should persist a new ticket if all parameters are valid.', async () => {});
   });
 
   describe('Handler logic errors', () => {
@@ -30,6 +48,7 @@ describe('Tests for the POST /tickets endpoint.', () => {
       expect(applicationResponse.status).toBe(401);
       expect(applicationResponse.code).toBe('UNAUTHORIZED_ERROR');
     });
+
     it('Should return a request validation error if an invalid title is provided.', async () => {});
     it('Should return a request validation error if an invalid price is provided.', async () => {});
   });
