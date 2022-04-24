@@ -73,7 +73,7 @@ describe('Tests for the POST /tickets endpoint.', () => {
         >;
 
       expect(applicationResponse.status).toBe(422);
-      expect(applicationResponse.code).toBe('REQUEST_VALIDATION_ERROR');
+      expect(applicationResponse.code).toBe('VALIDATION_ERROR');
     });
 
     it('Should return a request validation error if an invalid price is provided.', async () => {
@@ -100,7 +100,7 @@ describe('Tests for the POST /tickets endpoint.', () => {
         >;
 
       expect(applicationResponse.status).toBe(422);
-      expect(applicationResponse.code).toBe('REQUEST_VALIDATION_ERROR');
+      expect(applicationResponse.code).toBe('VALIDATION_ERROR');
     });
   });
 });
