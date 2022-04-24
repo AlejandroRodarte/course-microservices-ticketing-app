@@ -49,7 +49,58 @@ describe('Tests for the POST /tickets endpoint.', () => {
       expect(applicationResponse.code).toBe('UNAUTHORIZED_ERROR');
     });
 
-    it('Should return a request validation error if an invalid title is provided.', async () => {});
-    it('Should return a request validation error if an invalid price is provided.', async () => {});
+    it('Should return a request validation error if an invalid title is provided.', async () => {
+      const body = {
+        data: {
+          newTicket: {
+            title: '',
+            price: 10,
+          },
+        },
+      };
+
+      const [, cookie] = cookies.helpers.createUserAndCookie();
+      const response = await request(app)
+        .post(route)
+        .set('Cookie', cookie)
+        .send(body)
+        .expect(200);
+
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          undefined,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+
+      expect(applicationResponse.status).toBe(422);
+      expect(applicationResponse.code).toBe('REQUEST_VALIDATION_ERROR');
+    });
+
+    it('Should return a request validation error if an invalid price is provided.', async () => {
+      const body = {
+        data: {
+          newTicket: {
+            title: 'Super cool event',
+            price: -50,
+          },
+        },
+      };
+
+      const [, cookie] = cookies.helpers.createUserAndCookie();
+      const response = await request(app)
+        .post(route)
+        .set('Cookie', cookie)
+        .send(body)
+        .expect(200);
+
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          undefined,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+
+      expect(applicationResponse.status).toBe(422);
+      expect(applicationResponse.code).toBe('REQUEST_VALIDATION_ERROR');
+    });
   });
 });
