@@ -34,7 +34,28 @@ describe('Tests for the POST /tickets endpoint.', () => {
       expect(applicationResponse.code).not.toBe('UNAUTHORIZED_ERROR');
     });
 
-    it('Should persist a new ticket if all parameters are valid.', async () => {});
+    it('Should persist a new ticket if all parameters are valid.', async () => {
+      const body = {
+        data: {
+          newTicket: {
+            title: 'Super cool event',
+            price: 20,
+          },
+        },
+      };
+
+      const [, cookie] = cookies.helpers.createUserAndCookie();
+      const response = await request(app)
+        .post(route)
+        .set('Cookie', cookie)
+        .send(body)
+        .expect(200);
+
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<undefined, undefined>;
+
+      expect(applicationResponse.status).toBe(201);
+    });
   });
 
   describe('Handler logic errors', () => {

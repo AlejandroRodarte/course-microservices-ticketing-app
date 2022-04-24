@@ -1,20 +1,29 @@
 import { Response } from 'express';
-import { objects, jwt } from '@msnr-ticketing-app/common';
+import { objects, jwt, db } from '@msnr-ticketing-app/common';
 import bcrypt from '../../../../../../lib/bcrypt';
-import helpers from '../../../../../../lib/db/helpers';
 import SignInData from '../../../../../../lib/objects/data/users/sign-in-data';
 import BaseUserDto from '../../../../../../lib/objects/dto/users/base-user-dto';
 import { UsersRequestHandlers } from '../../../../../../lib/types/request-handlers/users';
+import { DbModelTypes } from '../../../../../../lib/types/db/models';
+import User from '../../../../../../lib/db/models/user';
 
 const post = async (
   req: UsersRequestHandlers.PostSignInExtendedRequest,
   res: Response
 ) => {
   const { credentials } = req.body.data;
-
-  const [user, databaseOperationError] = await helpers.user.findOne({
-    email: credentials.email,
+  const [user, databaseOperationError] = await db.helpers.findOne<
+    DbModelTypes.UserDocument,
+    DbModelTypes.UserModel
+  >({
+    Model: User,
+    filters: {
+      email: credentials.email,
+    },
+    errorMessage:
+      'There was an error trying to find a user by its unique filter criteria.',
   });
+
   if (typeof user === 'undefined' && databaseOperationError)
     throw databaseOperationError;
   if (!user) throw new objects.errors.BadCredentialsError('Wrong credentials.');

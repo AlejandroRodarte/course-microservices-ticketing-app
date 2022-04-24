@@ -41,7 +41,7 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "@msnr-ticketing-app/common": "^0.0.8",
+    "@msnr-ticketing-app/common": "^0.0.14",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express-async-errors": "^3.1.1"

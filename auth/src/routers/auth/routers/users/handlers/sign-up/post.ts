@@ -1,19 +1,27 @@
 import { Response } from 'express';
-import { objects, jwt } from '@msnr-ticketing-app/common';
+import { objects, jwt, db } from '@msnr-ticketing-app/common';
 
 import { UsersRequestHandlers } from '../../../../../../lib/types/request-handlers/users';
-import helpers from '../../../../../../lib/db/helpers';
 import User from '../../../../../../lib/db/models/user';
 import SignUpData from '../../../../../../lib/objects/data/users/sign-up-data';
 import BaseUserDto from '../../../../../../lib/objects/dto/users/base-user-dto';
+import { DbModelTypes } from '../../../../../../lib/types/db/models';
 
 const post = async (
   req: UsersRequestHandlers.PostSignUpExtendedRequest,
   res: Response
 ) => {
   const { credentials } = req.body.data;
-  const [userExists, userExistsOperationError] = await helpers.user.exists({
-    email: credentials.email,
+  const [userExists, userExistsOperationError] = await db.helpers.exists<
+    DbModelTypes.UserDocument,
+    DbModelTypes.UserModel
+  >({
+    Model: User,
+    filters: {
+      email: credentials.email,
+    },
+    errorMessage:
+      'An error occured while trying to check that the user existed in the database.',
   });
 
   if (typeof userExists === 'undefined' && userExistsOperationError)
@@ -25,7 +33,11 @@ const post = async (
     );
 
   const user = User.build(credentials);
-  const [savedUser, userSaveOperationError] = await helpers.user.save(user);
+  const [savedUser, userSaveOperationError] =
+    await db.helpers.save<DbModelTypes.UserDocument>({
+      document: user,
+      errorMessage: 'There was a problem saving the user into the database.',
+    });
 
   if (typeof savedUser === 'undefined' && userSaveOperationError)
     throw userSaveOperationError;

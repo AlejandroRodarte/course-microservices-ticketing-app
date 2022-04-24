@@ -1,9 +1,14 @@
 import request from 'supertest';
-import { objects, ApplicationResponseTypes } from '@msnr-ticketing-app/common';
+import {
+  objects,
+  ApplicationResponseTypes,
+  db,
+} from '@msnr-ticketing-app/common';
 import app from '../../../../../../../src/app';
-import dbHelpers from '../../../../../../../src/lib/db/helpers';
 import supertestHelpers from '../../../../../../lib/supertest/helpers';
 import CurrentUserData from '../../../../../../../src/lib/objects/data/users/current-user-data';
+import { DbModelTypes } from '../../../../../../../src/lib/types/db/models';
+import User from '../../../../../../../src/lib/db/models/user';
 
 const routes = {
   'sign-up': '/auth/users/sign-up',
@@ -25,8 +30,16 @@ describe('Tests for the GET /auth/users/current-user endpoint.', () => {
           undefined
         >;
 
-      const [user] = await dbHelpers.user.findOne({
-        email: signedUpUser.email,
+      const [user] = await db.helpers.findOne<
+        DbModelTypes.UserDocument,
+        DbModelTypes.UserModel
+      >({
+        Model: User,
+        filters: {
+          email: signedUpUser.email,
+        },
+        errorMessage:
+          'There was an error trying to find a user by its unique filter criteria.',
       });
 
       expect(applicationResponse.status).toBe(200);
