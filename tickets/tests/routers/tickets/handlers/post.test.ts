@@ -20,7 +20,16 @@ describe('Tests for the POST /tickets endpoint.', () => {
   });
 
   describe('Handler logic errors', () => {
-    it('Should deny access if user is not signed in.', async () => {});
+    it('Should deny access if user is not signed in.', async () => {
+      const response = await request(app).post(route).send({}).expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          undefined,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+      expect(applicationResponse.status).toBe(401);
+      expect(applicationResponse.code).toBe('UNAUTHORIZED_ERROR');
+    });
     it('Should return a request validation error if an invalid title is provided.', async () => {});
     it('Should return a request validation error if an invalid price is provided.', async () => {});
   });
