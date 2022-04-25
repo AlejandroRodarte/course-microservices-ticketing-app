@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { TicketsRequestHandlers } from '../../../lib/types/request-handlers/tickets';
 
 const put = (
-  req: TicketsRequestHandlers.PutTicketsIdExtendedRequest,
+  req: TicketsRequestHandlers.PutTicketsExtendedRequest,
   res: Response
 ) => {
   return res

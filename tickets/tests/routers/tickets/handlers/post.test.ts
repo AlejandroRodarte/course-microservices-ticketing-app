@@ -1,6 +1,13 @@
-import { ApplicationResponseTypes, objects } from '@msnr-ticketing-app/common';
+import {
+  ApplicationResponseTypes,
+  db,
+  objects,
+} from '@msnr-ticketing-app/common';
 import request from 'supertest';
 import app from '../../../../src/app';
+import Ticket from '../../../../src/lib/db/models/ticket';
+import { DbModelTypes } from '../../../../src/lib/types/db/models';
+import NewTicketData from '../../../../src/objects/data/new-ticket-data';
 import cookies from '../../../lib/cookies';
 
 const route = '/tickets';
@@ -44,7 +51,7 @@ describe('Tests for the POST /tickets endpoint.', () => {
         },
       };
 
-      const [, cookie] = cookies.helpers.createUserAndCookie();
+      const [user, cookie] = cookies.helpers.createUserAndCookie();
       const response = await request(app)
         .post(route)
         .set('Cookie', cookie)
@@ -52,9 +59,26 @@ describe('Tests for the POST /tickets endpoint.', () => {
         .expect(200);
 
       const applicationResponse =
-        response.body as ApplicationResponseTypes.Body<undefined, undefined>;
+        response.body as ApplicationResponseTypes.Body<
+          NewTicketData,
+          undefined
+        >;
 
       expect(applicationResponse.status).toBe(201);
+      expect(applicationResponse.code).toBe('NEW_TICKET_CREATED');
+
+      const [newTicket] = await db.helpers.findOne<
+        DbModelTypes.TicketDocument,
+        DbModelTypes.TicketModel
+      >({
+        Model: Ticket,
+        filters: { userId: user.id },
+        errorMessage:
+          'There was a problem finding the ticket given the unique criteria.',
+      });
+
+      expect(newTicket?.title).toBe(body.data.newTicket.title);
+      expect(newTicket?.price).toBe(body.data.newTicket.price);
     });
   });
 
