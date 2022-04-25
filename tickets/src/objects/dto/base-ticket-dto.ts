@@ -40,6 +40,12 @@ class BaseTicketDto {
     );
   }
 
+  static fromTicketDocumentArray(
+    ticketDocuments: DbModelTypes.TicketDocument[]
+  ) {
+    return ticketDocuments.map((ticket) => this.fromTicketDocument(ticket));
+  }
+
   get id() {
     return this._id;
   }
