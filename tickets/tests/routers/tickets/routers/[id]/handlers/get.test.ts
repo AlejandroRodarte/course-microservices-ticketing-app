@@ -1,4 +1,5 @@
 import { ApplicationResponseTypes, objects } from '@msnr-ticketing-app/common';
+import mongoose from 'mongoose';
 import request from 'supertest';
 import app from '../../../../../../src/app';
 import NewTicketData from '../../../../../../src/objects/data/new-ticket-data';
@@ -7,14 +8,17 @@ import cookies from '../../../../../lib/cookies';
 
 const routes = {
   newTicket: '/tickets',
-  getTicketById: (id: string) => `/tickets/${id}`,
+  getTicket: {
+    withoutId: () => `/tickets/${new mongoose.Types.ObjectId().toHexString()}`,
+    withId: (id: string) => `/tickets/${id}`,
+  },
 };
 
 describe('Tests for the GET /tickets/:id endpoint.', () => {
   describe('Success cases', () => {
     it('Should have a route handler listening on /tickets/:id for GET requests.', async () => {
       const response = await request(app)
-        .get(routes.getTicketById('507f1f77bcf86cd799439011'))
+        .get(routes.getTicket.withoutId())
         .expect(200);
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
@@ -49,7 +53,7 @@ describe('Tests for the GET /tickets/:id endpoint.', () => {
 
       const response = await request(app)
         .get(
-          routes.getTicketById(
+          routes.getTicket.withId(
             newTicketRequestApplicationResponse.data.newTicket.id
           )
         )
@@ -75,7 +79,7 @@ describe('Tests for the GET /tickets/:id endpoint.', () => {
   describe('Route handler errors', () => {
     it('Should return a 404/ENTITY_NOT_FOUND_ERROR error if the ticket is not found.', async () => {
       const response = await request(app)
-        .get(routes.getTicketById('507f1f77bcf86cd799439011'))
+        .get(routes.getTicket.withoutId())
         .expect(200);
       const applicationResponse =
         response.body as ApplicationResponseTypes.Body<
