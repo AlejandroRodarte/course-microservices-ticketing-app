@@ -18,5 +18,7 @@ export namespace TicketsRequestHandlers {
     body: PostTicketsBody;
   }
 
-  export interface PutTicketsExtendedRequest extends Request {}
+  export interface PutTicketsIdExtendedRequest extends Request {
+    ['jwt/user-data']?: JwtTypes.UserData;
+  }
 }

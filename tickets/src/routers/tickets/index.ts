@@ -16,7 +16,6 @@ router.post(
   routes.middlewares.validation.validateRequest,
   handlers.post
 );
-router.put('/', handlers.put);
 
 router.use('/health', routers.health);
 router.use('/:id', routers[':id']);
