@@ -148,8 +148,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
           git config --local pull.rebase false
-          git pull --no-edit origin master
           git commit -am "Bump rodarte/msnr-ta-front-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
+          git pull --no-edit origin master
 
       - name: Push changes
         uses: ad-m/github-push-action@master

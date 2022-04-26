@@ -217,8 +217,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
           git config --local pull.rebase false
-          git pull --no-edit origin master
           git commit -am "Bump rodarte/msnr-ta-tickets-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
+          git pull --no-edit origin master
 
       # step 5 of job 3: push changes to GitHub
       - name: Push changes
