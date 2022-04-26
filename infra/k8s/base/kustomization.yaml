@@ -15,9 +15,11 @@ resources:
   - 202-front-deployment.yaml
   - 203-tickets-deployment.yaml
   - 204-tickets-mongodb-deployment.yaml
+  - 205-nats-deployment.yaml
   - 300-auth-service.yaml
   - 301-auth-mongodb-service.yaml
   - 302-front-service.yaml
   - 303-tickets-service.yaml
   - 304-tickets-mongodb-service.yaml
+  - 305-nats-service.yaml
   - 900-ticketing-ingress.yaml
