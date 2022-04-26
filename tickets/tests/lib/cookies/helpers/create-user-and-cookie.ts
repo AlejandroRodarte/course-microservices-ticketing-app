@@ -1,9 +1,10 @@
 import { jwt } from '@msnr-ticketing-app/common';
+import mongoose from 'mongoose';
 import { CookieTestsTypes } from '../../types/cookies';
 
 const signUpAndGetCookie: CookieTestsTypes.CreateUserAndCookie = () => {
   const user = {
-    id: 'testing-id',
+    id: new mongoose.Types.ObjectId().toHexString(),
     email: 'test@test.com',
     password: 'password',
   };

@@ -34,7 +34,7 @@ const get = async (
       new objects.ApplicationResponse<ShowTicketData, undefined>(
         200,
         'TICKET_FOUND',
-        `Route GET /tickets/${req.params.id} found.`,
+        `Ticket with ID ${id} fetched succesfully from the database.`,
         new ShowTicketData(BaseTicketDto.fromTicketDocument(ticket)),
         undefined
       )

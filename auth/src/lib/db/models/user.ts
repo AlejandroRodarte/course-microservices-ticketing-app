@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 import { DbModelTypes } from '../../types/db/models';
 import bcrypt from '../../bcrypt';
 
-const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema<
+  DbModelTypes.UserDocument,
+  DbModelTypes.UserModel
+>({
   email: {
     type: String,
     required: [true, 'An email is required when creating a user.'],
@@ -13,9 +16,14 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.build = function (attributes: DbModelTypes.UserAttributes) {
-  return new User(attributes);
-};
+userSchema.static(
+  'build',
+  function (
+    attributes: DbModelTypes.UserAttributes
+  ): DbModelTypes.UserDocument {
+    return new User(attributes);
+  }
+);
 
 userSchema.pre<DbModelTypes.UserDocument>('save', async function (next) {
   const user = this;

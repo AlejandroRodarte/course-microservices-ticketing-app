@@ -15,11 +15,8 @@ export namespace DbModelTypes {
     email: string;
     password: string;
   }
-  export type BuildUserWrapperFunction = {
-    (attrs: UserAttributes): UserDocument;
-  };
   // interface to describe additional static methods for the User model
   export interface UserModel extends mongoose.Model<UserDocument> {
-    build: BuildUserWrapperFunction;
+    build(attrs: UserAttributes): UserDocument;
   }
 }

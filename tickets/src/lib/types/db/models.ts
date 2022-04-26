@@ -1,3 +1,4 @@
+import { objects, ReturnTypes } from '@msnr-ticketing-app/common';
 import mongoose from 'mongoose';
 
 export namespace DbModelTypes {
@@ -15,13 +16,15 @@ export namespace DbModelTypes {
     title: string;
     price: number;
     userId: string;
+    updateFields: (
+      attrs: Partial<TicketAttributes>
+    ) => ReturnTypes.AsyncTuple<
+      TicketDocument,
+      InstanceType<typeof objects.errors.DatabaseOperationError>
+    >;
   }
-  // utility function to build a Ticket document
-  export type BuildTicketWrapperFunction = {
-    (attrs: TicketAttributes): TicketDocument;
-  };
   // extend Ticket model to include static methods
   export interface TicketModel extends mongoose.Model<TicketDocument> {
-    build: BuildTicketWrapperFunction;
+    build(attrs: TicketAttributes): TicketDocument;
   }
 }

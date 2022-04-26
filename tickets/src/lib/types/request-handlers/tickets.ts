@@ -1,5 +1,6 @@
 import { JwtTypes } from '@msnr-ticketing-app/common';
 import { Request } from 'express';
+import { DbModelTypes } from '../db/models';
 
 export namespace TicketsRequestHandlers {
   export interface GetTicketsExtendedRequest extends Request {}
@@ -18,7 +19,17 @@ export namespace TicketsRequestHandlers {
     body: PostTicketsBody;
   }
 
+  interface PutTicketsIdBody {
+    data: {
+      ticketUpdates: Partial<{
+        title: string;
+        price: number;
+      }>;
+    };
+  }
   export interface PutTicketsIdExtendedRequest extends Request {
     ['jwt/user-data']?: JwtTypes.UserData;
+    ticket?: DbModelTypes.TicketDocument;
+    body: PutTicketsIdBody;
   }
 }
