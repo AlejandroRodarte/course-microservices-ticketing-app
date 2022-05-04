@@ -4,8 +4,8 @@
   "description": "Playground project to learn more about how NATS Streaming Server and node-nats-streaming work.",
   "main": "index.js",
   "scripts": {
-    "publish": "ts-node-dev --notify false src/publisher.ts",
-    "listen": "ts-node-dev --notify false src/listener.ts"
+    "publish": "ts-node-dev --rs --notify false src/publisher.ts",
+    "listen": "ts-node-dev --rs --notify false src/listener.ts"
   },
   "keywords": [],
   "author": "Alejandro Rodarte",

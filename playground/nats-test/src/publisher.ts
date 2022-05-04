@@ -1,5 +1,7 @@
 import nats from 'node-nats-streaming';
 
+console.clear();
+
 // nats.connect(clusterID, clientID, { url: natsStreamingServerURL })
 // clusterID was defined in our nats-deployment pod spec with the -cid flag
 // clientID is any unique identifier you desire to provide to your NATS client
@@ -10,7 +12,7 @@ const client = nats.connect('ticketing', 'abc', {
 });
 
 client.on('connect', () => {
-  console.log('Published connected to NATS.');
+  console.log('Publisher connected to NATS.');
 
   const data = {
     id: '123',
