@@ -11,4 +11,16 @@ const client = nats.connect('ticketing', 'abc', {
 
 client.on('connect', () => {
   console.log('Published connected to NATS.');
+
+  const data = {
+    id: '123',
+    title: 'concert',
+    price: 20,
+  };
+
+  const stringifiedData = JSON.stringify(data);
+
+  client.publish('ticket:created', stringifiedData, () => {
+    console.log('Event published!');
+  });
 });
