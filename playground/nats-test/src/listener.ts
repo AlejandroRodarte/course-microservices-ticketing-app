@@ -11,7 +11,17 @@ client.on('connect', () => {
 
   const subscription = client.subscribe('ticket:created');
 
-  subscription.on('message', (msg) => {
-    console.log('Message received.');
+  subscription.on('message', (msg: nats.Message) => {
+    const stringifiedData = msg.getData();
+    if (typeof stringifiedData === 'string') {
+      const data = JSON.parse(stringifiedData);
+      console.log(
+        `Received event #${msg.getSequence()}, with data ${JSON.stringify(
+          data,
+          undefined,
+          2
+        )}.`
+      );
+    }
   });
 });
