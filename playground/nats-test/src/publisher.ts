@@ -1,4 +1,5 @@
 import nats from 'node-nats-streaming';
+import { randomBytes } from 'crypto';
 
 console.clear();
 
@@ -7,7 +8,7 @@ console.clear();
 // clientID is any unique identifier you desire to provide to your NATS client
 // natsStreamingServerURL is the URL where your NATS Streaming Server is located
 // in the case of K8S, it would be something like http://nats-service:4222
-const client = nats.connect('ticketing', 'abc', {
+const client = nats.connect('ticketing', randomBytes(4).toString('hex'), {
   url: 'http://localhost:4222',
 });
 
