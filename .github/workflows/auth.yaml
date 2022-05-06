@@ -119,15 +119,15 @@ jobs:
 
       # steps 4-6 of job 2: Setup buildx for all of our Dockerfile stages (prod/dev/skaffold)
       - name: Setup production buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: prodbuilder
 
       - name: Setup development buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: devbuilder
 
       - name: Setup skaffold buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: skaffoldbuilder
 
       # steps 7-9: build images for each stage with correct build args

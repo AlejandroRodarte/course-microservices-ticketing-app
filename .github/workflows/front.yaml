@@ -62,15 +62,15 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Setup production buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: prodbuilder
 
       - name: Setup development buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: devbuilder
 
       - name: Setup skaffold buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: skaffoldbuilder
 
       - name: Build against prodbuilder
