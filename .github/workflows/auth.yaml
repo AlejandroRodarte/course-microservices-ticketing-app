@@ -112,22 +112,22 @@ jobs:
 
       # step 3 of job 2: login to DockerHub where we will push the images to build
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       # steps 4-6 of job 2: Setup buildx for all of our Dockerfile stages (prod/dev/skaffold)
       - name: Setup production buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: prodbuilder
 
       - name: Setup development buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: devbuilder
 
       - name: Setup skaffold buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
         id: skaffoldbuilder
 
       # steps 7-9: build images for each stage with correct build args
@@ -136,7 +136,7 @@ jobs:
       # 2. short commit hash
       # 3. package.json version number
       - name: Build against prodbuilder
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./auth
           push: true
@@ -151,7 +151,7 @@ jobs:
             rodarte/msnr-ta-auth-prod:latest
 
       - name: Build against devbuilder
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./auth
           push: true
@@ -166,7 +166,7 @@ jobs:
             rodarte/msnr-ta-auth-dev:latest
 
       - name: Build against skaffoldbuilder
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./auth
           push: true
