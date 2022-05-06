@@ -136,7 +136,7 @@ jobs:
       # 2. short commit hash
       # 3. package.json version number
       - name: Build against prodbuilder
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./auth
           push: true
@@ -151,7 +151,7 @@ jobs:
             rodarte/msnr-ta-auth-prod:latest
 
       - name: Build against devbuilder
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./auth
           push: true
@@ -166,7 +166,7 @@ jobs:
             rodarte/msnr-ta-auth-dev:latest
 
       - name: Build against skaffoldbuilder
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: ./auth
           push: true
