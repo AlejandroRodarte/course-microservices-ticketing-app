@@ -15,6 +15,11 @@ const client = nats.connect('ticketing', randomBytes(4).toString('hex'), {
 client.on('connect', () => {
   console.log('Publisher connected to NATS.');
 
+  client.on('close', () => {
+    console.log('Closing listener...');
+    process.exit();
+  });
+
   const data = {
     id: '123',
     title: 'concert',
@@ -27,3 +32,6 @@ client.on('connect', () => {
     console.log('Event published!');
   });
 });
+
+process.on('SIGTERM', () => client.close());
+process.on('SIGINIT', () => client.close());
