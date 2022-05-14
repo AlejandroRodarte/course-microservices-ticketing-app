@@ -15,13 +15,12 @@ client.on('connect', () => {
     process.exit();
   });
 
-  const options = client.subscriptionOptions().setManualAckMode(true);
+  const options = client
+    .subscriptionOptions()
+    .setManualAckMode(true)
+    .setDeliverAllAvailable();
 
-  const subscription = client.subscribe(
-    'ticket:created',
-    'orders-service-queue-group',
-    options
-  );
+  const subscription = client.subscribe('ticket:created', options);
 
   subscription.on('message', (msg: nats.Message) => {
     const stringifiedData = msg.getData();
