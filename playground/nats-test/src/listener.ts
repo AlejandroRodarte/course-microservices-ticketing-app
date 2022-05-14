@@ -18,9 +18,14 @@ client.on('connect', () => {
   const options = client
     .subscriptionOptions()
     .setManualAckMode(true)
-    .setDeliverAllAvailable();
+    .setDeliverAllAvailable()
+    .setDurableName('orders-service');
 
-  const subscription = client.subscribe('ticket:created', options);
+  const subscription = client.subscribe(
+    'ticket:created',
+    'queue-group-name',
+    options
+  );
 
   subscription.on('message', (msg: nats.Message) => {
     const stringifiedData = msg.getData();
