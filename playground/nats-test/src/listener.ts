@@ -1,5 +1,6 @@
 import nats from 'node-nats-streaming';
 import { randomBytes } from 'crypto';
+import TickerCreatedListener from './objects/ticket-created-listener';
 
 console.clear();
 
@@ -15,32 +16,7 @@ client.on('connect', () => {
     process.exit();
   });
 
-  const options = client
-    .subscriptionOptions()
-    .setManualAckMode(true)
-    .setDeliverAllAvailable()
-    .setDurableName('orders-service');
-
-  const subscription = client.subscribe(
-    'ticket:created',
-    'queue-group-name',
-    options
-  );
-
-  subscription.on('message', (msg: nats.Message) => {
-    const stringifiedData = msg.getData();
-    if (typeof stringifiedData === 'string') {
-      const data = JSON.parse(stringifiedData);
-      console.log(
-        `Received event #${msg.getSequence()}, with data ${JSON.stringify(
-          data,
-          undefined,
-          2
-        )}.`
-      );
-    }
-    msg.ack();
-  });
+  new TickerCreatedListener(client).listen();
 });
 
 process.on('SIGTERM', () => client.close());
