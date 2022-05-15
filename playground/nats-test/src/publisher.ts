@@ -1,5 +1,7 @@
-import nats from 'node-nats-streaming';
 import { randomBytes } from 'crypto';
+import createClient from './create-client';
+import TicketCreatedPublisher from './objects/ticket-created-publisher';
+import { TicketCreatedEventData } from './types';
 
 console.clear();
 
@@ -8,30 +10,33 @@ console.clear();
 // clientID is any unique identifier you desire to provide to your NATS client
 // natsStreamingServerURL is the URL where your NATS Streaming Server is located
 // in the case of K8S, it would be something like http://nats-service:4222
-const client = nats.connect('ticketing', randomBytes(4).toString('hex'), {
-  url: 'http://localhost:4222',
-});
-
-client.on('connect', () => {
-  console.log('Publisher connected to NATS.');
+const main = async () => {
+  const client = await createClient(
+    'ticketing',
+    randomBytes(4).toString('hex'),
+    {
+      url: 'http://localhost:4222',
+    }
+  );
 
   client.on('close', () => {
-    console.log('Closing listener...');
+    console.log('Closing publisher...');
     process.exit();
   });
 
-  const data = {
+  const publisher = new TicketCreatedPublisher(client);
+
+  const data: TicketCreatedEventData = {
     id: '123',
     title: 'concert',
     price: 20,
   };
 
-  const stringifiedData = JSON.stringify(data);
+  const error = await publisher.publish(data);
+  if (error) console.log(error);
 
-  client.publish('ticket:created', stringifiedData, () => {
-    console.log('Event published!');
-  });
-});
+  process.on('SIGTERM', () => client.close());
+  process.on('SIGINIT', () => client.close());
+};
 
-process.on('SIGTERM', () => client.close());
-process.on('SIGINIT', () => client.close());
+main();
