@@ -14,6 +14,8 @@ data:
   COOKIE_SESSION_DOMAIN: .10.64.140.43.nip.io
   CORS_ORIGIN: https://ticketing.10.64.140.43.nip.io
   FORCE_INSECURE_COOKIE: "true"
+  NATS_CLUSTER_ID: ticketing
+  NATS_SERVER_URL: http://nats-service:4222
   NODE_ENV: development-microk8s
 kind: ConfigMap
 metadata:
@@ -82,6 +84,25 @@ spec:
     targetPort: 3001
   selector:
     app: front
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: client
+    port: 4222
+    protocol: TCP
+    targetPort: 4222
+  - name: monitoring
+    port: 8222
+    protocol: TCP
+    targetPort: 8222
+  selector:
+    app: nats
   type: ClusterIP
 ---
 apiVersion: v1
@@ -280,6 +301,40 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: nats-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats
+  template:
+    metadata:
+      labels:
+        app: nats
+      namespace: ticketing
+    spec:
+      containers:
+      - args:
+        - -p
+        - "4222"
+        - -m
+        - "8222"
+        - -hbi
+        - 5s
+        - -hbt
+        - 5s
+        - -hbf
+        - "2"
+        - -SD
+        - -cid
+        - ticketing
+        image: nats-streaming:0.24.5
+        name: nats
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: tickets-deployment
   namespace: ticketing
 spec:
@@ -309,6 +364,20 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: COOKIE_SESSION_DOMAIN
+              name: common-configmap
+        - name: NATS_CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_CLUSTER_ID
+              name: common-configmap
+        - name: NATS_CLIENT_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NATS_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_SERVER_URL
               name: common-configmap
         - name: MONGODB_URL
           valueFrom:

@@ -1,4 +1,4 @@
-import { DbModelTypes } from '../../lib/types/db/models';
+import { DbModelTypes } from '../../types/db/models';
 
 interface IBaseTicketDto {
   id: string;

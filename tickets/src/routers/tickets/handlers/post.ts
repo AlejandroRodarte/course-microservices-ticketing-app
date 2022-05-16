@@ -2,8 +2,10 @@ import { db, objects } from '@msnr-ticketing-app/common';
 import { Response } from 'express';
 import Ticket from '../../../lib/db/models/ticket';
 import { TicketsRequestHandlers } from '../../../lib/types/request-handlers/tickets';
-import NewTicketData from '../../../objects/data/new-ticket-data';
-import BaseTicketDto from '../../../objects/dto/base-ticket-dto';
+import NewTicketData from '../../../lib/objects/data/new-ticket-data';
+import BaseTicketDto from '../../../lib/objects/dto/base-ticket-dto';
+import TicketCreatedPublisher from '../../../lib/objects/nats/publishers/ticket-created-publisher';
+import stanSingleton from '../../../lib/objects/nats/stan-singleton';
 
 const post = async (
   req: TicketsRequestHandlers.PostTicketsExtendedRequest,
@@ -21,6 +23,16 @@ const post = async (
   });
 
   if (ticketSaveOperationError) throw ticketSaveOperationError;
+
+  const [stan] = stanSingleton.stan;
+  const natsError = await new TicketCreatedPublisher(stan!).publish({
+    id: savedTicket.id,
+    title: savedTicket.title,
+    price: savedTicket.price,
+    userId: savedTicket.userId,
+  });
+
+  if (natsError) throw natsError;
 
   return res
     .status(200)

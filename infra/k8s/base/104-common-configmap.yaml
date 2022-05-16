@@ -3,3 +3,6 @@ kind: ConfigMap
 metadata:
   name: common-configmap
   namespace: ticketing
+data:
+  NATS_CLUSTER_ID: ticketing
+  NATS_SERVER_URL: http://nats-service:4222

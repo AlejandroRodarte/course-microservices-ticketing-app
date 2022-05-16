@@ -1,8 +1,8 @@
 import { objects } from '@msnr-ticketing-app/common';
 import { Response } from 'express';
 import { TicketsRequestHandlers } from '../../../../../lib/types/request-handlers/tickets';
-import UpdateTicketData from '../../../../../objects/data/update-ticket-data';
-import BaseTicketDto from '../../../../../objects/dto/base-ticket-dto';
+import UpdateTicketData from '../../../../../lib/objects/data/update-ticket-data';
+import BaseTicketDto from '../../../../../lib/objects/dto/base-ticket-dto';
 
 const put = async (
   req: TicketsRequestHandlers.PutTicketsIdExtendedRequest,

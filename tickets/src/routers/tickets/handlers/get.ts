@@ -3,8 +3,8 @@ import { Response } from 'express';
 import Ticket from '../../../lib/db/models/ticket';
 import { DbModelTypes } from '../../../lib/types/db/models';
 import { TicketsRequestHandlers } from '../../../lib/types/request-handlers/tickets';
-import GetTicketsData from '../../../objects/data/get-tickets-data';
-import BaseTicketDto from '../../../objects/dto/base-ticket-dto';
+import GetTicketsData from '../../../lib/objects/data/get-tickets-data';
+import BaseTicketDto from '../../../lib/objects/dto/base-ticket-dto';
 
 const get = async (
   req: TicketsRequestHandlers.GetTicketsExtendedRequest,

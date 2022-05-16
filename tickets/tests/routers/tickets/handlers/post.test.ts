@@ -7,7 +7,7 @@ import request from 'supertest';
 import app from '../../../../src/app';
 import Ticket from '../../../../src/lib/db/models/ticket';
 import { DbModelTypes } from '../../../../src/lib/types/db/models';
-import NewTicketData from '../../../../src/objects/data/new-ticket-data';
+import NewTicketData from '../../../../src/lib/objects/data/new-ticket-data';
 import cookies from '../../../lib/cookies';
 
 const route = '/tickets';

@@ -2,8 +2,8 @@ import { ApplicationResponseTypes, objects } from '@msnr-ticketing-app/common';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import app from '../../../../../../src/app';
-import NewTicketData from '../../../../../../src/objects/data/new-ticket-data';
-import UpdateTicketData from '../../../../../../src/objects/data/update-ticket-data';
+import NewTicketData from '../../../../../../src/lib/objects/data/new-ticket-data';
+import UpdateTicketData from '../../../../../../src/lib/objects/data/update-ticket-data';
 import cookies from '../../../../../lib/cookies';
 
 const routes = {

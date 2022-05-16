@@ -1,7 +1,7 @@
 import { ApplicationResponseTypes } from '@msnr-ticketing-app/common';
 import request from 'supertest';
 import app from '../../../../src/app';
-import GetTicketsData from '../../../../src/objects/data/get-tickets-data';
+import GetTicketsData from '../../../../src/lib/objects/data/get-tickets-data';
 import cookies from '../../../lib/cookies';
 
 const routes = {

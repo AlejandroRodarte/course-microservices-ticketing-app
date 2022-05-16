@@ -33,6 +33,20 @@ spec:
                 configMapKeyRef:
                   name: common-configmap
                   key: COOKIE_SESSION_DOMAIN
+            - name: NATS_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: NATS_CLUSTER_ID
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: NATS_SERVER_URL
             - name: MONGODB_URL
               valueFrom:
                 secretKeyRef:

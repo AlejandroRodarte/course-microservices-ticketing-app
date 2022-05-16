@@ -1,6 +1,7 @@
 import { db } from '@msnr-ticketing-app/common';
 import app from './app';
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
+import stanSingleton from './lib/objects/nats/stan-singleton';
 import { MainTypes } from './lib/types/main';
 
 const connection = db.mongoose.createConnection({
@@ -24,6 +25,12 @@ const port = process.env.PORT || 3002;
 const start: MainTypes.MainFunction = async () => {
   const [, databaseConnectionError] = await connection.connect();
   if (databaseConnectionError) return [undefined, databaseConnectionError];
+
+  const natsError = await stanSingleton.connect();
+  if (natsError) return [undefined, natsError];
+  console.log(
+    `[tickets] Connected client ${process.env.NATS_CLIENT_ID} to NATS server on ticketing microservice.`
+  );
 
   const server = app.listen(port, () => {
     console.log(`[tickets] Tickets microservice launched on port ${port}`);
@@ -50,6 +57,11 @@ const onFullfilled: MainTypes.OnFullfilledCallback = ([
       server.close();
       console.log(
         '[tickets] Express.js server closed in the tickets microservice.'
+      );
+      const [stan] = stanSingleton.stan;
+      if (stan) stan.close();
+      console.log(
+        `[tickets] Disconnected client ${process.env.NATS_CLIENT_ID} from NATS server in ticketing microservice.`
       );
       const databaseConnectionError = await connection.disconnect();
       // error disconnecting: exit with 1 status code
