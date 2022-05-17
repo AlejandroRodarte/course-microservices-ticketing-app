@@ -1,23 +1,26 @@
 # development override
 version: '3.4'
 
+x-common-env-variables: &common-env-variables
+  NODE_ENV: development-docker
+
 services:
   auth:
-    image: rodarte/msnr-ta-auth-dev:f8ce26e # use latest image built by CI/CD pipeline (dev stage)
+    image: rodarte/msnr-ta-auth-dev:ab44013 # use latest image built by CI/CD pipeline (dev stage)
     volumes:
       - ./auth:/node/app # dev stage sets WORKDIR on /node/app to bindmount local source code there
       - /node/app/node_modules # bind /node/app/node_modules to an empty volume (node_modules will be grabbed on parent folder: /node/node_modules)
     environment:
-      - NODE_ENV=development-docker
+      <<: *common-env-variables
   auth-mongodb:
     image: mongo:latest
   tickets:
-    image: rodarte/msnr-ta-tickets-dev:b2f68c6
+    image: rodarte/msnr-ta-tickets-dev:ab44013
     volumes:
       - ./tickets:/node/app
       - /node/app/node_modules
     environment:
-      - NODE_ENV=development-docker
+      <<: *common-env-variables
   tickets-mongodb:
     image: mongo:latest
   front:
@@ -26,4 +29,4 @@ services:
       - ./client:/node/app
       - /node/app/node_modules
     environment:
-      - NEXT_PUBLIC_ENV=development-docker
+      NEXT_PUBLIC_ENV: development-docker
