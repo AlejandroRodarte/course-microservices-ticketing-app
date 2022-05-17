@@ -1,9 +1,11 @@
 const stanSingleton = {
   stan: [
     {
-      publish: (subject: string, data: string, callback: () => void) => {
-        callback();
-      },
+      publish: jest.fn(
+        (subject: string, data: string, callback: () => void) => {
+          callback();
+        }
+      ),
     },
     undefined,
   ],

@@ -9,6 +9,7 @@ import Ticket from '../../../../src/lib/db/models/ticket';
 import { DbModelTypes } from '../../../../src/lib/types/db/models';
 import NewTicketData from '../../../../src/lib/objects/data/new-ticket-data';
 import cookies from '../../../lib/cookies';
+import stanSingleton from '../../../../src/lib/objects/nats/stan-singleton';
 
 const route = '/tickets';
 
@@ -41,7 +42,7 @@ describe('Tests for the POST /tickets endpoint.', () => {
       expect(applicationResponse.code).not.toBe('UNAUTHORIZED_ERROR');
     });
 
-    it('Should persist a new ticket if all parameters are valid.', async () => {
+    it('Should persist a new ticket and publish an event to ticket:created if all parameters are valid.', async () => {
       const body = {
         data: {
           newTicket: {
@@ -66,6 +67,9 @@ describe('Tests for the POST /tickets endpoint.', () => {
 
       expect(applicationResponse.status).toBe(201);
       expect(applicationResponse.code).toBe('NEW_TICKET_CREATED');
+
+      const [stan] = stanSingleton.stan;
+      expect(stan!.publish).toHaveBeenCalled();
 
       const [newTicket] = await db.helpers.findOne<
         DbModelTypes.TicketDocument,

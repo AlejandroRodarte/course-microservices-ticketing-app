@@ -5,6 +5,7 @@ import app from '../../../../../../src/app';
 import NewTicketData from '../../../../../../src/lib/objects/data/new-ticket-data';
 import UpdateTicketData from '../../../../../../src/lib/objects/data/update-ticket-data';
 import cookies from '../../../../../lib/cookies';
+import stanSingleton from '../../../../../../src/lib/objects/nats/stan-singleton';
 
 const routes = {
   newTicket: '/tickets',
@@ -28,7 +29,7 @@ describe('Tests for the PUT /tickets/:id endpoint.', () => {
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
 
-    it('Should return a 204/TICKET_UPDATED status if the ticket is correctly updated.', async () => {
+    it('Should return a 204/TICKET_UPDATED status and publish an event to ticket:updated if the ticket is correctly updated.', async () => {
       const [, cookie] = cookies.helpers.createUserAndCookie();
 
       const newTicketRequestBody = {
@@ -75,6 +76,10 @@ describe('Tests for the PUT /tickets/:id endpoint.', () => {
 
       expect(applicationResponse.status).toBe(204);
       expect(applicationResponse.code).toBe('TICKET_UPDATED');
+
+      const [stan] = stanSingleton.stan;
+      expect(stan!.publish).toHaveBeenCalled();
+
       expect(applicationResponse.data.updatedTicket).toEqual({
         id: newTicketApplicationResponse.data.newTicket.id,
         title: updateTicketRequestBody.data.ticketUpdates.title,
