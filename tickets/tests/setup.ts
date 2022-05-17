@@ -1,6 +1,8 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
+jest.mock('../src/lib/objects/nats/stan-singleton');
+
 let mongo: MongoMemoryServer | undefined = undefined;
 
 beforeAll(async () => {

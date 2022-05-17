@@ -10,8 +10,6 @@ import { DbModelTypes } from '../../../../src/lib/types/db/models';
 import NewTicketData from '../../../../src/lib/objects/data/new-ticket-data';
 import cookies from '../../../lib/cookies';
 
-jest.mock('../../../../src/lib/objects/nats/stan-singleton');
-
 const route = '/tickets';
 
 describe('Tests for the POST /tickets endpoint.', () => {
