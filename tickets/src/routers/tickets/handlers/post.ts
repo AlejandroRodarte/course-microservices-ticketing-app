@@ -24,7 +24,9 @@ const post = async (
 
   if (ticketSaveOperationError) throw ticketSaveOperationError;
 
-  const [stan] = stanSingleton.stan;
+  const [stan, stanUnconnectedError] = stanSingleton.stan;
+  if (stanUnconnectedError) throw stanUnconnectedError;
+
   const natsError = await new TicketCreatedPublisher(stan!).publish({
     id: savedTicket.id,
     title: savedTicket.title,

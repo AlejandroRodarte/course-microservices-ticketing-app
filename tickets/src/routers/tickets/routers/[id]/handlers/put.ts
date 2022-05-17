@@ -3,6 +3,8 @@ import { Response } from 'express';
 import { TicketsRequestHandlers } from '../../../../../lib/types/request-handlers/tickets';
 import UpdateTicketData from '../../../../../lib/objects/data/update-ticket-data';
 import BaseTicketDto from '../../../../../lib/objects/dto/base-ticket-dto';
+import stanSingleton from '../../../../../lib/objects/nats/stan-singleton';
+import TicketUpdatedPublisher from '../../../../../lib/objects/nats/publishers/ticket-updated-publisher';
 
 const put = async (
   req: TicketsRequestHandlers.PutTicketsIdExtendedRequest,
@@ -12,6 +14,18 @@ const put = async (
     req.body.data.ticketUpdates
   );
   if (updateError) throw updateError;
+
+  const [stan, stanUnconnectedError] = stanSingleton.stan;
+  if (stanUnconnectedError) throw stanUnconnectedError;
+
+  const natsError = await new TicketUpdatedPublisher(stan!).publish({
+    id: updatedTicket.id,
+    title: updatedTicket.title,
+    price: updatedTicket.price,
+    userId: updatedTicket.userId,
+  });
+
+  if (natsError) throw natsError;
 
   return res
     .status(200)
