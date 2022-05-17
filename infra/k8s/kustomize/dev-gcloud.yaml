@@ -38,6 +38,12 @@ metadata:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: orders-configmap
+  namespace: ticketing
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: tickets-configmap
   namespace: ticketing
 ---
@@ -103,6 +109,36 @@ spec:
     targetPort: 8222
   selector:
     app: nats
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-mongodb-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: db
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: orders-mongodb
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: orders
+    port: 3003
+    protocol: TCP
+    targetPort: 3003
+  selector:
+    app: orders
   type: ClusterIP
 ---
 apiVersion: v1
@@ -340,6 +376,119 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: orders-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+      namespace: ticketing
+    spec:
+      containers:
+      - env:
+        - name: FORCE_INSECURE_COOKIE
+          valueFrom:
+            configMapKeyRef:
+              key: FORCE_INSECURE_COOKIE
+              name: common-configmap
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: common-configmap
+        - name: CORS_ORIGIN
+          valueFrom:
+            configMapKeyRef:
+              key: CORS_ORIGIN
+              name: common-configmap
+        - name: COOKIE_SESSION_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: COOKIE_SESSION_DOMAIN
+              name: common-configmap
+        - name: NATS_CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_CLUSTER_ID
+              name: common-configmap
+        - name: NATS_CLIENT_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NATS_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_SERVER_URL
+              name: common-configmap
+        - name: MONGODB_URL
+          valueFrom:
+            secretKeyRef:
+              key: MONGODB_URL
+              name: orders-secret
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: JWT_SECRET
+              name: common-secret
+        image: us.gcr.io/prime-byway-274602/msnr-ta-orders-skaffold
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /orders/health/healthz
+            port: 3003
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: orders
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /orders/health/healthz
+            port: 3003
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        startupProbe:
+          failureThreshold: 5
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 3003
+          timeoutSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-mongodb-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-mongodb
+  template:
+    metadata:
+      labels:
+        app: orders-mongodb
+      namespace: ticketing
+    spec:
+      containers:
+      - image: mongo:latest
+        name: orders-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: tickets-deployment
   namespace: ticketing
 spec:
@@ -479,6 +628,19 @@ spec:
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
+  name: orders-secret
+  namespace: ticketing
+spec:
+  encryptedData:
+    MONGODB_URL: AgB0x6QIiHGbp9NAGXQg47P9v7nrMVgan18ljY7TOUJNvvmTkYAgINJekL/SLT1pYP0kMviqrARQxlt7fafzZCuO59AkoC1NUPpErIbHlhX5NrS6x+YWgcFXJGB2kpXxH73s+zHQOFG8gMJ/8+ifK3M+wTzPhAi42Uyoz249zgCf34U+e5GzSNAH/xw1LoSIOlr6hQmmLiVztRG/Jv1nzHbeL8ubLIdBmbENtPnUdUpcpFqO6EVbuj8RplTzfpheNhVUyeUPv/RTKJTs3lEveH+0v5NmCe071pF6ti6LfPVPMpO2G1EWr0g1JetWFZaruEkMlJKjli3GN2YvYOlKUD9Xe4KLQZPNgGO0IeovPtVLqu4ClybiNGQLjJ0uwCuh0iGj3HYX5QMSwwYUaoFftsjhy38Sfi71CKl0SQgirIGmST3kjGYAEcWnzRRC/oDMiJF1diPPKFoLBkdP3101c+iKiRsSzuT+43hFOhuYKpL13wcttYXO9S3Rlc4td6usB39hW+9+IjNUPk4hiRp8LIirsWpmk6orF7HsXqr/d4F6FKinEbvGm4DQBTfDuxaCz/eS1uJXZao2jeCNqCNQE5BsQ4POzkjxJhyq0B96UEzhAACnWZmXfVRrjKbPAR1guyAedFGF6Qz6i8Uhp08M0yrq66X5x+L6Fc8CV+lxUptEmwRK15pFiDEOdSQQFejBKMD7iRS8JrcTEcujPzaFA0ZimOIPLUaN9KmQjHnjDThASm5yei0VBZpwqbP2uzj1Xz7+qQ1mSQ==
+  template:
+    metadata:
+      name: orders-secret
+      namespace: ticketing
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
   name: tickets-secret
   namespace: ticketing
 spec:
@@ -514,6 +676,13 @@ spec:
             port:
               number: 3002
         path: /tickets
+        pathType: Prefix
+      - backend:
+          service:
+            name: orders-service
+            port:
+              number: 3003
+        path: /orders
         pathType: Prefix
   - host: ticketing.104.197.128.80.nip.io
     http:

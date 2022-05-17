@@ -23,6 +23,13 @@ spec:
                 name: tickets-service
                 port:
                   number: 3002
+          - path: /orders # http://ticketing-api.dummy-value.com/orders redirects traffic to our orders-service Service resource, located on port 3003 within the cluster
+            pathType: Prefix
+            backend:
+              service:
+                name: orders-service
+                port:
+                  number: 3003
     - host: ticketing.dummy-value.com
       http:
         paths:

@@ -4,4 +4,8 @@ metadata:
   name: tickets-mongodb-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: tickets-mongodb
+          image: mongo:latest

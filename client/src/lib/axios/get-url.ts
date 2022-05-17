@@ -8,11 +8,15 @@ const microserviceToPortMapper: AxiosTypes.MicroserviceToPortMapper = {
   tickets:
     process.env.TICKETS_MICROSERVICE_PORT ||
     process.env.NEXT_PUBLIC_TICKETS_MICROSERVICE_PORT!,
+  orders:
+    process.env.ORDERS_MICROSERVICE_PORT ||
+    process.env.NEXT_PUBLIC_ORDERS_MICROSERVICE_PORT!,
 };
 
 const microserviceToNameMapper: AxiosTypes.MicroserviceToNameMapper = {
   auth: process.env.AUTH_MICROSERVICE_NAME!,
   tickets: process.env.TICKETS_MICROSERVICE_NAME!,
+  orders: process.env.ORDERS_MICROSERVICE_NAME!,
 };
 
 const getUrl = (

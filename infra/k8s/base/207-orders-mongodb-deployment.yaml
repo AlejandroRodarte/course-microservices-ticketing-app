@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-mongodb-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-mongodb
+  template:
+    metadata:
+      labels:
+        app: orders-mongodb
+      namespace: ticketing
+    spec:
+      containers:
+        - name: orders-mongodb
+          image: mongo:5.0

@@ -23,6 +23,15 @@ services:
       <<: *common-env-variables
   tickets-mongodb:
     image: mongo:latest
+  orders:
+    image: rodarte/msnr-ta-orders-dev:latest
+    volumes:
+      - ./orders:/node/app
+      - /node/app/node_modules
+    environment:
+      <<: *common-env-variables
+  orders-mongodb:
+    image: mongo:latest
   front:
     image: rodarte/msnr-ta-front-dev:b89cc02
     volumes:

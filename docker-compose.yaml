@@ -42,6 +42,22 @@ services:
       - tickets-mongodb
   tickets-mongodb:
     image: mongo:5.0
+  orders:
+    image: rodarte/msnr-ta-orders-prod:latest
+    ports:
+      - '3003:3003'
+    environment:
+      <<: *common-env-variables
+      <<: *common-env-nats-variables
+      NATS_CLIENT_ID: orders
+      MONGODB_URL_FILE_PATH: /run/secrets/orders_mongodb_url
+    secrets:
+      - orders_mongodb_url
+      - jwt_secret
+    depends_on:
+      - orders-mongodb
+  orders-mongodb:
+    image: mongo:5.0
   front:
     image: rodarte/msnr-ta-front-prod:b89cc02
     ports:
@@ -53,6 +69,8 @@ services:
       NEXT_PUBLIC_AUTH_MICROSERVICE_PORT: 3000
       TICKETS_MICROSERVICE_NAME: tickets
       NEXT_PUBLIC_TICKETS_MICROSERVICE_PORT: 3002
+      ORDERS_MICROSERVICE_NAME: orders
+      NEXT_PUBLIC_ORDERS_MICROSERVICE_PORT: 3003
   nats:
     image: nats-streaming:0.24.5
     command:
@@ -74,5 +92,7 @@ secrets:
     file: ./secrets/docker/auth/mongodb-url.txt
   tickets_mongodb_url:
     file: ./secrets/docker/tickets/mongodb-url.txt
+  orders_mongodb_url:
+    file: ./secrets/docker/orders/mongodb-url.txt
   jwt_secret:
     file: ./secrets/docker/common/jwt-secret.txt
