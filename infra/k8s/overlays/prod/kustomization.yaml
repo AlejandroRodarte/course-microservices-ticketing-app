@@ -33,10 +33,10 @@ images:
   newTag: ab44013
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
-  newTag: b89cc02
-- name: rodarte/msnr-ta-tickets-prod
-  newName: rodarte/msnr-ta-tickets-prod
-  newTag: ab44013
+  newTag: 04398b2
 - name: rodarte/msnr-ta-orders-prod
   newName: rodarte/msnr-ta-orders-prod
+  newTag: ab44013
+- name: rodarte/msnr-ta-tickets-prod
+  newName: rodarte/msnr-ta-tickets-prod
   newTag: ab44013
