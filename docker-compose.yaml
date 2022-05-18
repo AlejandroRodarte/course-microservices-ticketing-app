@@ -43,7 +43,7 @@ services:
   tickets-mongodb:
     image: mongo:5.0
   orders:
-    image: rodarte/msnr-ta-orders-prod:latest
+    image: rodarte/msnr-ta-orders-prod:04398b2
     ports:
       - '3003:3003'
     environment:
@@ -59,7 +59,7 @@ services:
   orders-mongodb:
     image: mongo:5.0
   front:
-    image: rodarte/msnr-ta-front-prod:b89cc02
+    image: rodarte/msnr-ta-front-prod:04398b2
     ports:
       - '3001:3001'
     environment:

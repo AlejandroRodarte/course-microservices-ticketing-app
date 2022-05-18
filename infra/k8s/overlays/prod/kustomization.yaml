@@ -36,7 +36,7 @@ images:
   newTag: 04398b2
 - name: rodarte/msnr-ta-orders-prod
   newName: rodarte/msnr-ta-orders-prod
-  newTag: ab44013
+  newTag: 04398b2
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
   newTag: ab44013

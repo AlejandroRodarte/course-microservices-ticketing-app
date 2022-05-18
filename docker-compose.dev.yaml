@@ -24,7 +24,7 @@ services:
   tickets-mongodb:
     image: mongo:latest
   orders:
-    image: rodarte/msnr-ta-orders-dev:latest
+    image: rodarte/msnr-ta-orders-dev:04398b2
     volumes:
       - ./orders:/node/app
       - /node/app/node_modules
@@ -33,7 +33,7 @@ services:
   orders-mongodb:
     image: mongo:latest
   front:
-    image: rodarte/msnr-ta-front-dev:b89cc02
+    image: rodarte/msnr-ta-front-dev:04398b2
     volumes:
       - ./client:/node/app
       - /node/app/node_modules
