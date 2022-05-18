@@ -2,14 +2,10 @@ import { Router } from 'express';
 import { routes } from '@msnr-ticketing-app/common';
 
 import handlers from './handlers';
-import routers from './routers';
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get('/', routes.middlewares.auth.setUserData, handlers.get);
-router.post('/', routes.middlewares.auth.setUserData, handlers.post);
-
-router.use('/health', routers.health);
-router.use('/:id', routers[':id']);
+router.delete('/', routes.middlewares.auth.setUserData, handlers.delete);
 
 export default router;
