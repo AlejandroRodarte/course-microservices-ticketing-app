@@ -29,25 +29,10 @@ const post = async (
 
   // 2. make sure that the ticket is not already reserved
   // 2a. find order that has ticket we just found as that is not reserved (non-cancelled status)
-  const [existingOrder, findOneExistingOrderError] = await db.helpers.findOne<
-    DbModelTypes.OrderDocument,
-    DbModelTypes.OrderModel
-  >({
-    Model: Order,
-    filters: {
-      ticket,
-      status: {
-        $in: constants.resources.order.statuses.filter(
-          (status) => status !== 'cancelled'
-        ),
-      },
-    },
-    errorMessage: `Error finding order that matches ticket ID ${ticket._id} and that is not cancelled.`,
-  });
-
-  if (findOneExistingOrderError) throw findOneExistingOrderError;
-  // 2b. if a non-cancelled order is found for the ticket, it means that the ticket has been reserver
-  if (existingOrder)
+  const [isTicketReserved, ticketReservedError] = await ticket.isReserved();
+  if (ticketReservedError) throw ticketReservedError;
+  // 2b. if a non-cancelled order is found for the ticket, it means that the ticket has been reserved
+  if (isTicketReserved)
     throw new objects.errors.BadEntityError(
       'order',
       `There is already an order reserving ticket with ID ${ticket._id}`

@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
-import { OrderResourceTypes } from '@msnr-ticketing-app/common';
+import {
+  objects,
+  OrderResourceTypes,
+  ReturnTypes,
+} from '@msnr-ticketing-app/common';
 
 export namespace DbModelTypes {
   /**
@@ -14,6 +18,12 @@ export namespace DbModelTypes {
   export interface TicketDocument extends mongoose.Document {
     title: string;
     price: number;
+    isReserved(): Promise<
+      ReturnTypes.AsyncTuple<
+        boolean,
+        InstanceType<typeof objects.errors.DatabaseOperationError>
+      >
+    >;
   }
   // extend Ticket model to include static methods
   export interface TicketModel extends mongoose.Model<TicketDocument> {
