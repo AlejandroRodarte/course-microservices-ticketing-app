@@ -3,3 +3,5 @@ kind: ConfigMap
 metadata:
   name: orders-configmap
   namespace: ticketing
+data:
+  EXPIRATION_WINDOW_SECONDS: 900

@@ -47,6 +47,11 @@ spec:
                 configMapKeyRef:
                   name: common-configmap
                   key: NATS_SERVER_URL
+            - name: EXPIRATION_WINDOW_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  name: orders-configmap
+                  key: EXPIRATION_WINDOW_SECONDS
             - name: MONGODB_URL
               valueFrom:
                 secretKeyRef:

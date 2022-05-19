@@ -1,7 +1,9 @@
-import { constants, db, objects } from '@msnr-ticketing-app/common';
+import { db, objects } from '@msnr-ticketing-app/common';
 import { Response } from 'express';
 import Order from '../../../lib/db/models/order';
 import Ticket from '../../../lib/db/models/ticket';
+import CreateOrderData from '../../../lib/objects/data/orders/create-order-data';
+import BaseOrderDto from '../../../lib/objects/dto/orders/base-order-dto';
 import { DbModelTypes } from '../../../lib/types/db/models';
 import { OrdersRequestHandlers } from '../../../lib/types/request-handlers/orders';
 
@@ -39,17 +41,40 @@ const post = async (
     );
 
   // 3. calculate an expiration date for this order
+  const expiresAt = new Date();
+  expiresAt.setSeconds(
+    expiresAt.getSeconds() + parseInt(process.env.EXPIRATION_WINDOW_SECONDS!)
+  );
+
   // 4. build the order and save it to the database
+  const order = Order.build({
+    userId: req['jwt/user-data']!.id,
+    status: 'created',
+    expiresAt,
+    ticket,
+  });
+
+  const [savedOrder, saveOrderError] =
+    await db.helpers.save<DbModelTypes.OrderDocument>({
+      document: order,
+      errorMessage: 'Error saving order into the database.',
+    });
+
+  if (saveOrderError) throw saveOrderError;
+
   // 5. publish event informing an order has been created
 
+  // 6. send back response to client
   return res
     .status(200)
     .send(
-      new objects.ApplicationResponse<undefined, undefined>(
-        200,
-        'ROUTE_FOUND',
-        'Route POST /orders found.',
-        undefined,
+      new objects.ApplicationResponse<CreateOrderData, undefined>(
+        201,
+        'ORDER_CREATED',
+        `Order ${
+          savedOrder!.id
+        } has been succesfully persisted into the database.`,
+        new CreateOrderData(BaseOrderDto.fromOrderDocument(savedOrder!)),
         undefined
       )
     );
