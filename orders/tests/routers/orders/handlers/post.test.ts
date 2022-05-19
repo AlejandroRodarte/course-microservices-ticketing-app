@@ -26,7 +26,44 @@ describe('Test for the POST /orders endpoint.', () => {
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
 
-    it('Should return a 201/ORDER_CREATED status if the order is succesfully created', async () => {});
+    it('Should return a 201/ORDER_CREATED status if the order is succesfully created', async () => {
+      const [user, cookie] = cookies.helpers.createUserAndCookie();
+
+      // creating a ticket
+      const ticketAttributes: DbModelTypes.TicketAttributes = {
+        title: 'Concert',
+        price: 20,
+      };
+      const ticket = Ticket.build(ticketAttributes);
+      await ticket.save();
+
+      const body = {
+        data: {
+          newOrder: {
+            ticketId: ticket._id,
+          },
+        },
+      };
+
+      const response = await request(app)
+        .post(routes.newOrder)
+        .send(body)
+        .set('Cookie', cookie)
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          CreateOrderData,
+          undefined
+        >;
+
+      expect(applicationResponse.status).toBe(201);
+      expect(applicationResponse.code).toBe('ORDER_CREATED');
+
+      expect(applicationResponse.data.newOrder.userId).toBe(user.id);
+      expect(applicationResponse.data.newOrder.status).toBe('created');
+      expect(applicationResponse.data.newOrder.ticket.title).toBe(ticket.title);
+      expect(applicationResponse.data.newOrder.ticket.price).toBe(ticket.price);
+    });
   });
 
   describe('Route handler errors', () => {
