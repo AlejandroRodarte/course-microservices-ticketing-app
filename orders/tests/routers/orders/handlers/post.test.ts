@@ -4,6 +4,9 @@ import request from 'supertest';
 import app from '../../../../src/app';
 import cookies from '../../../lib/cookies';
 import CreateOrderData from '../../../../src/lib/objects/data/orders/create-order-data';
+import { DbModelTypes } from '../../../../src/lib/types/db/models';
+import Ticket from '../../../../src/lib/db/models/ticket';
+import Order from '../../../../src/lib/db/models/order';
 
 const routes = {
   newOrder: '/orders',
@@ -133,6 +136,56 @@ describe('Test for the POST /orders endpoint.', () => {
       expect(error.field).toBe('ticket');
     });
 
-    it('Should return a 400/BAD_ENTITY_ERROR status if the ticket is already reserved.', async () => {});
+    it('Should return a 400/BAD_ENTITY_ERROR status if the ticket is already reserved.', async () => {
+      const [firstUser] = cookies.helpers.createUserAndCookie();
+      const [, secondUserCookie] = cookies.helpers.createUserAndCookie();
+
+      // creating a ticket
+      const ticketAttributes: DbModelTypes.TicketAttributes = {
+        title: 'Concert',
+        price: 20,
+      };
+      const ticket = Ticket.build(ticketAttributes);
+      await ticket.save();
+
+      // creating an order
+      const orderAttributesExpiresAt = new Date();
+      orderAttributesExpiresAt.setSeconds(
+        orderAttributesExpiresAt.getSeconds() + 900
+      );
+      const orderAttributes: DbModelTypes.OrderAttributes = {
+        userId: firstUser.id,
+        status: 'created',
+        expiresAt: orderAttributesExpiresAt,
+        ticket,
+      };
+      const order = Order.build(orderAttributes);
+      await order.save();
+
+      const body = {
+        data: {
+          newOrder: {
+            ticketId: ticket._id,
+          },
+        },
+      };
+
+      const response = await request(app)
+        .post(routes.newOrder)
+        .send(body)
+        .set('Cookie', secondUserCookie)
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          undefined,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+
+      expect(applicationResponse.status).toBe(400);
+      expect(applicationResponse.code).toBe('BAD_ENTITY_ERROR');
+
+      const [error] = applicationResponse.error.errors;
+      expect(error.field).toBe('order');
+    });
   });
 });
