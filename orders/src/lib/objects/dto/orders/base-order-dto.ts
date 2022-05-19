@@ -44,6 +44,12 @@ class BaseOrderDto {
     );
   }
 
+  static fromOrderDocumentArray(orderDocuments: DbModelTypes.OrderDocument[]) {
+    return orderDocuments.map((orderDocument) =>
+      this.fromOrderDocument(orderDocument)
+    );
+  }
+
   get id() {
     return this._id;
   }

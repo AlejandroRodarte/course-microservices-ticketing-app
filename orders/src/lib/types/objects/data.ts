@@ -4,4 +4,7 @@ export namespace DataTypes {
   export interface ICreateOrderData {
     newOrder: BaseOrderDto;
   }
+  export interface IGetOrdersData {
+    orders: BaseOrderDto[];
+  }
 }
