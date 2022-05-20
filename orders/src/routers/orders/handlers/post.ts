@@ -4,6 +4,8 @@ import Order from '../../../lib/db/models/order';
 import Ticket from '../../../lib/db/models/ticket';
 import CreateOrderData from '../../../lib/objects/data/orders/create-order-data';
 import BaseOrderDto from '../../../lib/objects/dto/orders/base-order-dto';
+import OrderCreatedPublisher from '../../../lib/objects/nats/publishers/order-created-publisher';
+import stanSingleton from '../../../lib/objects/nats/stan-singleton';
 import { DbModelTypes } from '../../../lib/types/db/models';
 import { OrdersRequestHandlers } from '../../../lib/types/request-handlers/orders';
 
@@ -63,6 +65,19 @@ const post = async (
   if (saveOrderError) throw saveOrderError;
 
   // 5. publish event informing an order has been created
+  const [stan] = stanSingleton.stan;
+  const natsError = await new OrderCreatedPublisher(stan!).publish({
+    id: savedOrder.id,
+    status: savedOrder.status,
+    userId: savedOrder.userId,
+    expiresAt: savedOrder.expiresAt.toISOString(),
+    ticket: {
+      id: ticket.id,
+      price: ticket.price,
+    },
+  });
+
+  if (natsError) throw natsError;
 
   // 6. send back response to client
   return res
