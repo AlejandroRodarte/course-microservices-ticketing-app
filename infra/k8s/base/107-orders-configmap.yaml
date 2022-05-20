@@ -4,4 +4,4 @@ metadata:
   name: orders-configmap
   namespace: ticketing
 data:
-  EXPIRATION_WINDOW_SECONDS: 900
+  EXPIRATION_WINDOW_SECONDS: '900'
