@@ -23,6 +23,10 @@ class TicketCreatedListener extends objects.nats
   ): Promise<
     InstanceType<typeof objects.errors.DatabaseOperationError> | undefined
   > {
+    console.log(
+      `[orders] NATS client ${process.env.NATS_CLIENT_ID} received event from ticket:created channel.`
+    );
+
     const { id, title, price } = data;
     const ticket = Ticket.build({ id, title, price });
     const [, saveTicketError] =
