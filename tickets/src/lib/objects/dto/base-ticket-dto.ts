@@ -5,6 +5,7 @@ interface IBaseTicketDto {
   title: string;
   price: number;
   userId: string;
+  version: number;
 }
 
 class BaseTicketDto {
@@ -12,12 +13,20 @@ class BaseTicketDto {
   private _title: string;
   private _price: number;
   private _userId: string;
+  private _version: number;
 
-  constructor(id: string, title: string, price: number, userId: string) {
+  constructor(
+    id: string,
+    title: string,
+    price: number,
+    userId: string,
+    version: number
+  ) {
     this._id = id;
     this._title = title;
     this._price = price;
     this._userId = userId;
+    this._version = version;
   }
 
   toJSON(): IBaseTicketDto {
@@ -26,6 +35,7 @@ class BaseTicketDto {
       title: this.title,
       price: this.price,
       userId: this.userId,
+      version: this.version,
     };
   }
 
@@ -36,7 +46,8 @@ class BaseTicketDto {
       ticketDocument._id,
       ticketDocument.title,
       ticketDocument.price,
-      ticketDocument.userId
+      ticketDocument.userId,
+      ticketDocument.version
     );
   }
 
@@ -62,6 +73,10 @@ class BaseTicketDto {
     return this._userId;
   }
 
+  get version() {
+    return this._version;
+  }
+
   set id(id: string) {
     this._id = id;
   }
@@ -76,6 +91,10 @@ class BaseTicketDto {
 
   set userId(userId: string) {
     this._userId = userId;
+  }
+
+  set version(version: number) {
+    this._version = version;
   }
 }
 

@@ -12,6 +12,7 @@ export namespace DtoTypes {
     userId: string;
     status: OrderResourceTypes.Status;
     expiresAt: string;
+    version: number;
     ticket: IBaseTicketDto;
   }
 }

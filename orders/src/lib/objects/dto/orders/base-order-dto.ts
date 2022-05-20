@@ -8,6 +8,7 @@ class BaseOrderDto {
   private _userId: string;
   private _status: OrderResourceTypes.Status;
   private _expiresAt: string;
+  private _version: number;
   private _ticket: BaseTicketDto;
 
   constructor(
@@ -15,12 +16,14 @@ class BaseOrderDto {
     userId: string,
     status: OrderResourceTypes.Status,
     expiresAt: string,
+    version: number,
     ticket: BaseTicketDto
   ) {
     this._id = id;
     this._userId = userId;
     this._status = status;
     this._expiresAt = expiresAt;
+    this._version = version;
     this._ticket = ticket;
   }
 
@@ -30,6 +33,7 @@ class BaseOrderDto {
       userId: this.userId,
       status: this.status,
       expiresAt: this.expiresAt,
+      version: this.version,
       ticket: this.ticket.toJSON(),
     };
   }
@@ -40,6 +44,7 @@ class BaseOrderDto {
       orderDocument.userId,
       orderDocument.status,
       orderDocument.expiresAt.toISOString(),
+      orderDocument.version,
       BaseTicketDto.fromTicketDocument(orderDocument.ticket)
     );
   }
@@ -66,6 +71,10 @@ class BaseOrderDto {
     return this._expiresAt;
   }
 
+  get version() {
+    return this._version;
+  }
+
   get ticket() {
     return this._ticket;
   }
@@ -84,6 +93,10 @@ class BaseOrderDto {
 
   set expiresAt(expiresAt: string) {
     this._expiresAt = expiresAt;
+  }
+
+  set version(version: number) {
+    this._version = version;
   }
 
   set ticket(ticket: BaseTicketDto) {
