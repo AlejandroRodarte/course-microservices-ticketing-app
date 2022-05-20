@@ -1,5 +1,6 @@
-import { db, objects, ReturnTypes } from '@msnr-ticketing-app/common';
+import { db, objects } from '@msnr-ticketing-app/common';
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { DbModelTypes } from '../../types/db/models';
 
 const ticketSchema = new mongoose.Schema<
@@ -23,6 +24,9 @@ const ticketSchema = new mongoose.Schema<
     required: [true, 'A user ID is required when creating a ticket.'],
   },
 });
+
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
 
 ticketSchema.method(
   'updateFields',
