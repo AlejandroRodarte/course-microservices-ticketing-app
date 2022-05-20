@@ -7,14 +7,14 @@ class BaseOrderDto {
   private _id: string;
   private _userId: string;
   private _status: OrderResourceTypes.Status;
-  private _expiresAt: number;
+  private _expiresAt: string;
   private _ticket: BaseTicketDto;
 
   constructor(
     id: string,
     userId: string,
     status: OrderResourceTypes.Status,
-    expiresAt: number,
+    expiresAt: string,
     ticket: BaseTicketDto
   ) {
     this._id = id;
@@ -39,7 +39,7 @@ class BaseOrderDto {
       orderDocument._id,
       orderDocument.userId,
       orderDocument.status,
-      orderDocument.expiresAt.getTime(),
+      orderDocument.expiresAt.toISOString(),
       BaseTicketDto.fromTicketDocument(orderDocument.ticket)
     );
   }
@@ -82,7 +82,7 @@ class BaseOrderDto {
     this._status = status;
   }
 
-  set expiresAt(expiresAt: number) {
+  set expiresAt(expiresAt: string) {
     this._expiresAt = expiresAt;
   }
 
