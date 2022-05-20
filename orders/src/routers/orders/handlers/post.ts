@@ -68,6 +68,9 @@ const post = async (
   const [stan, stanUnconnectedError] = stanSingleton.stan;
   if (stanUnconnectedError) throw stanUnconnectedError;
 
+  console.log(
+    `[orders] NATS client ${process.env.NATS_CLIENT_ID} emitting event to order:created channel.`
+  );
   const natsError = await new OrderCreatedPublisher(stan!).publish({
     id: savedOrder.id,
     status: savedOrder.status,

@@ -23,6 +23,9 @@ const deleteHandler = async (
   const [stan, stanUnconnectedError] = stanSingleton.stan;
   if (stanUnconnectedError) throw stanUnconnectedError;
 
+  console.log(
+    `[orders] NATS client ${process.env.NATS_CLIENT_ID} emitting event to order:cancelled channel.`
+  );
   const natsError = await new OrderCancelledPublisher(stan!).publish({
     id: req.order!.id,
     ticket: {

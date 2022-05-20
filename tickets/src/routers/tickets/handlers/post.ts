@@ -27,6 +27,9 @@ const post = async (
   const [stan, stanUnconnectedError] = stanSingleton.stan;
   if (stanUnconnectedError) throw stanUnconnectedError;
 
+  console.log(
+    `[tickets] NATS client ${process.env.NATS_CLIENT_ID} emitting event to ticket:created channel.`
+  );
   const natsError = await new TicketCreatedPublisher(stan!).publish({
     id: savedTicket.id,
     title: savedTicket.title,
