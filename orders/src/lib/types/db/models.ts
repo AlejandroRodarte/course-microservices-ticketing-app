@@ -19,6 +19,7 @@ export namespace DbModelTypes {
   export interface TicketDocument extends mongoose.Document {
     title: string;
     price: number;
+    version: number;
     isReserved(): Promise<
       ReturnTypes.AsyncTuple<
         boolean,

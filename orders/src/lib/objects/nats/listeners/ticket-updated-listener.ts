@@ -31,17 +31,18 @@ class TicketUpdatedListener extends objects.nats
 
     const { id, title, price, version } = data;
 
-    const [ticket, findTicketError] = await db.helpers.findOne<
-      DbModelTypes.TicketDocument,
-      DbModelTypes.TicketModel
-    >({
-      Model: Ticket,
-      filters: {
-        _id: id,
-        version: version - 1,
-      },
-      errorMessage: `There was an error finding ticket with ID ${id}.`,
-    });
+    const [ticket, findTicketError] =
+      await db.helpers.findOneWithPreviousVersion<
+        DbModelTypes.TicketDocument,
+        DbModelTypes.TicketModel
+      >({
+        Model: Ticket,
+        filters: {
+          _id: id,
+        },
+        version,
+        errorMessage: `There was an error finding ticket with ID ${id}.`,
+      });
     if (findTicketError) return findTicketError;
     if (!ticket)
       return new objects.errors.EntityNotFoundError(
