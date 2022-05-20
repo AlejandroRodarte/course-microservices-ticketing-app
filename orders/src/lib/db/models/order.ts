@@ -1,5 +1,6 @@
 import { constants, OrderResourceTypes } from '@msnr-ticketing-app/common';
 import mongoose from 'mongoose';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { DbModelTypes } from '../../types/db/models';
 
 const orderSchema = new mongoose.Schema<
@@ -31,6 +32,9 @@ const orderSchema = new mongoose.Schema<
     ref: 'Ticket',
   },
 });
+
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.static(
   'build',

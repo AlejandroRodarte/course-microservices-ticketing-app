@@ -28,6 +28,7 @@ const deleteHandler = async (
   );
   const natsError = await new OrderCancelledPublisher(stan!).publish({
     id: req.order!.id,
+    version: req.order!.version,
     ticket: {
       id: req.order!.ticket.id,
     },

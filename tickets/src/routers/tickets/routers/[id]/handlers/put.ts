@@ -26,6 +26,7 @@ const put = async (
     title: updatedTicket.title,
     price: updatedTicket.price,
     userId: updatedTicket.userId,
+    version: updatedTicket.version,
   });
 
   if (natsError) throw natsError;

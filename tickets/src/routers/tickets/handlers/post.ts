@@ -35,6 +35,7 @@ const post = async (
     title: savedTicket.title,
     price: savedTicket.price,
     userId: savedTicket.userId,
+    version: savedTicket.version,
   });
 
   if (natsError) throw natsError;

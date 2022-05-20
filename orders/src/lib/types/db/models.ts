@@ -46,6 +46,7 @@ export namespace DbModelTypes {
     userId: string;
     status: OrderResourceTypes.Status;
     expiresAt: Date;
+    version: number;
     ticket: TicketDocument;
   }
   // extend Order model to include static methods

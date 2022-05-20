@@ -76,6 +76,7 @@ const post = async (
     status: savedOrder.status,
     userId: savedOrder.userId,
     expiresAt: savedOrder.expiresAt.toISOString(),
+    version: savedOrder.version,
     ticket: {
       id: ticket.id,
       price: ticket.price,
