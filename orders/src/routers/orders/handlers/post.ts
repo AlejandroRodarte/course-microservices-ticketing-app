@@ -65,7 +65,9 @@ const post = async (
   if (saveOrderError) throw saveOrderError;
 
   // 5. publish event informing an order has been created
-  const [stan] = stanSingleton.stan;
+  const [stan, stanUnconnectedError] = stanSingleton.stan;
+  if (stanUnconnectedError) throw stanUnconnectedError;
+
   const natsError = await new OrderCreatedPublisher(stan!).publish({
     id: savedOrder.id,
     status: savedOrder.status,

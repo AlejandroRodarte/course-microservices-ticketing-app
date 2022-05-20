@@ -7,6 +7,7 @@ import CreateOrderData from '../../../../../../src/lib/objects/data/orders/creat
 import { DbModelTypes } from '../../../../../../src/lib/types/db/models';
 import Ticket from '../../../../../../src/lib/db/models/ticket';
 import UpdateOrderData from '../../../../../../src/lib/objects/data/orders/update-order-data';
+import stanSingleton from '../../../../../../src/lib/objects/nats/stan-singleton';
 
 const routes = {
   newOrder: '/orders',
@@ -30,7 +31,7 @@ describe('Test for the DELETE /orders/:id endpoint.', () => {
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
 
-    it('Should return a 204/USER_ORDER_CANCELLED status if the user order is cancelled.', async () => {
+    it('Should return a 204/USER_ORDER_CANCELLED status and emit an order:cancelled event if the user order is cancelled.', async () => {
       const [user, cookie] = cookies.helpers.createUserAndCookie();
 
       const ticketAttributes: DbModelTypes.TicketAttributes = {
@@ -72,6 +73,9 @@ describe('Test for the DELETE /orders/:id endpoint.', () => {
       expect(applicationResponse.code).toBe('USER_ORDER_CANCELLED');
 
       expect(applicationResponse.data.updatedOrder.status).toBe('cancelled');
+
+      const [stan] = stanSingleton.stan;
+      expect(stan?.publish).toHaveBeenCalled();
     });
   });
 

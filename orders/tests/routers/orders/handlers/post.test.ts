@@ -7,6 +7,7 @@ import CreateOrderData from '../../../../src/lib/objects/data/orders/create-orde
 import { DbModelTypes } from '../../../../src/lib/types/db/models';
 import Ticket from '../../../../src/lib/db/models/ticket';
 import Order from '../../../../src/lib/db/models/order';
+import stanSingleton from '../../../../src/lib/objects/nats/stan-singleton';
 
 const routes = {
   newOrder: '/orders',
@@ -26,7 +27,7 @@ describe('Test for the POST /orders endpoint.', () => {
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
 
-    it('Should return a 201/ORDER_CREATED status if the order is succesfully created', async () => {
+    it('Should return a 201/ORDER_CREATED status and emit an order:created event if the order is succesfully created', async () => {
       const [user, cookie] = cookies.helpers.createUserAndCookie();
 
       // creating a ticket
@@ -60,9 +61,9 @@ describe('Test for the POST /orders endpoint.', () => {
       expect(applicationResponse.code).toBe('ORDER_CREATED');
 
       expect(applicationResponse.data.newOrder.userId).toBe(user.id);
-      expect(applicationResponse.data.newOrder.status).toBe('created');
-      expect(applicationResponse.data.newOrder.ticket.title).toBe(ticket.title);
-      expect(applicationResponse.data.newOrder.ticket.price).toBe(ticket.price);
+
+      const [stan] = stanSingleton.stan;
+      expect(stan?.publish).toHaveBeenCalled();
     });
   });
 

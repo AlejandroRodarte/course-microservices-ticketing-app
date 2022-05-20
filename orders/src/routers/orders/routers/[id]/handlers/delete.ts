@@ -20,7 +20,9 @@ const deleteHandler = async (
     });
   if (updateOrderError) throw updateOrderError;
 
-  const [stan] = stanSingleton.stan;
+  const [stan, stanUnconnectedError] = stanSingleton.stan;
+  if (stanUnconnectedError) throw stanUnconnectedError;
+
   const natsError = await new OrderCancelledPublisher(stan!).publish({
     id: req.order!.id,
     ticket: {
