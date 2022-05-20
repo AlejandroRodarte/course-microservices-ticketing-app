@@ -29,14 +29,17 @@ class TicketUpdatedListener extends objects.nats
       `[orders] NATS client ${process.env.NATS_CLIENT_ID} received event from ticket:updated channel.`
     );
 
-    const { id, title, price } = data;
+    const { id, title, price, version } = data;
 
-    const [ticket, findTicketError] = await db.helpers.findById<
+    const [ticket, findTicketError] = await db.helpers.findOne<
       DbModelTypes.TicketDocument,
       DbModelTypes.TicketModel
     >({
       Model: Ticket,
-      id,
+      filters: {
+        _id: id,
+        version: version - 1,
+      },
       errorMessage: `There was an error finding ticket with ID ${id}.`,
     });
     if (findTicketError) return findTicketError;
