@@ -1,6 +1,8 @@
 import { db } from '@msnr-ticketing-app/common';
 import app from './app';
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
+import TicketCreatedListener from './lib/objects/nats/listeners/ticket-created-listener';
+import TicketUpdatedListener from './lib/objects/nats/listeners/ticket-updated-listener';
 import stanSingleton from './lib/objects/nats/stan-singleton';
 import { MainTypes } from './lib/types/main';
 
@@ -31,6 +33,12 @@ const start: MainTypes.MainFunction = async () => {
   console.log(
     `[orders] Connected client ${process.env.NATS_CLIENT_ID} to NATS server on orders microservice.`
   );
+
+  const [stan, stanUnconnectedError] = stanSingleton.stan;
+  if (stanUnconnectedError) return [undefined, stanUnconnectedError];
+
+  new TicketCreatedListener(stan!).listen();
+  new TicketUpdatedListener(stan!).listen();
 
   const server = app.listen(port, () => {
     console.log(`[orders] Orders microservice launched on port ${port}`);
