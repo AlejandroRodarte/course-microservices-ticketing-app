@@ -1,5 +1,6 @@
 import { JwtTypes } from '@msnr-ticketing-app/common';
 import { Request } from 'express';
+import { DbModelTypes } from '../db/models';
 
 export namespace OrdersRequestHandlers {
   export interface GetOrdersExtendedRequest extends Request {
@@ -7,6 +8,7 @@ export namespace OrdersRequestHandlers {
   }
   export interface GetOrdersIdExtendedRequest extends Request {
     ['jwt/user-data']?: JwtTypes.UserData;
+    order?: DbModelTypes.OrderDocument;
   }
   interface PostOrdersBody {
     data: {
@@ -21,5 +23,6 @@ export namespace OrdersRequestHandlers {
   }
   export interface DeleteOrdersIdExtendedRequest extends Request {
     ['jwt/user-data']?: JwtTypes.UserData;
+    order?: DbModelTypes.OrderDocument;
   }
 }

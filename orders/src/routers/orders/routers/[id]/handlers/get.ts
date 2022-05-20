@@ -1,5 +1,7 @@
 import { objects } from '@msnr-ticketing-app/common';
 import { Response } from 'express';
+import GetOrderData from '../../../../../lib/objects/data/orders/get-order-data';
+import BaseOrderDto from '../../../../../lib/objects/dto/orders/base-order-dto';
 import { OrdersRequestHandlers } from '../../../../../lib/types/request-handlers/orders';
 
 const get = async (
@@ -9,11 +11,11 @@ const get = async (
   return res
     .status(200)
     .send(
-      new objects.ApplicationResponse<undefined, undefined>(
+      new objects.ApplicationResponse<GetOrderData, undefined>(
         200,
-        'ROUTE_FOUND',
-        `Route GET /orders/${req.params.id} found.`,
-        undefined,
+        'USER_ORDER_FETCHED',
+        `Order ${req.params.id} has been fetched succesfully from the database.`,
+        new GetOrderData(BaseOrderDto.fromOrderDocument(req.order!)),
         undefined
       )
     );

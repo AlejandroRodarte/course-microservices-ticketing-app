@@ -7,4 +7,7 @@ export namespace DataTypes {
   export interface IGetOrdersData {
     orders: BaseOrderDto[];
   }
+  export interface IGetOrderData {
+    order: BaseOrderDto;
+  }
 }
