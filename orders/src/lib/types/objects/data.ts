@@ -10,4 +10,7 @@ export namespace DataTypes {
   export interface IGetOrderData {
     order: BaseOrderDto;
   }
+  export interface IUpdateOrderData {
+    updatedOrder: BaseOrderDto;
+  }
 }
