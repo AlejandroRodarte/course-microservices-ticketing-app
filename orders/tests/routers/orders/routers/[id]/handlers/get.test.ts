@@ -25,5 +25,15 @@ describe('Test for the GET /orders/:id endpoint.', () => {
       expect(applicationResponse.status).not.toBe(404);
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
+
+    it('Should return a 200/USER_ORDER_FETCHED status if the user order is found.', async () => {});
+  });
+
+  describe('Route handler errors', () => {
+    it('Should throw a 401/UNAUTHORIZED_ERROR status if no credentials are provided.', async () => {});
+
+    it('Should throw a 404/ENTITY_NOT_FOUND_ERROR status if no order is found in the database.', async () => {});
+
+    it('Should throw a 401/UNAUTHORIZED_ERROR status with the correct reason if the order is not owned by the user.', async () => {});
   });
 });

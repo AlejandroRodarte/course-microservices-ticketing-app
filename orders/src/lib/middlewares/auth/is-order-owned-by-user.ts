@@ -17,6 +17,9 @@ const isOrderOwnedByUser = async (
     Model: Order,
     id,
     errorMessage: `There was an error trying to find order with ID ${id}.`,
+    opts: {
+      populateFields: ['ticket'],
+    },
   });
 
   if (findOrderError) return next(findOrderError);
