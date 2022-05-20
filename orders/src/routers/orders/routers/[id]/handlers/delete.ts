@@ -2,6 +2,8 @@ import { db, objects } from '@msnr-ticketing-app/common';
 import { Response } from 'express';
 import UpdateOrderData from '../../../../../lib/objects/data/orders/update-order-data';
 import BaseOrderDto from '../../../../../lib/objects/dto/orders/base-order-dto';
+import OrderCancelledPublisher from '../../../../../lib/objects/nats/publishers/order-cancelled-publisher';
+import stanSingleton from '../../../../../lib/objects/nats/stan-singleton';
 import { DbModelTypes } from '../../../../../lib/types/db/models';
 import { OrdersRequestHandlers } from '../../../../../lib/types/request-handlers/orders';
 
@@ -17,6 +19,16 @@ const deleteHandler = async (
       errorMessage: `There was a problem cancelling order ${req.order!.id}`,
     });
   if (updateOrderError) throw updateOrderError;
+
+  const [stan] = stanSingleton.stan;
+  const natsError = await new OrderCancelledPublisher(stan!).publish({
+    id: req.order!.id,
+    ticket: {
+      id: req.order!.ticket.id,
+    },
+  });
+
+  if (natsError) throw natsError;
 
   return res
     .status(200)
