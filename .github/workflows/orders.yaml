@@ -80,6 +80,7 @@ jobs:
           cd config
           touch .env.test
           echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env.test
+          echo EXPIRATION_WINDOW_SECONDS=900 >> .env.test
 
       - name: Run tests
         working-directory: orders
