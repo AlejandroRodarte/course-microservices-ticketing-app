@@ -51,10 +51,9 @@ ticketSchema.method('isReserved', async function (): ReturnTypes.AsyncTuple<
 
 ticketSchema.static(
   'build',
-  function (
-    attributes: DbModelTypes.TicketAttributes
-  ): DbModelTypes.TicketDocument {
-    return new Ticket(attributes);
+  function (attrs: DbModelTypes.TicketAttributes): DbModelTypes.TicketDocument {
+    const { id, ...rest } = attrs;
+    return new Ticket({ _id: id, ...rest });
   }
 );
 

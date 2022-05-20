@@ -35,6 +35,7 @@ describe('Test for the DELETE /orders/:id endpoint.', () => {
       const [user, cookie] = cookies.helpers.createUserAndCookie();
 
       const ticketAttributes: DbModelTypes.TicketAttributes = {
+        id: new mongoose.Types.ObjectId().toHexString(),
         title: 'Concert',
         price: 20,
       };
@@ -118,6 +119,7 @@ describe('Test for the DELETE /orders/:id endpoint.', () => {
         cookies.helpers.createUserAndCookie();
 
       const ticketAttributes: DbModelTypes.TicketAttributes = {
+        id: new mongoose.Types.ObjectId().toHexString(),
         title: 'Concert',
         price: 20,
       };

@@ -23,8 +23,8 @@ class TicketCreatedListener extends objects.nats
   ): Promise<
     InstanceType<typeof objects.errors.DatabaseOperationError> | undefined
   > {
-    const { title, price } = data;
-    const ticket = Ticket.build({ title, price });
+    const { id, title, price } = data;
+    const ticket = Ticket.build({ id, title, price });
     const [, saveTicketError] =
       await db.helpers.save<DbModelTypes.TicketDocument>({
         document: ticket,

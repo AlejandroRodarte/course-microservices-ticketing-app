@@ -1,12 +1,11 @@
 import { ApplicationResponseTypes } from '@msnr-ticketing-app/common';
+import mongoose from 'mongoose';
 import request from 'supertest';
 import app from '../../../../src/app';
 import cookies from '../../../lib/cookies';
-import Order from '../../../../src/lib/db/models/order';
 import Ticket from '../../../../src/lib/db/models/ticket';
 import { DbModelTypes } from '../../../../src/lib/types/db/models';
 import GetOrdersData from '../../../../src/lib/objects/data/orders/get-orders-data';
-import BaseTicketDto from '../../../../src/lib/objects/dto/tickets/base-ticket-dto';
 
 const routes = {
   newOrder: '/orders',
@@ -32,14 +31,17 @@ describe('Test for the GET /orders endpoint.', () => {
       // 1. create three tickets
       const ticketAttributes: DbModelTypes.TicketAttributes[] = [
         {
+          id: new mongoose.Types.ObjectId().toHexString(),
           title: 'Concert',
           price: 20,
         },
         {
+          id: new mongoose.Types.ObjectId().toHexString(),
           title: 'Art Gallery',
           price: 50,
         },
         {
+          id: new mongoose.Types.ObjectId().toHexString(),
           title: 'Monster Jam',
           price: 35,
         },

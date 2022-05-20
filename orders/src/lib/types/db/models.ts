@@ -11,6 +11,7 @@ export namespace DbModelTypes {
    */
   // attributes required to create a Ticket
   export interface TicketAttributes {
+    id: string;
     title: string;
     price: number;
   }

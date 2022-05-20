@@ -32,6 +32,7 @@ describe('Test for the POST /orders endpoint.', () => {
 
       // creating a ticket
       const ticketAttributes: DbModelTypes.TicketAttributes = {
+        id: new mongoose.Types.ObjectId().toHexString(),
         title: 'Concert',
         price: 20,
       };
@@ -180,6 +181,7 @@ describe('Test for the POST /orders endpoint.', () => {
 
       // creating a ticket
       const ticketAttributes: DbModelTypes.TicketAttributes = {
+        id: new mongoose.Types.ObjectId().toHexString(),
         title: 'Concert',
         price: 20,
       };
