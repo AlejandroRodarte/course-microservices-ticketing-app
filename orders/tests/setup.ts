@@ -1,6 +1,11 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
+global.console = {
+  ...console,
+  log: jest.fn(),
+};
+
 jest.mock('../src/lib/objects/nats/stan-singleton');
 
 let mongo: MongoMemoryServer | undefined = undefined;
