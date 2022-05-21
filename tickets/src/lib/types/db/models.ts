@@ -17,6 +17,7 @@ export namespace DbModelTypes {
     price: number;
     userId: string;
     version: number;
+    orderId?: string;
     updateFields: (
       attrs: Partial<TicketAttributes>
     ) => ReturnTypes.AsyncTuple<

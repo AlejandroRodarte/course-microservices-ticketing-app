@@ -23,6 +23,10 @@ const ticketSchema = new mongoose.Schema<
     type: String,
     required: [true, 'A user ID is required when creating a ticket.'],
   },
+  orderId: {
+    type: String,
+    required: false,
+  },
 });
 
 ticketSchema.set('versionKey', 'version');
