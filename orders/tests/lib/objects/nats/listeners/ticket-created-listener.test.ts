@@ -46,7 +46,11 @@ describe('Tests for the TicketCreatedListener object.', () => {
     });
 
     it('Should acknowledge the message upon processing the event.', async () => {
+      const { listener, data, msg } = await setup();
+
       // 6. write assertion to make sure msg.ack has been called
+      await listener.onMessage(msg, data);
+      expect(msg.ack).toHaveBeenCalled();
     });
   });
 });
