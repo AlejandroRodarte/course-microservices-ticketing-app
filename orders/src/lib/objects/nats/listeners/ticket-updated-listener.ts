@@ -1,7 +1,7 @@
 import { db, NatsTypes, objects } from '@msnr-ticketing-app/common';
 import { Message } from 'node-nats-streaming';
 import { QUEUE_GROUP_NAME } from '../../../constants/nats';
-import Ticket from '../../../db/models/ticket';
+import dbHelpers from '../../../db/helpers';
 import { DbModelTypes } from '../../../types/db/models';
 
 class TicketUpdatedListener extends objects.nats
@@ -31,18 +31,11 @@ class TicketUpdatedListener extends objects.nats
 
     const { id, title, price, version } = data;
 
-    const [ticket, findTicketError] =
-      await db.helpers.findOneWithPreviousVersion<
-        DbModelTypes.TicketDocument,
-        DbModelTypes.TicketModel
-      >({
-        Model: Ticket,
-        filters: {
-          _id: id,
-        },
-        version,
-        errorMessage: `There was an error finding ticket with ID ${id}.`,
-      });
+    const [ticket, findTicketError] = await dbHelpers.tickets.findByEvent({
+      id,
+      version,
+      errorMessage: `There was an error finding ticket with ID ${id}.`,
+    });
     if (findTicketError) return findTicketError;
     if (!ticket)
       return new objects.errors.EntityNotFoundError(
