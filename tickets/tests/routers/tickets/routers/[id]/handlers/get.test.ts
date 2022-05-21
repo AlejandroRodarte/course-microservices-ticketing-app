@@ -72,6 +72,7 @@ describe('Tests for the GET /tickets/:id endpoint.', () => {
         title: newTicketRequestBody.data.newTicket.title,
         price: newTicketRequestBody.data.newTicket.price,
         userId: user.id,
+        version: 0,
       });
     });
   });

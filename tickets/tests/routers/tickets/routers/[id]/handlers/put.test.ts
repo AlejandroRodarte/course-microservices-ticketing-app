@@ -85,6 +85,7 @@ describe('Tests for the PUT /tickets/:id endpoint.', () => {
         title: updateTicketRequestBody.data.ticketUpdates.title,
         price: updateTicketRequestBody.data.ticketUpdates.price,
         userId: newTicketApplicationResponse.data.newTicket.userId,
+        version: 1,
       });
     });
   });
