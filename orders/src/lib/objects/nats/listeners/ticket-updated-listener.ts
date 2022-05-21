@@ -11,10 +11,12 @@ class TicketUpdatedListener extends objects.nats
   readonly durableName = `${QUEUE_GROUP_NAME}-ticket-updated`;
   readonly queueGroupName = QUEUE_GROUP_NAME;
 
-  onMessage(msg: Message, data: NatsTypes.TicketUpdatedEventData): void {
-    this.exec(msg, data).then((err) => {
-      if (!err) msg.ack();
-    });
+  async onMessage(
+    msg: Message,
+    data: NatsTypes.TicketUpdatedEventData
+  ): Promise<void> {
+    const error = await this.exec(msg, data);
+    if (!error) msg.ack();
   }
 
   private async exec(

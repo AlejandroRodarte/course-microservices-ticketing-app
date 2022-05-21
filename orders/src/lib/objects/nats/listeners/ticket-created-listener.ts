@@ -11,10 +11,12 @@ class TicketCreatedListener extends objects.nats
   readonly durableName = `${QUEUE_GROUP_NAME}-ticket-created`;
   readonly queueGroupName = QUEUE_GROUP_NAME;
 
-  onMessage(msg: Message, data: NatsTypes.TicketCreatedEventData): void {
-    this.exec(msg, data).then((err) => {
-      if (!err) msg.ack();
-    });
+  async onMessage(
+    msg: Message,
+    data: NatsTypes.TicketCreatedEventData
+  ): Promise<void> {
+    const error = await this.exec(msg, data);
+    if (!error) msg.ack();
   }
 
   private async exec(
