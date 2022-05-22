@@ -15,9 +15,18 @@ describe('Tests for the OrderCancelledListener object.', () => {
       price: 20,
       userId: new mongoose.Types.ObjectId().toHexString(),
     });
+    const orderId = new mongoose.Types.ObjectId().toHexString();
+    savedTicket.orderId = orderId;
     await savedTicket.save();
 
     const orderCancelledEventArray: NatsTypes.OrderCancelledEventData[] = [
+      {
+        id: orderId,
+        version: 0,
+        ticket: {
+          id: savedTicket.id,
+        },
+      },
       {
         id: new mongoose.Types.ObjectId().toHexString(),
         version: 0,
@@ -26,7 +35,7 @@ describe('Tests for the OrderCancelledListener object.', () => {
         },
       },
       {
-        id: new mongoose.Types.ObjectId().toHexString(),
+        id: orderId,
         version: 0,
         ticket: {
           id: new mongoose.Types.ObjectId().toHexString(),
@@ -87,9 +96,17 @@ describe('Tests for the OrderCancelledListener object.', () => {
   });
 
   describe('Failure cases', () => {
-    it('Should not acknowledge the message if no ticket is found in the database.', async () => {
+    it('Should not acknowledge the message if an unknown order requests to cancel a reserved ticket.', async () => {
       const { listener, orderCancelledEventArray, msg } = await setup();
       const [, data] = orderCancelledEventArray;
+
+      await listener.onMessage(msg, data);
+      expect(msg.ack).not.toHaveBeenCalled();
+    });
+
+    it('Should not acknowledge the message if ticket does not exist.', async () => {
+      const { listener, orderCancelledEventArray, msg } = await setup();
+      const [, , data] = orderCancelledEventArray;
 
       await listener.onMessage(msg, data);
       expect(msg.ack).not.toHaveBeenCalled();
