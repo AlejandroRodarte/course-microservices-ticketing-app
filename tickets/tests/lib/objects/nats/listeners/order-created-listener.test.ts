@@ -98,9 +98,21 @@ describe('Tests for the OrderCreatedListener object.', () => {
 
   describe('Failure cases', () => {
     it('Should not acknowledge the message if no ticket is found in the database.', async () => {
-      const { listener, orderCreatedEventDataArray, msg } =
-        await setup();
+      const { listener, orderCreatedEventDataArray, msg } = await setup();
       const [, data] = orderCreatedEventDataArray;
+
+      await listener.onMessage(msg, data);
+      expect(msg.ack).not.toHaveBeenCalled();
+    });
+
+    it('Should not acknowledge the message if the ticket is already reserved.', async () => {
+      const { listener, savedTicket, orderCreatedEventDataArray, msg } =
+        await setup();
+      const [data] = orderCreatedEventDataArray;
+
+      const ticket = await Ticket.findById(savedTicket.id);
+      ticket!.orderId = new mongoose.Types.ObjectId().toHexString();
+      await ticket!.save();
 
       await listener.onMessage(msg, data);
       expect(msg.ack).not.toHaveBeenCalled();
