@@ -1,6 +1,9 @@
-import { NatsTypes, objects } from '@msnr-ticketing-app/common';
+import { db, NatsTypes, objects } from '@msnr-ticketing-app/common';
 import { Message } from 'node-nats-streaming';
 import { QUEUE_GROUP_NAME } from '../../../constants/nats';
+import Ticket from '../../../db/models/ticket';
+import { DbModelTypes } from '../../../types/db/models';
+import TicketUpdatedPublisher from '../publishers/ticket-updated-publisher';
 
 class OrderCancelledListener extends objects.nats
   .Listener<NatsTypes.OrderCancelledEvent> {
@@ -21,11 +24,52 @@ class OrderCancelledListener extends objects.nats
     msg: Message,
     data: NatsTypes.OrderCancelledEventData
   ): Promise<
-    InstanceType<typeof objects.errors.DatabaseOperationError> | undefined
+    | InstanceType<typeof objects.errors.DatabaseOperationError>
+    | InstanceType<typeof objects.errors.EntityNotFoundError>
+    | InstanceType<typeof objects.errors.NatsError>
+    | undefined
   > {
     console.log(
-      `[tickets] NATS client ${process.env.NATS_CLIENT_ID} received event from order:created channel.`
+      `[tickets] NATS client ${process.env.NATS_CLIENT_ID} received event from order:cancelled channel.`
     );
+
+    const {
+      ticket: { id: ticketId },
+    } = data;
+
+    const [ticket, findTicketError] = await db.helpers.findById<
+      DbModelTypes.TicketDocument,
+      DbModelTypes.TicketModel
+    >({
+      Model: Ticket,
+      id: ticketId,
+      errorMessage: `There was an error finding ticket with ID ${ticketId}.`,
+    });
+    if (findTicketError) return findTicketError;
+    if (!ticket)
+      return new objects.errors.EntityNotFoundError(
+        'ticket',
+        `Ticket with ID ${ticketId} was not found in the database.`
+      );
+
+    ticket.orderId = undefined;
+
+    const [updatedTicket, updateTicketError] =
+      await db.helpers.save<DbModelTypes.TicketDocument>({
+        document: ticket,
+        errorMessage: `There was an error un-reserving ticket with ID ${ticketId}.`,
+      });
+    if (updateTicketError) return updateTicketError;
+
+    const natsError = await new TicketUpdatedPublisher(this.client).publish({
+      id: updatedTicket.id,
+      title: updatedTicket.title,
+      price: updatedTicket.price,
+      userId: updatedTicket.userId,
+      version: updatedTicket.version,
+    });
+    if (natsError) return natsError;
+
     return undefined;
   }
 }
