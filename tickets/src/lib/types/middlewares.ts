@@ -7,4 +7,8 @@ export namespace MiddlewareTypes {
     ['jwt/user-data']?: JwtTypes.UserData;
     ticket?: DbModelTypes.TicketDocument;
   }
+  export interface IsTicketUnreservedExtendedRequest extends Request {
+    ['jwt/user-data']?: JwtTypes.UserData;
+    ticket?: DbModelTypes.TicketDocument;
+  }
 }

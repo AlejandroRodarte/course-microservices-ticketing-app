@@ -15,6 +15,7 @@ router.put(
   checkSchema(ticketsSchemas.updateTicket),
   routes.middlewares.validation.validateRequest,
   middlewares.auth.isTicketOwnedByUser,
+  middlewares.auth.isTicketUnreserved,
   handlers.put
 );
 

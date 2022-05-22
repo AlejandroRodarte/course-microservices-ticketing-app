@@ -6,6 +6,7 @@ import NewTicketData from '../../../../../../src/lib/objects/data/new-ticket-dat
 import UpdateTicketData from '../../../../../../src/lib/objects/data/update-ticket-data';
 import cookies from '../../../../../lib/cookies';
 import stanSingleton from '../../../../../../src/lib/objects/nats/stan-singleton';
+import Ticket from '../../../../../../src/lib/db/models/ticket';
 
 const routes = {
   newTicket: '/tickets',
@@ -292,6 +293,83 @@ describe('Tests for the PUT /tickets/:id endpoint.', () => {
 
       expect(applicationResponse.status).toBe(404);
       expect(applicationResponse.code).toBe('ENTITY_NOT_FOUND_ERROR');
+    });
+
+    it('Should return a 400/BAD_ENTITY_ERROR with the correct message if the ticket is reserved.', async () => {
+      // 1. get user cookie
+      const [, cookie] = cookies.helpers.createUserAndCookie();
+
+      // 2. create new ticket
+      const newTicketRequestBody = {
+        data: {
+          newTicket: {
+            title: 'New event',
+            price: 30,
+          },
+        },
+      };
+      const newTicketResponse = await request(app)
+        .post(routes.newTicket)
+        .set('Cookie', cookie)
+        .send(newTicketRequestBody)
+        .expect(200);
+      const newTicketApplicationResponse =
+        newTicketResponse.body as ApplicationResponseTypes.Body<
+          NewTicketData,
+          undefined
+        >;
+
+      // 3. get saved ticket and emulate order:created effect by assigning orderId
+      const newTicket = await Ticket.findById(
+        newTicketApplicationResponse.data.newTicket.id
+      );
+      const orderId = new mongoose.Types.ObjectId().toHexString();
+      newTicket!.orderId = orderId;
+      await newTicket!.save();
+
+      // 4. request to update reserved ticket
+      const updateTicketRequestBody = {
+        data: {
+          ticketUpdates: {
+            title: 'New event 2',
+            price: 50,
+          },
+        },
+      };
+      const response = await request(app)
+        .put(
+          routes.updateTicket.withId(
+            newTicketApplicationResponse.data.newTicket.id
+          )
+        )
+        .send(updateTicketRequestBody)
+        .set('Cookie', cookie)
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          undefined,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+
+      // 5. expect BAD_ENTITY_ERROR with correct message
+      expect(applicationResponse.status).toBe(400);
+      expect(applicationResponse.code).toBe('BAD_ENTITY_ERROR');
+      const [error] = applicationResponse.error.errors;
+      expect(error.message).toBe(
+        `Ticket with ID ${newTicketApplicationResponse.data.newTicket.id} can not be edited as it is currently reserved by order with ID ${orderId}.`
+      );
+
+      // 6. expect ticket to have un-updated data
+      const unUpdatedTicket = await Ticket.findById(
+        newTicketApplicationResponse.data.newTicket.id
+      );
+      expect(unUpdatedTicket!.title).toBe(
+        newTicketRequestBody.data.newTicket.title
+      );
+      expect(unUpdatedTicket!.price).toBe(
+        newTicketRequestBody.data.newTicket.price
+      );
+      expect(unUpdatedTicket!.version).toBe(newTicket?.version);
     });
   });
 });
