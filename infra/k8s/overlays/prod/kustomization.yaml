@@ -33,14 +33,14 @@ images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod
   newTag: 34f1d42
+- name: rodarte/msnr-ta-expiration-prod
+  newName: rodarte/msnr-ta-expiration-prod
+  newTag: 08acb37
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
   newTag: 04398b2
 - name: rodarte/msnr-ta-orders-prod
   newName: rodarte/msnr-ta-orders-prod
-  newTag: 34f1d42
-- name: rodarte/msnr-ta-expiration-prod
-  newName: rodarte/msnr-ta-expiration-prod
   newTag: 34f1d42
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
