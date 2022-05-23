@@ -1,0 +1,38 @@
+{
+  "name": "msnr-ta-expiration",
+  "version": "0.0.1",
+  "description": "Expiration microservice for a ticketing application",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node build/src/index.js",
+    "start:dev": "env-cmd -f ./config/.env.development ts-node-dev src/index.ts",
+    "test": "env-cmd -f ./config/.env.test jest --no-cache",
+    "test:watch": "env-cmd -f ./config/.env.test jest --watchAll --no-cache"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./tests/setup.ts"
+    ],
+    "modulePathIgnorePatterns": [
+      "build"
+    ]
+  },
+  "keywords": [],
+  "author": "Alejandro Rodarte",
+  "license": "ISC",
+  "dependencies": {
+    "@msnr-ticketing-app/common": "^0.0.34"
+  },
+  "devDependencies": {
+    "@types/bull": "^3.15.8",
+    "@types/jest": "^27.5.1",
+    "env-cmd": "^10.1.0",
+    "jest": "^28.1.0",
+    "ts-jest": "^28.0.2",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.4"
+  }
+}
