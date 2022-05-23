@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-redis-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: expiration-redis
+          image: redis:latest

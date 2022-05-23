@@ -11,10 +11,10 @@ spec:
           image: us.gcr.io/prime-byway-274602/msnr-ta-front-skaffold
           startupProbe:
             failureThreshold: 5
-            initialDelaySeconds: 15
+            initialDelaySeconds: 30
           readinessProbe:
             failureThreshold: 5
-            initialDelaySeconds: 20
+            initialDelaySeconds: 40
           livenessProbe:
             failureThreshold: 5
-            initialDelaySeconds: 25
+            initialDelaySeconds: 50

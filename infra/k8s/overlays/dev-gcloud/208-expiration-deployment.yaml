@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: expiration
+          image: us.gcr.io/prime-byway-274602/msnr-ta-expiration-skaffold
+          readinessProbe:
+            exec:
+              command:
+                - ts-node
+                - /node/src/healthcheck.ts
+            failureThreshold: 5
+            initialDelaySeconds: 45
+          livenessProbe:
+            exec:
+              command:
+                - ts-node
+                - /node/src/healthcheck.ts
+            failureThreshold: 5
+            initialDelaySeconds: 45

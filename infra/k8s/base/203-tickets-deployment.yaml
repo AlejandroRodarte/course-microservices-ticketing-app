@@ -61,17 +61,17 @@ spec:
             failureThreshold: 3
             tcpSocket:
               port: 3002
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 10
             successThreshold: 1
-            timeoutSeconds: 5
+            timeoutSeconds: 10
           readinessProbe:
             failureThreshold: 3
             httpGet:
               path: /tickets/health/healthz
               port: 3002
               scheme: HTTP
-            initialDelaySeconds: 10
+            initialDelaySeconds: 20
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 10
@@ -81,7 +81,7 @@ spec:
               path: /tickets/health/healthz
               port: 3002
               scheme: HTTP
-            initialDelaySeconds: 15
+            initialDelaySeconds: 30
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 10

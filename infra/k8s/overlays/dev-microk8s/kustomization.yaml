@@ -9,6 +9,7 @@ patchesStrategicMerge:
 - 104-common-configmap.yaml
 - 106-tickets-secret.yaml
 - 108-orders-secret.yaml
+- 110-expiration-secret.yaml
 - 200-auth-deployment.yaml
 - 201-auth-mongodb-deployment.yaml
 - 202-front-deployment.yaml
@@ -16,6 +17,8 @@ patchesStrategicMerge:
 - 204-tickets-mongodb-deployment.yaml
 - 206-orders-deployment.yaml
 - 207-orders-mongodb-deployment.yaml
+- 208-expiration-deployment.yaml
+- 209-expiration-redis-deployment.yaml
 - 900-ticketing-ingress.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patches:
@@ -39,6 +42,9 @@ images:
   newTag: f3f0cef
 - name: rodarte/msnr-ta-orders-skaffold
   newName: rodarte/msnr-ta-orders-skaffold
+  newTag: f3f0cef
+- name: rodarte/msnr-ta-expiration-skaffold
+  newName: rodarte/msnr-ta-expiration-skaffold
   newTag: f3f0cef
 - name: rodarte/msnr-ta-front-skaffold
   newName: rodarte/msnr-ta-front-skaffold

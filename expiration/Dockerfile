@@ -74,7 +74,7 @@ ENV NODE_ENV development
 WORKDIR /node/app
 
 # run healthcheck
-HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD node src/healthcheck.ts || exit 1
+HEALTHCHECK --interval=20s --timeout=30s --start-period=50s --retries=3 CMD ts-node /node/app/src/healthcheck.ts || exit 1
 
 # change to node user
 USER node
@@ -111,7 +111,7 @@ LABEL com.rodarte.msnr.ticketing.expiration.stage skaffold
 ENV NODE_ENV development
 
 # run healthcheck
-HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD node src/healthcheck.ts || exit 1
+HEALTHCHECK --interval=20s --timeout=30s --start-period=50s --retries=3 CMD ts-node /node/src/healthcheck.ts || exit 1
 
 # change to node user
 USER node
@@ -148,7 +148,7 @@ LABEL com.rodarte.msnr.ticketing.expiration.stage prod
 COPY --chown=node:node --from=build /node/build/src ./src
 
 # run healthcheck
-HEALTHCHECK --interval=10s --timeout=10s --start-period=10s --retries=3 CMD node src/healthcheck.js || exit 1
+HEALTHCHECK --interval=20s --timeout=30s --start-period=50s --retries=3 CMD node /node/src/healthcheck.js || exit 1
 
 # change to node user
 USER node

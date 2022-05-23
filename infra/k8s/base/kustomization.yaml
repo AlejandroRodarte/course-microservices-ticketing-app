@@ -12,6 +12,8 @@ resources:
   - 106-tickets-secret.yaml
   - 107-orders-configmap.yaml
   - 108-orders-secret.yaml
+  - 109-expiration-configmap.yaml
+  - 110-expiration-secret.yaml
   - 200-auth-deployment.yaml
   - 201-auth-mongodb-deployment.yaml
   - 202-front-deployment.yaml
@@ -20,6 +22,8 @@ resources:
   - 205-nats-deployment.yaml
   - 206-orders-deployment.yaml
   - 207-orders-mongodb-deployment.yaml
+  - 208-expiration-deployment.yaml
+  - 209-expiration-redis-deployment.yaml
   - 300-auth-service.yaml
   - 301-auth-mongodb-service.yaml
   - 302-front-service.yaml
@@ -28,4 +32,5 @@ resources:
   - 305-nats-service.yaml
   - 306-orders-service.yaml
   - 307-orders-mongodb-service.yaml
+  - 308-expiration-redis-service.yaml
   - 900-ticketing-ingress.yaml

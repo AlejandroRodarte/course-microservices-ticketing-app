@@ -32,6 +32,15 @@ profiles:
           docker:
             dockerfile: Dockerfile
             target: skaffold # build image based on skaffold-specific image
+        - image: localhost:32000/msnr-ta-expiration-skaffold
+          context: expiration # build image based on what is inside ./expiration
+          sync:
+            manual:
+              - src: src/***/*.ts # recompile when a .ts file inside ./expiration/src changes
+                dest: .
+          docker:
+            dockerfile: Dockerfile
+            target: skaffold # build image based on skaffold-specific image
         - image: localhost:32000/msnr-ta-front-skaffold
           context: client
           sync:
@@ -77,6 +86,15 @@ profiles:
           sync:
             manual:
               - src: src/**/*.ts # recompile when a .ts file inside ./orders/src changes
+                dest: .
+          docker:
+            dockerfile: Dockerfile
+            target: skaffold # build image based on skaffold-specific image
+        - image: us.gcr.io/prime-byway-274602/msnr-ta-expiration-skaffold
+          context: expiration # build image based on what is inside ./expiration
+          sync:
+            manual:
+              - src: src/**/*.ts # recompile when a .ts file inside ./expiration/src changes
                 dest: .
           docker:
             dockerfile: Dockerfile
