@@ -13,7 +13,7 @@ x-common-env-nats-variables: &common-env-nats-variables
 # base version of compose files
 services:
   auth:
-    image: rodarte/msnr-ta-auth-prod:ab44013 # use latest image built by CI/CD pipeline (prod stage)
+    image: rodarte/msnr-ta-auth-prod:34f1d42 # use latest image built by CI/CD pipeline (prod stage)
     ports:
       - '3000:3000' # publish port 3000 of container to port 3000 of virtual computer
     environment:
@@ -27,7 +27,7 @@ services:
   auth-mongodb:
     image: mongo:5.0
   tickets:
-    image: rodarte/msnr-ta-tickets-prod:ab44013
+    image: rodarte/msnr-ta-tickets-prod:34f1d42
     ports:
       - '3002:3002'
     environment:
@@ -43,7 +43,7 @@ services:
   tickets-mongodb:
     image: mongo:5.0
   orders:
-    image: rodarte/msnr-ta-orders-prod:04398b2
+    image: rodarte/msnr-ta-orders-prod:34f1d42
     ports:
       - '3003:3003'
     environment:

@@ -6,7 +6,7 @@ x-common-env-variables: &common-env-variables
 
 services:
   auth:
-    image: rodarte/msnr-ta-auth-dev:ab44013 # use latest image built by CI/CD pipeline (dev stage)
+    image: rodarte/msnr-ta-auth-dev:34f1d42 # use latest image built by CI/CD pipeline (dev stage)
     volumes:
       - ./auth:/node/app # dev stage sets WORKDIR on /node/app to bindmount local source code there
       - /node/app/node_modules # bind /node/app/node_modules to an empty volume (node_modules will be grabbed on parent folder: /node/node_modules)
@@ -15,7 +15,7 @@ services:
   auth-mongodb:
     image: mongo:latest
   tickets:
-    image: rodarte/msnr-ta-tickets-dev:ab44013
+    image: rodarte/msnr-ta-tickets-dev:34f1d42
     volumes:
       - ./tickets:/node/app
       - /node/app/node_modules
@@ -24,7 +24,7 @@ services:
   tickets-mongodb:
     image: mongo:latest
   orders:
-    image: rodarte/msnr-ta-orders-dev:04398b2
+    image: rodarte/msnr-ta-orders-dev:34f1d42
     volumes:
       - ./orders:/node/app
       - /node/app/node_modules
