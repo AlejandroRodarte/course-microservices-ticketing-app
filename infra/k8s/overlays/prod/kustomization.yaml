@@ -35,7 +35,7 @@ images:
   newTag: 34f1d42
 - name: rodarte/msnr-ta-expiration-prod
   newName: rodarte/msnr-ta-expiration-prod
-  newTag: 08acb37
+  newTag: 793c103
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
   newTag: 04398b2
