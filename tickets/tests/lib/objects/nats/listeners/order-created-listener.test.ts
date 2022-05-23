@@ -116,6 +116,9 @@ describe('Tests for the OrderCreatedListener object.', () => {
 
       await listener.onMessage(msg, data);
       expect(msg.ack).not.toHaveBeenCalled();
+
+      const unupdatedTicket = await Ticket.findById(savedTicket.id);
+      expect(unupdatedTicket?.orderId).toBe(ticket!.orderId);
     });
   });
 });

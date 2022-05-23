@@ -97,11 +97,16 @@ describe('Tests for the OrderCancelledListener object.', () => {
 
   describe('Failure cases', () => {
     it('Should not acknowledge the message if an unknown order requests to cancel a reserved ticket.', async () => {
-      const { listener, orderCancelledEventArray, msg } = await setup();
+      const { listener, orderCancelledEventArray, savedTicket, msg } =
+        await setup();
       const [, data] = orderCancelledEventArray;
 
       await listener.onMessage(msg, data);
       expect(msg.ack).not.toHaveBeenCalled();
+
+      const ticket = await Ticket.findById(savedTicket.id);
+      expect(ticket?.orderId).toBeDefined();
+      expect(ticket?.orderId).toBe(savedTicket.orderId);
     });
 
     it('Should not acknowledge the message if ticket does not exist.', async () => {
