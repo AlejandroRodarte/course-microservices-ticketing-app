@@ -30,7 +30,7 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod
-  newTag: ab44013
+  newTag: 34f1d42
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
   newTag: 04398b2
@@ -39,4 +39,4 @@ images:
   newTag: 34f1d42
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
-  newTag: ab44013
+  newTag: 34f1d42
