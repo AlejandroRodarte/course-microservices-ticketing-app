@@ -1,0 +1,226 @@
+# workflow for the expiration microservice
+name: expiration
+
+# run this workflow on all branches and pull requests, when changes inside ./expiration are present in the commit
+on:
+  push:
+    branches:
+      - '*'
+    paths:
+      - 'expiration/**'
+  pull_request:
+    branches:
+      - '*'
+    paths:
+      - 'expiration/**'
+
+jobs:
+  # job 1: prep variables that we will use in the other jobs
+  build-vars:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    # declare output names: short git hash and creation date
+    outputs:
+      sha-short: ${{ steps.vars.outputs.sha_short }}
+      created-date: ${{ steps.vars.outputs.created_date }}
+
+    steps:
+      # step 1 of job 1: checkout current commit
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      # step 2 of job 2: use bash to set output variables
+      - name: Get commit hash and date
+        id: vars
+        shell: bash
+        run: |
+          echo "::set-output name=sha_short::$(git log -1 --format="%h")"
+          echo "::set-output name=created_date::$(date "+%s")"
+
+  # job 2: run tests
+  test:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      
+      - name: Setup node env
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: ./expiration/package-lock.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        working-directory: expiration
+        run: npm ci
+
+      - name: Create .env.test file
+        working-directory: expiration
+        run: |
+          mkdir config
+          cd config
+          touch .env.test
+
+      - name: Run tests
+        working-directory: expiration
+        run: npm run test
+
+  # job 3: build Docker image for multiple stages
+  build:
+    runs-on: ${{ matrix.os }}
+    needs: [build-vars, test]
+
+    # only runs when pushing/making a pull request to the master or development branch
+    if: ${{ (github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/development')) || (github.event_name == 'pull_request' && (github.base_ref == 'master' || github.base_ref == 'development')) }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+
+      # step 1 of job 2: checkout current commit
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      # step 2 of job 2: get version from ./expiration/package.json to use as image tag in a future step
+      - name: Get npm package version
+        uses: martinbeentjes/npm-get-version-action@master
+        id: package-version
+        with:
+          path: ./expiration
+
+      # step 3 of job 2: login to DockerHub where we will push the images to build
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # steps 4-6 of job 2: Setup buildx for all of our Dockerfile stages (prod/dev/skaffold)
+      - name: Setup production buildx
+        uses: docker/setup-buildx-action@v2
+        id: prodbuilder
+
+      - name: Setup development buildx
+        uses: docker/setup-buildx-action@v2
+        id: devbuilder
+
+      - name: Setup skaffold buildx
+        uses: docker/setup-buildx-action@v2
+        id: skaffoldbuilder
+
+      # steps 7-9: build images for each stage with correct build args
+      # three tags to implement on each image:
+      # 1. latest
+      # 2. short commit hash
+      # 3. package.json version number
+      - name: Build against prodbuilder
+        uses: docker/build-push-action@v3
+        with:
+          context: ./expiration
+          push: true
+          builder: ${{ steps.prodbuilder.output.name }}
+          target: prod
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-expiration-prod:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-expiration-prod:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-expiration-prod:latest
+
+      - name: Build against devbuilder
+        uses: docker/build-push-action@v3
+        with:
+          context: ./expiration
+          push: true
+          builder: ${{ steps.devbuilder.output.name }}
+          target: dev
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-expiration-dev:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-expiration-dev:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-expiration-dev:latest
+
+      - name: Build against skaffoldbuilder
+        uses: docker/build-push-action@v3
+        with:
+          context: ./expiration
+          push: true
+          builder: ${{ steps.skaffoldbuilder.output.name }}
+          target: skaffold
+          build-args: |
+            SOURCE_COMMIT=${{ github.sha }}
+            CREATED_DATE=${{ needs.build-vars.outputs.created-date }}
+          tags: |
+            rodarte/msnr-ta-expiration-skaffold:${{ needs.build-vars.outputs.sha-short }}
+            rodarte/msnr-ta-expiration-skaffold:${{ steps.package-version.outputs.current-version }}
+            rodarte/msnr-ta-expiration-skaffold:latest
+
+  # job 4: edit ./infra/k8s/overlays/prod/kustomization.yaml file to recently created tag for
+  # continuous deployment to ArgoCD
+  deploy:
+    runs-on: ${{ matrix.os }}
+    needs: [build-vars, test, build]
+
+    # only execute this job when pushing to master
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      # step 1 of job 3: checkout to current commit
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      # step 2 of job 3: use kustomize
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v1
+        with:
+          kustomize-version: "3.6.1"
+
+      # step 3 of job 3: update file to implement prod image built on job 2
+      - name: Update Kubernetes resources
+        run: |
+          cd infra/k8s/overlays/prod
+          kustomize edit set image rodarte/msnr-ta-expiration-prod=rodarte/msnr-ta-expiration-prod:${{ needs.build-vars.outputs.sha-short }}
+          cat kustomization.yaml
+
+      # step 4 of job 3: commit changes as GitHub Actions user
+      - name: Commit kustomization.yaml file
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git config --local pull.rebase false
+          git commit -am "Bump rodarte/msnr-ta-expiration-prod tag to ${{ needs.build-vars.outputs.sha-short }}"
+          git pull --no-edit origin master
+
+      # step 5 of job 3: push changes to GitHub
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
