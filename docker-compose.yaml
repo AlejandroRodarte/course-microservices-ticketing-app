@@ -59,6 +59,19 @@ services:
       - orders-mongodb
   orders-mongodb:
     image: mongo:5.0
+  expiration:
+    image: rodarte/msnr-ta-expiration-prod:08acb37
+    environment:
+      <<: *common-env-variables
+      <<: *common-env-nats-variables
+      NATS_CLIENT_ID: expiration
+      REDIS_HOST_FILE_PATH: /run/secrets/redis_host
+    secrets:
+      - redis_host
+    depends_on:
+      - expiration-redis
+  expiration-redis:
+    image: redis:7.0
   front:
     image: rodarte/msnr-ta-front-prod:04398b2
     ports:
@@ -95,5 +108,7 @@ secrets:
     file: ./secrets/docker/tickets/mongodb-url.txt
   orders_mongodb_url:
     file: ./secrets/docker/orders/mongodb-url.txt
+  redis_host:
+    file: ./secrets/docker/expiration/redis-host.txt
   jwt_secret:
     file: ./secrets/docker/common/jwt-secret.txt

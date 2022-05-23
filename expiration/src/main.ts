@@ -1,7 +1,13 @@
+import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
 import stanSingleton from './lib/objects/nats/stan-singleton';
 import { MainTypes } from './lib/types/main';
 
 const start: MainTypes.MainFunction = async () => {
+  if (
+    ['production-docker', 'development-docker'].includes(process.env.NODE_ENV!)
+  )
+    setFromDockerSecrets();
+
   const natsError = await stanSingleton.connect();
   if (natsError) return [undefined, natsError];
   console.log(

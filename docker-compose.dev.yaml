@@ -32,6 +32,15 @@ services:
       <<: *common-env-variables
   orders-mongodb:
     image: mongo:latest
+  expiration:
+    image: rodarte/msnr-ta-expiration-dev:08acb37
+    volumes:
+      - ./expiration:/node/app
+      - /node/app/node_modules
+    environment:
+      <<: *common-env-variables
+  expiration-redis:
+    image: redis:latest
   front:
     image: rodarte/msnr-ta-front-dev:04398b2
     volumes:
