@@ -73,7 +73,7 @@ services:
   expiration-redis:
     image: redis:7.0
   payments:
-    image: rodarte/msnr-ta-payments-prod:073368d
+    image: rodarte/msnr-ta-payments-prod:cb566e7
     ports:
       - '3004:3004'
     environment:

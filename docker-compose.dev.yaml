@@ -42,7 +42,7 @@ services:
   expiration-redis:
     image: redis:latest
   payments:
-    image: rodarte/msnr-ta-payments-dev:073368d
+    image: rodarte/msnr-ta-payments-dev:cb566e7
     volumes:
       - ./payments:/node/app
       - /node/app/node_modules
