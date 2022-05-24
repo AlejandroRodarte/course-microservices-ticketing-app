@@ -60,7 +60,7 @@ services:
   orders-mongodb:
     image: mongo:5.0
   expiration:
-    image: rodarte/msnr-ta-expiration-prod:250e673
+    image: rodarte/msnr-ta-expiration-prod:5ec1781
     environment:
       <<: *common-env-variables
       <<: *common-env-nats-variables

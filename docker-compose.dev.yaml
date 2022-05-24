@@ -33,7 +33,7 @@ services:
   orders-mongodb:
     image: mongo:latest
   expiration:
-    image: rodarte/msnr-ta-expiration-dev:250e673
+    image: rodarte/msnr-ta-expiration-dev:5ec1781
     volumes:
       - ./expiration:/node/app
       - /node/app/node_modules
