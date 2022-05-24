@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: orders-mongodb-deployment
+  name: payments-mongodb-deployment
   namespace: ticketing
 spec:
   template:
     spec:
       containers:
-        - name: orders-mongodb
+        - name: payments-mongodb
           image: mongo:latest

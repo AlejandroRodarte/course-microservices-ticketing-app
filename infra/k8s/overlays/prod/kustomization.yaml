@@ -10,11 +10,13 @@ patchesStrategicMerge:
 - 106-tickets-secret.yaml
 - 108-orders-secret.yaml
 - 110-expiration-secret.yaml
+- 112-payments-secret.yaml
 - 200-auth-deployment.yaml
 - 202-front-deployment.yaml
 - 203-tickets-deployment.yaml
 - 206-orders-deployment.yaml
 - 208-expiration-deployment.yaml
+- 210-payments-deployment.yaml
 - 900-ticketing-ingress.yaml
 # patch 900-ticketing-ingress.yaml resource with the hosts.yaml file
 patchesJson6902:
@@ -44,4 +46,7 @@ images:
   newTag: 2fe6e9e
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
+  newTag: 250e673
+- name: rodarte/msnr-ta-payments-prod
+  newName: rodarte/msnr-ta-payments-prod
   newTag: 250e673

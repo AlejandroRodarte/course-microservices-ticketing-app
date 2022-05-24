@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: payments
+          image: us.gcr.io/prime-byway-274602/msnr-ta-payments-skaffold
+          env:
+            - name: FORCE_INSECURE_COOKIE
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: FORCE_INSECURE_COOKIE
+          startupProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 20
+          readinessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 30
+          livenessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 40

@@ -72,6 +72,22 @@ services:
       - expiration-redis
   expiration-redis:
     image: redis:7.0
+  payments:
+    image: rodarte/msnr-ta-payments-prod:latest
+    ports:
+      - '3004:3004'
+    environment:
+      <<: *common-env-variables
+      <<: *common-env-nats-variables
+      NATS_CLIENT_ID: payments
+      MONGODB_URL_FILE_PATH: /run/secrets/payments_mongodb_url
+    secrets:
+      - payments_mongodb_url
+      - jwt_secret
+    depends_on:
+      - payments-mongodb
+  payments-mongodb:
+    image: mongo:5.0
   front:
     image: rodarte/msnr-ta-front-prod:04398b2
     ports:
@@ -85,6 +101,8 @@ services:
       NEXT_PUBLIC_TICKETS_MICROSERVICE_PORT: 3002
       ORDERS_MICROSERVICE_NAME: orders
       NEXT_PUBLIC_ORDERS_MICROSERVICE_PORT: 3003
+      PAYMENTS_MICROSERVICE_NAME: payments
+      NEXT_PUBLIC_PAYMENTS_MICROSERVICE_PORT: 3004
   nats:
     image: nats-streaming:0.24.5
     command:
@@ -108,6 +126,8 @@ secrets:
     file: ./secrets/docker/tickets/mongodb-url.txt
   orders_mongodb_url:
     file: ./secrets/docker/orders/mongodb-url.txt
+  payments_mongodb_url:
+    file: ./secrets/docker/payments/mongodb-url.txt
   redis_host:
     file: ./secrets/docker/expiration/redis-host.txt
   jwt_secret:

@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+      namespace: ticketing
+    spec:
+      containers:
+        - name: payments
+          image: rodarte/msnr-ta-payments-prod
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: NODE_ENV
+            - name: CORS_ORIGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: CORS_ORIGIN
+            - name: COOKIE_SESSION_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: COOKIE_SESSION_DOMAIN
+            - name: NATS_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: NATS_CLUSTER_ID
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: common-configmap
+                  key: NATS_SERVER_URL
+            - name: MONGODB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: payments-secret
+                  key: MONGODB_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: common-secret
+                  key: JWT_SECRET
+          startupProbe:
+            failureThreshold: 3
+            tcpSocket:
+              port: 3004
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /payments/health/healthz
+              port: 3004
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /payments/health/healthz
+              port: 3004
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10

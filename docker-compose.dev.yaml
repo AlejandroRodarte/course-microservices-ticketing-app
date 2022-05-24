@@ -41,6 +41,15 @@ services:
       <<: *common-env-variables
   expiration-redis:
     image: redis:latest
+  payments:
+    image: rodarte/msnr-ta-payments-dev:latest
+    volumes:
+      - ./payments:/node/app
+      - /node/app/node_modules
+    environment:
+      <<: *common-env-variables
+  payments-mongodb:
+    image: mongo:latest
   front:
     image: rodarte/msnr-ta-front-dev:04398b2
     volumes:

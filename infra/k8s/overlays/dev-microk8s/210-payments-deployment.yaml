@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-deployment
+  namespace: ticketing
+spec:
+  template:
+    spec:
+      containers:
+        - name: payments
+          image: localhost:32000/msnr-ta-payments-skaffold
+          startupProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 20
+          readinessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 30
+          livenessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 40

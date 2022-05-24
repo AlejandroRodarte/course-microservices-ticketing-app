@@ -23,6 +23,12 @@ metadata:
   namespace: ticketing
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: expiration-configmap
+  namespace: ticketing
+---
+apiVersion: v1
 data:
   AUTH_MICROSERVICE_NAME: auth-service
   AUTH_MICROSERVICE_PORT: "3000"
@@ -36,9 +42,17 @@ metadata:
   namespace: ticketing
 ---
 apiVersion: v1
+data:
+  EXPIRATION_WINDOW_SECONDS: "900"
 kind: ConfigMap
 metadata:
   name: orders-configmap
+  namespace: ticketing
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payments-configmap
   namespace: ticketing
 ---
 apiVersion: v1
@@ -75,6 +89,21 @@ spec:
     targetPort: 3000
   selector:
     app: auth
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expiration-redis-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: db
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: expiration-redis
   type: ClusterIP
 ---
 apiVersion: v1
@@ -139,6 +168,36 @@ spec:
     targetPort: 3003
   selector:
     app: orders
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-mongodb-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: db
+    port: 27017
+    protocol: TCP
+    targetPort: 27017
+  selector:
+    app: payments-mongodb
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-service
+  namespace: ticketing
+spec:
+  ports:
+  - name: payments
+    port: 3004
+    protocol: TCP
+    targetPort: 3004
+  selector:
+    app: payments
   type: ClusterIP
 ---
 apiVersion: v1
@@ -221,7 +280,7 @@ spec:
             path: /auth/health/healthz
             port: 3000
             scheme: HTTP
-          initialDelaySeconds: 20
+          initialDelaySeconds: 40
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -232,18 +291,18 @@ spec:
             path: /auth/health/healthz
             port: 3000
             scheme: HTTP
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
         startupProbe:
           failureThreshold: 5
-          initialDelaySeconds: 10
+          initialDelaySeconds: 20
           periodSeconds: 10
           successThreshold: 1
           tcpSocket:
             port: 3000
-          timeoutSeconds: 5
+          timeoutSeconds: 10
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -264,6 +323,91 @@ spec:
       containers:
       - image: mongo:latest
         name: auth-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+      namespace: ticketing
+    spec:
+      containers:
+      - env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: common-configmap
+        - name: NATS_CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_CLUSTER_ID
+              name: common-configmap
+        - name: NATS_CLIENT_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NATS_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_SERVER_URL
+              name: common-configmap
+        - name: REDIS_HOST
+          valueFrom:
+            secretKeyRef:
+              key: REDIS_HOST
+              name: expiration-secret
+        image: localhost:32000/msnr-ta-expiration-skaffold
+        livenessProbe:
+          exec:
+            command:
+            - ts-node
+            - /node/src/healthcheck.ts
+          failureThreshold: 5
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 45
+        name: expiration
+        readinessProbe:
+          exec:
+            command:
+            - ts-node
+            - /node/src/healthcheck.ts
+          failureThreshold: 5
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 45
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-redis-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration-redis
+  template:
+    metadata:
+      labels:
+        app: expiration-redis
+      namespace: ticketing
+    spec:
+      containers:
+      - image: redis:latest
+        name: expiration-redis
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -310,7 +454,7 @@ spec:
             path: /api/health/healthz
             port: 3001
             scheme: HTTP
-          initialDelaySeconds: 25
+          initialDelaySeconds: 50
           periodSeconds: 15
           successThreshold: 1
           timeoutSeconds: 20
@@ -321,18 +465,18 @@ spec:
             path: /api/health/healthz
             port: 3001
             scheme: HTTP
-          initialDelaySeconds: 20
+          initialDelaySeconds: 40
           periodSeconds: 15
           successThreshold: 1
           timeoutSeconds: 20
         startupProbe:
           failureThreshold: 5
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 15
           successThreshold: 1
           tcpSocket:
             port: 3001
-          timeoutSeconds: 5
+          timeoutSeconds: 10
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -415,6 +559,11 @@ spec:
             configMapKeyRef:
               key: NATS_SERVER_URL
               name: common-configmap
+        - name: EXPIRATION_WINDOW_SECONDS
+          valueFrom:
+            configMapKeyRef:
+              key: EXPIRATION_WINDOW_SECONDS
+              name: orders-configmap
         - name: MONGODB_URL
           valueFrom:
             secretKeyRef:
@@ -432,7 +581,7 @@ spec:
             path: /orders/health/healthz
             port: 3003
             scheme: HTTP
-          initialDelaySeconds: 20
+          initialDelaySeconds: 40
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -443,18 +592,18 @@ spec:
             path: /orders/health/healthz
             port: 3003
             scheme: HTTP
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
         startupProbe:
           failureThreshold: 5
-          initialDelaySeconds: 10
+          initialDelaySeconds: 20
           periodSeconds: 10
           successThreshold: 1
           tcpSocket:
             port: 3003
-          timeoutSeconds: 5
+          timeoutSeconds: 10
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -473,8 +622,116 @@ spec:
       namespace: ticketing
     spec:
       containers:
-      - image: mongo:5.0
+      - image: mongo:latest
         name: orders-mongodb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+      namespace: ticketing
+    spec:
+      containers:
+      - env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_ENV
+              name: common-configmap
+        - name: CORS_ORIGIN
+          valueFrom:
+            configMapKeyRef:
+              key: CORS_ORIGIN
+              name: common-configmap
+        - name: COOKIE_SESSION_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: COOKIE_SESSION_DOMAIN
+              name: common-configmap
+        - name: NATS_CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_CLUSTER_ID
+              name: common-configmap
+        - name: NATS_CLIENT_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NATS_SERVER_URL
+          valueFrom:
+            configMapKeyRef:
+              key: NATS_SERVER_URL
+              name: common-configmap
+        - name: MONGODB_URL
+          valueFrom:
+            secretKeyRef:
+              key: MONGODB_URL
+              name: payments-secret
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: JWT_SECRET
+              name: common-secret
+        image: localhost:32000/msnr-ta-payments-skaffold
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /payments/health/healthz
+            port: 3004
+            scheme: HTTP
+          initialDelaySeconds: 40
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: payments
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /payments/health/healthz
+            port: 3004
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        startupProbe:
+          failureThreshold: 5
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 3004
+          timeoutSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-mongodb-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments-mongodb
+  template:
+    metadata:
+      labels:
+        app: payments-mongodb
+      namespace: ticketing
+    spec:
+      containers:
+      - image: mongo:latest
+        name: payments-mongodb
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -540,7 +797,7 @@ spec:
             path: /tickets/health/healthz
             port: 3002
             scheme: HTTP
-          initialDelaySeconds: 20
+          initialDelaySeconds: 40
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
@@ -551,18 +808,18 @@ spec:
             path: /tickets/health/healthz
             port: 3002
             scheme: HTTP
-          initialDelaySeconds: 15
+          initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 10
         startupProbe:
           failureThreshold: 5
-          initialDelaySeconds: 10
+          initialDelaySeconds: 20
           periodSeconds: 10
           successThreshold: 1
           tcpSocket:
             port: 3002
-          timeoutSeconds: 5
+          timeoutSeconds: 10
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -613,6 +870,19 @@ spec:
 apiVersion: bitnami.com/v1alpha1
 kind: SealedSecret
 metadata:
+  name: expiration-secret
+  namespace: ticketing
+spec:
+  encryptedData:
+    REDIS_HOST: AgCJNkHwJ8/lOAaygkVTDvK+gqFYeoSnwREdi8EdQzdU5ix1x3UsHg3ohsQTbPrGRLYC9z26v5NGvZldvFHVD7F7qhKFw6cQvQWRf/fsVQrkAvFdzK7AvCAHdNHtu1JUIo9oMbi9KyttMMkJJIckMY+fH17YWdextccnAF4mK597dgtaVQ/UjopfBAgOH8RSUqb6yKQR0W2A9HO/JXNqrx9+gHNKlqLFDUYbqI4x0ozAvIfcf9vJjNetjYW2mB7p7uEtwvV9EN3jGx9UKAoDn39suHPZS8RGgCzXOzU74m4IdkmQK9VTzlr746iZJE6bADVIRzGIZ05Yi+95ITOTeYdESStUhPxolgFHeaslYGIWcbpOA0riu98mVTl+fAfNrN1QJlRwhv8OUUxtEYYrvR9OYca0pTvW/PaUUmSaaG2uzCrvWuDHS67/HQzeYvz18b74T2Y5Pjb7/qnANcWO9caGEFmaRyohyAkowi3A336H42Ag8HSfDGwfms9tOG5R5PZ/1fXVqID5ATWQQinUh1d+dtW8xLlc3nQ+yAoufY/sx3eEmPdSACbU1v8kDdmzyyZXgGncJg6rokKKX2c9ySXGq3fVzT0/r8JspljKMVEFsuPhqLskeGusR6/CSNkdcTdB9F7E6t+45NONsrI3iyHXT8uIHziklEAsqO2tL7Sa1Jp7w2UzL6pM44cUAipdELqd8LwF5HPgcwX8nip0KDBZxV/dWaPDETY=
+  template:
+    metadata:
+      name: expiration-secret
+      namespace: ticketing
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
   name: orders-secret
   namespace: ticketing
 spec:
@@ -621,6 +891,19 @@ spec:
   template:
     metadata:
       name: orders-secret
+      namespace: ticketing
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: payments-secret
+  namespace: ticketing
+spec:
+  encryptedData:
+    MONGODB_URL: AgAa8fGtPh1mVG3S0xaLSUSP0r7zNyMCEKp0uLwTA9SwlPhLibRTktRv2uPARjTj0qGdesQ7hhoPRoz7NuqIvuMflAGL4ZRt8KXv3XrdVluhfzDN7wPUd0L2fFgzIhlHI67NNOhKdIIOb/irOPfesn/aBbC5VDdIc/rDECYr7HJIhF4vAJ+i/SY+MuIK5z2TflE+0NZrY/J8qxRNxfXv1A1DorwxY7/4+4NiSMxWMc32fR7Aso2MDPOcgsbCwRKVEXw3RSSZYlSFaxh0QqJ41PH789Q2jCn+vn0W5xBEoTrCAacXcZAGBP+TVI1MTSw4GHFaHHpNKHnT4V9Q8AsGHHwQFyGXZl2dLmDnjFXyVCE4JkyGAU1spk1Lb17bR2jL3l97QxklQrW8Z/wxRLcQ9CLnkxDgMuaJuU9EU3Wa+agPNk6gXvHT8PSwm6a01UOi3RnQCWlz3WVcm+084TmieD/I8Nd+yTBoQwzeObZLiKWN7E6Dstg223iqoLf3vbrGBEqzTOLJco04J+B15WTJABZo2c+608ui6MNLj5g4SlUo/QU/U68UeflHSrm1uRMjU7W+7nmRN3zDO8c8NnkkHpWXvX1abpqSn2cDcCD2w69cz/cz00CHqIq1d92LHizGnGlEzVJ0g+Ezuwv3KeysvB8QEEaJL/raHdaNQ51jGoBFJ/aFF1U3FzaV4BbKIEIELGBxeQ8/0FlcZkKMDe4oUj3UwC4iNs7lItQYrvFxEaQ/kxNb7tI/T4mMgVitBLEjgVC5VczrszzKEUs=
+  template:
+    metadata:
+      name: payments-secret
       namespace: ticketing
 ---
 apiVersion: bitnami.com/v1alpha1
@@ -667,6 +950,13 @@ spec:
             port:
               number: 3003
         path: /orders
+        pathType: Prefix
+      - backend:
+          service:
+            name: payments-service
+            port:
+              number: 3004
+        path: /payments
         pathType: Prefix
   - host: ticketing.10.64.140.43.nip.io
     http:

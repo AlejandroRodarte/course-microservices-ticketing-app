@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-mongodb-deployment
+  namespace: ticketing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments-mongodb
+  template:
+    metadata:
+      labels:
+        app: payments-mongodb
+      namespace: ticketing
+    spec:
+      containers:
+        - name: payments-mongodb
+          image: mongo:5.0
