@@ -28,12 +28,16 @@ class OrderCreatedListener extends objects.nats
       `[expiration] NATS client ${process.env.NATS_CLIENT_ID} received event from order:created channel.`
     );
 
-    const { id: orderId } = data;
+    const { id: orderId, expiresAt } = data;
+    const delay = new Date(expiresAt).getTime() - new Date().getTime();
 
     const bullError =
       await bullHelpers.add<BullQueueTypes.OrderExpirationJobPayload>({
         queue: expirationQueue,
         payload: { orderId },
+        opts: {
+          delay,
+        },
         errorMessage: `There was an error adding order:expiration job to database for order with ID ${orderId}.`,
       });
     if (bullError) return bullError;

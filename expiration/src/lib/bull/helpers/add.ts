@@ -5,9 +5,10 @@ async function add<PayloadType>({
   queue,
   payload,
   errorMessage,
+  opts,
 }: BullHelperTypes.AddArgs<PayloadType>): BullHelperTypes.AddReturns {
   try {
-    await queue.add(payload);
+    await queue.add(payload, opts);
     return undefined;
   } catch (e) {
     return new objects.errors.LibraryError('bull', errorMessage);
