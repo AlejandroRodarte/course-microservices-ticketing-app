@@ -1,4 +1,5 @@
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
+import OrderCreatedListener from './lib/objects/nats/listeners/order-created-listener';
 import stanSingleton from './lib/objects/nats/stan-singleton';
 import { MainTypes } from './lib/types/main';
 
@@ -16,6 +17,8 @@ const start: MainTypes.MainFunction = async () => {
 
   const [stan, stanUnconnectedError] = stanSingleton.stan;
   if (stanUnconnectedError) return [undefined, stanUnconnectedError];
+
+  new OrderCreatedListener(stan!).listen();
 
   return [true, undefined];
 };

@@ -1,6 +1,9 @@
 import { NatsTypes, objects } from '@msnr-ticketing-app/common';
 import { Message } from 'node-nats-streaming';
+import bullHelpers from '../../../bull/helpers';
+import expirationQueue from '../../../bull/queues/expiration-queue';
 import { QUEUE_GROUP_NAME } from '../../../constants/nats';
+import { BullQueueTypes } from '../../../types/bull/queues';
 
 class OrderCreatedListener extends objects.nats
   .Listener<NatsTypes.OrderCreatedEvent> {
@@ -13,14 +16,30 @@ class OrderCreatedListener extends objects.nats
     msg: Message,
     data: NatsTypes.OrderCreatedEventData
   ): Promise<void> {
-    await this.exec(msg, data);
-    msg.ack();
+    const error = await this.exec(msg, data);
+    if (!error) msg.ack();
   }
 
   private async exec(
     msg: Message,
     data: NatsTypes.OrderCreatedEventData
-  ): Promise<void> {}
+  ): Promise<InstanceType<typeof objects.errors.LibraryError> | undefined> {
+    console.log(
+      `[expiration] NATS client ${process.env.NATS_CLIENT_ID} received event from order:created channel.`
+    );
+
+    const { id: orderId } = data;
+
+    const bullError =
+      await bullHelpers.add<BullQueueTypes.OrderExpirationJobPayload>({
+        queue: expirationQueue,
+        payload: { orderId },
+        errorMessage: `There was an error adding order:expiration job to database for order with ID ${orderId}.`,
+      });
+    if (bullError) return bullError;
+
+    return undefined;
+  }
 }
 
 export default OrderCreatedListener;

@@ -65,6 +65,9 @@ class OrderCancelledListener extends objects.nats
       });
     if (updateTicketError) return updateTicketError;
 
+    console.log(
+      `[tickets] NATS client ${process.env.NATS_CLIENT_ID} emitting event to ticket:updated channel.`
+    );
     const natsError = await new TicketUpdatedPublisher(this.client).publish({
       id: updatedTicket.id,
       title: updatedTicket.title,
