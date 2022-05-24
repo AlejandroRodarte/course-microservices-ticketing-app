@@ -1,6 +1,7 @@
 import { db } from '@msnr-ticketing-app/common';
 import app from './app';
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
+import ExpirationCompleteListener from './lib/objects/nats/listeners/expiration-complete-listener';
 import TicketCreatedListener from './lib/objects/nats/listeners/ticket-created-listener';
 import TicketUpdatedListener from './lib/objects/nats/listeners/ticket-updated-listener';
 import stanSingleton from './lib/objects/nats/stan-singleton';
@@ -39,6 +40,7 @@ const start: MainTypes.MainFunction = async () => {
 
   new TicketCreatedListener(stan!).listen();
   new TicketUpdatedListener(stan!).listen();
+  new ExpirationCompleteListener(stan!).listen();
 
   const server = app.listen(port, () => {
     console.log(`[orders] Orders microservice launched on port ${port}`);
