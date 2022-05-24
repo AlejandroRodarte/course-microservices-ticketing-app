@@ -7,4 +7,5 @@ const setFromDockerSecrets = () => {
   process.env.REDIS_HOST = redisHost;
 };
 
-export default setFromDockerSecrets;
+if (['production-docker', 'development-docker'].includes(process.env.NODE_ENV!))
+  setFromDockerSecrets();
