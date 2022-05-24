@@ -24,7 +24,7 @@
   "author": "Alejandro Rodarte",
   "license": "ISC",
   "dependencies": {
-    "@msnr-ticketing-app/common": "^0.0.36",
+    "@msnr-ticketing-app/common": "^0.0.37",
     "bull": "^4.8.3"
   },
   "devDependencies": {
