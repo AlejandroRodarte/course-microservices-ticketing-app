@@ -15,7 +15,7 @@ services:
   auth-mongodb:
     image: mongo:latest
   tickets:
-    image: rodarte/msnr-ta-tickets-dev:250e673
+    image: rodarte/msnr-ta-tickets-dev:073368d
     volumes:
       - ./tickets:/node/app
       - /node/app/node_modules
@@ -24,7 +24,7 @@ services:
   tickets-mongodb:
     image: mongo:latest
   orders:
-    image: rodarte/msnr-ta-orders-dev:2fe6e9e
+    image: rodarte/msnr-ta-orders-dev:073368d
     volumes:
       - ./orders:/node/app
       - /node/app/node_modules
@@ -42,7 +42,7 @@ services:
   expiration-redis:
     image: redis:latest
   payments:
-    image: rodarte/msnr-ta-payments-dev:latest
+    image: rodarte/msnr-ta-payments-dev:073368d
     volumes:
       - ./payments:/node/app
       - /node/app/node_modules
@@ -51,7 +51,7 @@ services:
   payments-mongodb:
     image: mongo:latest
   front:
-    image: rodarte/msnr-ta-front-dev:04398b2
+    image: rodarte/msnr-ta-front-dev:073368d
     volumes:
       - ./client:/node/app
       - /node/app/node_modules
