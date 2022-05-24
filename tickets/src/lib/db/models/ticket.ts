@@ -70,6 +70,6 @@ ticketSchema.static(
 const Ticket = mongoose.model<
   DbModelTypes.TicketDocument,
   DbModelTypes.TicketModel
->('User', ticketSchema);
+>('Ticket', ticketSchema);
 
 export default Ticket;

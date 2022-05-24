@@ -24,7 +24,7 @@ services:
   tickets-mongodb:
     image: mongo:latest
   orders:
-    image: rodarte/msnr-ta-orders-dev:34f1d42
+    image: rodarte/msnr-ta-orders-dev:2fe6e9e
     volumes:
       - ./orders:/node/app
       - /node/app/node_modules
@@ -33,7 +33,7 @@ services:
   orders-mongodb:
     image: mongo:latest
   expiration:
-    image: rodarte/msnr-ta-expiration-dev:5ec1781
+    image: rodarte/msnr-ta-expiration-dev:2fe6e9e
     volumes:
       - ./expiration:/node/app
       - /node/app/node_modules

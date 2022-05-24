@@ -34,6 +34,10 @@ class ExpirationCompleteListener extends objects.nats
     | InstanceType<typeof objects.errors.EntityNotFoundError>
     | undefined
   > {
+    console.log(
+      `[orders] NATS client ${process.env.NATS_CLIENT_ID} received event from expiration:complete channel.`
+    );
+
     const {
       order: { id: orderId },
     } = data;
@@ -70,6 +74,10 @@ class ExpirationCompleteListener extends objects.nats
         errorMessage: `There was an error cancelling order with ID ${orderId}.`,
       });
     if (updateOrderError) return updateOrderError;
+
+    console.log(
+      `[orders] NATS client ${process.env.NATS_CLIENT_ID} emitting event to order:cancelled channel.`
+    );
 
     const natsError = await new OrderCancelledPublisher(this.client).publish({
       id: updatedOrder!.id,

@@ -43,7 +43,7 @@ services:
   tickets-mongodb:
     image: mongo:5.0
   orders:
-    image: rodarte/msnr-ta-orders-prod:34f1d42
+    image: rodarte/msnr-ta-orders-prod:2fe6e9e
     ports:
       - '3003:3003'
     environment:
@@ -60,7 +60,7 @@ services:
   orders-mongodb:
     image: mongo:5.0
   expiration:
-    image: rodarte/msnr-ta-expiration-prod:5ec1781
+    image: rodarte/msnr-ta-expiration-prod:2fe6e9e
     environment:
       <<: *common-env-variables
       <<: *common-env-nats-variables
