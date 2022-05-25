@@ -72,6 +72,7 @@ class OrderCancelledListener extends objects.nats
       price: updatedTicket.price,
       userId: updatedTicket.userId,
       version: updatedTicket.version,
+      orderId: updatedTicket.orderId,
     });
     if (natsError) return natsError;
 
