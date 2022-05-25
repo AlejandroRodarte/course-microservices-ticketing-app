@@ -3,6 +3,8 @@ import app from './app';
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
 import OrderCancelledListener from './lib/objects/nats/listeners/order-cancelled-listener';
 import OrderCreatedListener from './lib/objects/nats/listeners/order-created-listener';
+import TicketCreatedListener from './lib/objects/nats/listeners/ticket-created-listener';
+import TicketUpdatedListener from './lib/objects/nats/listeners/ticket-updated-listener';
 import stanSingleton from './lib/objects/nats/stan-singleton';
 import { MainTypes } from './lib/types/main';
 
@@ -37,6 +39,8 @@ const start: MainTypes.MainFunction = async () => {
   const [stan, stanUnconnectedError] = stanSingleton.stan;
   if (stanUnconnectedError) return [undefined, stanUnconnectedError];
 
+  new TicketCreatedListener(stan!).listen();
+  new TicketUpdatedListener(stan!).listen();
   new OrderCreatedListener(stan!).listen();
   new OrderCancelledListener(stan!).listen();
 

@@ -8,7 +8,6 @@ export namespace DbModelTypes {
   // attributes required to create a Ticket
   export interface TicketAttributes {
     id: string;
-    version: number;
     orderId?: string;
   }
   // attributes related to a Ticket document (single record)
