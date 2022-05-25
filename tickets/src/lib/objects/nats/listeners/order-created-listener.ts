@@ -38,15 +38,12 @@ class OrderCreatedListener extends objects.nats
       id: orderId,
     } = data;
 
-    const [ticket, findTicketError] = await db.helpers.findOne<
+    const [ticket, findTicketError] = await db.helpers.findById<
       DbModelTypes.TicketDocument,
       DbModelTypes.TicketModel
     >({
       Model: Ticket,
-      filters: {
-        _id: ticketId,
-        orderId: undefined,
-      },
+      id: ticketId,
       errorMessage: `There was an error finding ticket with ID ${ticketId}.`,
     });
     if (findTicketError) return findTicketError;
@@ -56,6 +53,7 @@ class OrderCreatedListener extends objects.nats
         `Ticket with ID ${ticketId} does not exist in the database.`
       );
 
+    if (ticket!.orderId) return undefined;
     ticket!.orderId = orderId;
 
     const [updatedTicket, updateTicketError] =

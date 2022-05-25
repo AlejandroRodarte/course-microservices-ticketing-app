@@ -38,15 +38,12 @@ class OrderCancelledListener extends objects.nats
       ticket: { id: ticketId },
     } = data;
 
-    const [ticket, findTicketError] = await db.helpers.findOne<
+    const [ticket, findTicketError] = await db.helpers.findById<
       DbModelTypes.TicketDocument,
       DbModelTypes.TicketModel
     >({
       Model: Ticket,
-      filters: {
-        _id: ticketId,
-        orderId,
-      },
+      id: ticketId,
       errorMessage: `There was an error finding ticket with ID ${ticketId}.`,
     });
     if (findTicketError) return findTicketError;
@@ -56,6 +53,7 @@ class OrderCancelledListener extends objects.nats
         `Ticket with ID ${ticketId} was not found in the database.`
       );
 
+    if (ticket.orderId !== orderId) return undefined;
     ticket.orderId = undefined;
 
     const [updatedTicket, updateTicketError] =
