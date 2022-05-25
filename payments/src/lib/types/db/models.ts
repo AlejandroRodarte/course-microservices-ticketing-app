@@ -3,6 +3,25 @@ import { OrderResourceTypes } from '@msnr-ticketing-app/common';
 
 export namespace DbModelTypes {
   /**
+   * Ticket model
+   */
+  // attributes required to create a Ticket
+  export interface TicketAttributes {
+    id: string;
+    version: number;
+    orderId?: string;
+  }
+  // attributes related to a Ticket document (single record)
+  export interface TicketDocument extends mongoose.Document {
+    version: number;
+    orderId?: string;
+  }
+  // extend Ticket model to include static methods
+  export interface TicketModel extends mongoose.Model<TicketDocument> {
+    build(attrs: TicketAttributes): TicketDocument;
+  }
+
+  /**
    * Order model
    */
   // attributes required to create a Order
