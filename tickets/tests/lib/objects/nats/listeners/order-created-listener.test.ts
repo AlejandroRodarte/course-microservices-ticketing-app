@@ -82,6 +82,7 @@ describe('Tests for the OrderCreatedListener object.', () => {
           price: ticket!.price,
           userId: ticket!.userId,
           version: ticket!.version,
+          orderId: ticket!.orderId,
         }),
         expect.any(Function)
       );
@@ -105,7 +106,7 @@ describe('Tests for the OrderCreatedListener object.', () => {
       expect(msg.ack).not.toHaveBeenCalled();
     });
 
-    it('Should not acknowledge the message if the ticket is already reserved.', async () => {
+    it('Should acknowledge the message if the ticket is already reserved, yet not update the ticket orderId.', async () => {
       const { listener, savedTicket, orderCreatedEventDataArray, msg } =
         await setup();
       const [data] = orderCreatedEventDataArray;
@@ -115,7 +116,7 @@ describe('Tests for the OrderCreatedListener object.', () => {
       await ticket!.save();
 
       await listener.onMessage(msg, data);
-      expect(msg.ack).not.toHaveBeenCalled();
+      expect(msg.ack).toHaveBeenCalled();
 
       const unupdatedTicket = await Ticket.findById(savedTicket.id);
       expect(unupdatedTicket?.orderId).toBe(ticket!.orderId);

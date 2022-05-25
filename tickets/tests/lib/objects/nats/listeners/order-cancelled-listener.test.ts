@@ -81,6 +81,7 @@ describe('Tests for the OrderCancelledListener object.', () => {
           price: ticket!.price,
           userId: ticket!.userId,
           version: ticket!.version,
+          orderId: ticket!.orderId,
         }),
         expect.any(Function)
       );
@@ -96,13 +97,13 @@ describe('Tests for the OrderCancelledListener object.', () => {
   });
 
   describe('Failure cases', () => {
-    it('Should not acknowledge the message if an unknown order requests to cancel a reserved ticket.', async () => {
+    it('Should acknowledge the message if an unknown order requests to cancel a reserved ticket, yet not un-reserve the ticket.', async () => {
       const { listener, orderCancelledEventArray, savedTicket, msg } =
         await setup();
       const [, data] = orderCancelledEventArray;
 
       await listener.onMessage(msg, data);
-      expect(msg.ack).not.toHaveBeenCalled();
+      expect(msg.ack).toHaveBeenCalled();
 
       const ticket = await Ticket.findById(savedTicket.id);
       expect(ticket?.orderId).toBeDefined();
