@@ -3,6 +3,7 @@ import ApplicationResponse from '@msnr-ticketing-app/common/build/lib/objects/ap
 import { Response } from 'express';
 import PaymentDuplicateOrderPublisher from '../../../lib/objects/nats/publishers/payment-duplicate-order-publisher';
 import stanSingleton from '../../../lib/objects/nats/stan-singleton';
+import stripe from '../../../lib/stripe';
 import { PaymentsRequestHandlers } from '../../../lib/types/request-handlers/payments';
 
 const post = async (
@@ -44,6 +45,16 @@ const post = async (
         req.order!.status
       }, thus can not accept a payment.`
     );
+
+  const [charge, stripeError] = await stripe.helpers.create({
+    instance: stripe.instance,
+    params: {
+      currency: 'usd',
+      amount: req.order!.price * 100,
+      source: 'token',
+    },
+  });
+  if (stripeError) throw stripeError;
 
   return res
     .status(200)
