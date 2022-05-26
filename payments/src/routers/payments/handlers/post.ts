@@ -9,19 +9,6 @@ const post = async (
   req: PaymentsRequestHandlers.PostPaymentExtendedRequest,
   res: Response
 ) => {
-  const invalidStatuses: OrderResourceTypes.Status[] = [
-    'cancelled',
-    'complete',
-  ];
-
-  if (invalidStatuses.includes(req.order!.status))
-    throw new objects.errors.BadEntityError(
-      'order',
-      `Order with ID ${req.order!.id} is ${
-        req.order!.status
-      }, thus can not accept a payment.`
-    );
-
   if (req.order!.id !== req.order!.ticket.orderId) {
     const [stan, stanUnconnectedError] = stanSingleton.stan;
     if (stanUnconnectedError) throw stanUnconnectedError;
@@ -44,6 +31,19 @@ const post = async (
       }. This order will be cancelled.`
     );
   }
+
+  const invalidStatuses: OrderResourceTypes.Status[] = [
+    'cancelled',
+    'complete',
+  ];
+
+  if (invalidStatuses.includes(req.order!.status))
+    throw new objects.errors.BadEntityError(
+      'order',
+      `Order with ID ${req.order!.id} is ${
+        req.order!.status
+      }, thus can not accept a payment.`
+    );
 
   return res
     .status(200)
