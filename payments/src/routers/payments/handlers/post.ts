@@ -1,4 +1,4 @@
-import { db, objects, OrderResourceTypes } from '@msnr-ticketing-app/common';
+import { objects, OrderResourceTypes } from '@msnr-ticketing-app/common';
 import ApplicationResponse from '@msnr-ticketing-app/common/build/lib/objects/application-response';
 import { Response } from 'express';
 import PaymentDuplicateOrderPublisher from '../../../lib/objects/nats/publishers/payment-duplicate-order-publisher';

@@ -17,6 +17,7 @@ describe('Tests for the OrderCreatedListener object.', () => {
       id: new mongoose.Types.ObjectId().toHexString(),
       orderId,
     });
+    await savedTicket.save();
 
     const eventsData: NatsTypes.OrderCreatedEventData[] = [
       {
@@ -78,7 +79,7 @@ describe('Tests for the OrderCreatedListener object.', () => {
     });
   });
 
-  describe('Failure cases', async () => {
+  describe('Failure cases', () => {
     it('Should not create order if ticket is not found.', async () => {
       const { listener, eventsData, msg } = await setup();
       const [, data] = eventsData;

@@ -9,7 +9,8 @@ const isOrderOwnedByUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { id } = req.params;
+  const id = req['order/id']!;
+
   const [order, findOrderError] = await db.helpers.findById<
     DbModelTypes.OrderDocument,
     DbModelTypes.OrderModel

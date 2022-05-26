@@ -15,6 +15,7 @@ router.post(
   routes.middlewares.auth.setUserData,
   checkSchema(chargesSchemas.newCharge),
   routes.middlewares.validation.validateRequest,
+  middlewares.attach.orderId.newCharge,
   middlewares.auth.isOrderOwnedByUser,
   handlers.post
 );
