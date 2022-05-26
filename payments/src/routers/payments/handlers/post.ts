@@ -10,6 +10,8 @@ const post = async (
   req: PaymentsRequestHandlers.PostPaymentExtendedRequest,
   res: Response
 ) => {
+  const { token } = req.body.data.newCharge;
+
   if (req.order!.id !== req.order!.ticket.orderId) {
     const [stan, stanUnconnectedError] = stanSingleton.stan;
     if (stanUnconnectedError) throw stanUnconnectedError;
@@ -51,7 +53,7 @@ const post = async (
     params: {
       currency: 'usd',
       amount: req.order!.price * 100,
-      source: 'token',
+      source: token,
     },
   });
   if (stripeError) throw stripeError;
