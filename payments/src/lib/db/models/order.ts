@@ -28,6 +28,10 @@ const orderSchema = new mongoose.Schema<
     required: [true, 'A price is required.'],
     min: 0,
   },
+  ticket: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ticket',
+  },
 });
 
 orderSchema.set('versionKey', 'version');

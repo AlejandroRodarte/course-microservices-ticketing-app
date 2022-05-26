@@ -4,11 +4,20 @@ import { NatsTypes } from '@msnr-ticketing-app/common';
 import OrderCancelledListener from '../../../../../src/lib/objects/nats/listeners/order-cancelled-listener';
 import stanSingleton from '../../../../../src/lib/objects/nats/stan-singleton';
 import Order from '../../../../../src/lib/db/models/order';
+import Ticket from '../../../../../src/lib/db/models/ticket';
 
 describe('Tests for the OrderCancelledListener object.', () => {
   const setup = async () => {
     const [stan] = stanSingleton.stan;
     const listener = new OrderCancelledListener(stan!);
+
+    const orderId = new mongoose.Types.ObjectId().toHexString();
+
+    const savedTicket = Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
+      orderId,
+    });
+    await savedTicket.save();
 
     const savedOrder = Order.build({
       id: new mongoose.Types.ObjectId().toHexString(),
@@ -16,6 +25,7 @@ describe('Tests for the OrderCancelledListener object.', () => {
       userId: new mongoose.Types.ObjectId().toHexString(),
       version: 1,
       price: 20,
+      ticket: savedTicket,
     });
     await savedOrder.save();
 
