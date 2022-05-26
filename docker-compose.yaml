@@ -27,7 +27,7 @@ services:
   auth-mongodb:
     image: mongo:5.0
   tickets:
-    image: rodarte/msnr-ta-tickets-prod:073368d
+    image: rodarte/msnr-ta-tickets-prod:577e925
     ports:
       - '3002:3002'
     environment:
@@ -73,7 +73,7 @@ services:
   expiration-redis:
     image: redis:7.0
   payments:
-    image: rodarte/msnr-ta-payments-prod:cb566e7
+    image: rodarte/msnr-ta-payments-prod:577e925
     ports:
       - '3004:3004'
     environment:
