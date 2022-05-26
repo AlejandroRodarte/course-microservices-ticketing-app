@@ -81,9 +81,11 @@ services:
       <<: *common-env-nats-variables
       NATS_CLIENT_ID: payments
       MONGODB_URL_FILE_PATH: /run/secrets/payments_mongodb_url
+      STRIPE_API_KEY_FILE_PATH: /run/secrets/stripe_api_key
     secrets:
       - payments_mongodb_url
       - jwt_secret
+      - stripe_api_key
     depends_on:
       - payments-mongodb
   payments-mongodb:
@@ -132,3 +134,5 @@ secrets:
     file: ./secrets/docker/expiration/redis-host.txt
   jwt_secret:
     file: ./secrets/docker/common/jwt-secret.txt
+  stripe_api_key:
+    file: ./secrets/docker/payments/stripe-api-key.txt
