@@ -27,7 +27,8 @@
     "@msnr-ticketing-app/common": "^0.0.40",
     "cors": "^2.8.5",
     "express-async-errors": "^3.1.1",
-    "mongoose-update-if-current": "^1.4.0"
+    "mongoose-update-if-current": "^1.4.0",
+    "stripe": "^9.4.0"
   },
   "devDependencies": {
     "@types/cookie-session": "^2.0.44",
