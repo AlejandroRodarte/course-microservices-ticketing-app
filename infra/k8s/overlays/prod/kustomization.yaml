@@ -43,7 +43,7 @@ images:
   newTag: 04398b2
 - name: rodarte/msnr-ta-orders-prod
   newName: rodarte/msnr-ta-orders-prod
-  newTag: 2fe6e9e
+  newTag: "9238083"
 - name: rodarte/msnr-ta-payments-prod
   newName: rodarte/msnr-ta-payments-prod
   newTag: 577e925
