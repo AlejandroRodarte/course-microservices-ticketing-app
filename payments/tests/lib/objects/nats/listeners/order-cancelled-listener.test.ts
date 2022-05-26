@@ -34,21 +34,21 @@ describe('Tests for the OrderCancelledListener object.', () => {
         id: savedOrder.id,
         version: savedOrder.version + 1,
         ticket: {
-          id: new mongoose.Types.ObjectId().toHexString(),
+          id: savedTicket.id,
         },
       },
       {
         id: new mongoose.Types.ObjectId().toHexString(),
         version: savedOrder.version + 1,
         ticket: {
-          id: new mongoose.Types.ObjectId().toHexString(),
+          id: savedTicket.id,
         },
       },
       {
         id: savedOrder.id,
         version: savedOrder.version + 2,
         ticket: {
-          id: new mongoose.Types.ObjectId().toHexString(),
+          id: savedTicket.id,
         },
       },
     ];
