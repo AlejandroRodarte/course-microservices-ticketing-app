@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from 'next';
+import Link from 'next/link';
 import DefaultLayout from '../components/layouts/default-layout';
 import requests from '../lib/requests';
 import { AuthObjectDtoTypes } from '../lib/types/objects/dto/auth';
@@ -19,6 +20,11 @@ const HomePage: React.FC<HomePageProps> = (props) => {
           <tr key={ticket.id}>
             <td>{ticket.title}</td>
             <td>{ticket.price}</td>
+            <td>
+              <Link href={`/tickets/${ticket.id}`}>
+                <a>View Details</a>
+              </Link>
+            </td>
           </tr>
         ));
 
@@ -31,6 +37,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
             <tr>
               <th>Title</th>
               <th>Price</th>
+              <th>Link</th>
             </tr>
           </thead>
           <tbody>{ticketList}</tbody>
