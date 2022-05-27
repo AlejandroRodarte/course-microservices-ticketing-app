@@ -8,6 +8,8 @@ import Ticket from '../../../../src/lib/db/models/ticket';
 import Order from '../../../../src/lib/db/models/order';
 import stanSingleton from '../../../../src/lib/objects/nats/stan-singleton';
 import stripe from '../../../../src/lib/stripe/instance';
+import NewPaymentData from '../../../../src/lib/objects/data/new-payment-data';
+import Payment from '../../../../src/lib/db/models/payment';
 
 const routes = {
   newCharge: '/payments',
@@ -57,7 +59,10 @@ describe('Tests for the POST /payments endpoint.', () => {
         .set('Cookie', cookie)
         .expect(200);
       const applicationResponse =
-        response.body as ApplicationResponseTypes.Body<undefined, undefined>;
+        response.body as ApplicationResponseTypes.Body<
+          NewPaymentData,
+          undefined
+        >;
 
       expect(applicationResponse.status).toBe(201);
       expect(applicationResponse.code).toBe('CHARGE_CREATED');
@@ -70,6 +75,56 @@ describe('Tests for the POST /payments endpoint.', () => {
         },
         undefined
       );
+    });
+
+    it('Should create payment record upon request arrival.', async () => {
+      const [user, cookie] = cookies.helpers.createUserAndCookie();
+
+      const ticket = Ticket.build({
+        id: new mongoose.Types.ObjectId().toHexString(),
+        orderId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      await ticket.save();
+
+      const order = Order.build({
+        id: ticket.orderId!,
+        status: 'created',
+        version: 0,
+        userId: user.id,
+        price: 20,
+        ticket,
+      });
+      await order.save();
+
+      const body = {
+        data: {
+          newCharge: {
+            token: 'tok_visa',
+            orderId: order.id,
+          },
+        },
+      };
+
+      const response = await request(app)
+        .post(routes.newCharge)
+        .send(body)
+        .set('Cookie', cookie)
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          NewPaymentData,
+          undefined
+        >;
+
+      expect(applicationResponse.data.newPayment.orderId).toBe(order.id);
+      expect(applicationResponse.data.newPayment.stripeId).toBeDefined();
+
+      const payment = await Payment.findById(
+        applicationResponse.data.newPayment.id
+      );
+
+      expect(payment!.orderId).toBe(order.id);
+      expect(payment!.stripeId).toBeDefined();
     });
   });
 

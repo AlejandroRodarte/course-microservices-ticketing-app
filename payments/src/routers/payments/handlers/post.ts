@@ -1,10 +1,13 @@
-import { objects, OrderResourceTypes } from '@msnr-ticketing-app/common';
+import { db, objects, OrderResourceTypes } from '@msnr-ticketing-app/common';
 import ApplicationResponse from '@msnr-ticketing-app/common/build/lib/objects/application-response';
 import { Response } from 'express';
 import Payment from '../../../lib/db/models/payment';
+import NewPaymentData from '../../../lib/objects/data/new-payment-data';
+import BasePaymentDto from '../../../lib/objects/dto/base-payment-dto';
 import PaymentDuplicateOrderPublisher from '../../../lib/objects/nats/publishers/payment-duplicate-order-publisher';
 import stanSingleton from '../../../lib/objects/nats/stan-singleton';
 import stripe from '../../../lib/stripe';
+import { DbModelTypes } from '../../../lib/types/db/models';
 import { PaymentsRequestHandlers } from '../../../lib/types/request-handlers/payments';
 
 const post = async (
@@ -59,16 +62,28 @@ const post = async (
   });
   if (stripeError) throw stripeError;
 
+  const payment = Payment.build({
+    orderId: req.order!.id,
+    stripeId: charge.id,
+  });
+
+  const [savedPayment, savePaymentError] =
+    await db.helpers.save<DbModelTypes.PaymentDocument>({
+      document: payment,
+      errorMessage: 'There was an error saving the new payment.',
+    });
+  if (savePaymentError) throw savePaymentError;
+
   return res
     .status(200)
     .send(
-      new ApplicationResponse<undefined, undefined>(
+      new ApplicationResponse<NewPaymentData, undefined>(
         201,
         'CHARGE_CREATED',
         `Order with ID ${req.order!.id} completed. User charged for $${
           req.order!.price
         } USD.`,
-        undefined,
+        new NewPaymentData(BasePaymentDto.fromPaymentDocument(savedPayment!)),
         undefined
       )
     );

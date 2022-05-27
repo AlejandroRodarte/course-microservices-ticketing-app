@@ -6,9 +6,9 @@ const stripe = {
       (
         params?: Stripe.ChargeCreateParams,
         options?: Stripe.RequestOptions
-      ): Promise<void> =>
+      ): Promise<{ id: string }> =>
         new Promise((resolve, reject) => {
-          resolve();
+          resolve({ id: 'some-cool-stripe-charge-id' });
         })
     ),
   },
