@@ -2,6 +2,7 @@ import { db } from '@msnr-ticketing-app/common';
 import app from './app';
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
 import ExpirationCompleteListener from './lib/objects/nats/listeners/expiration-complete-listener';
+import PaymentCreatedListener from './lib/objects/nats/listeners/payment-created-listener';
 import PaymentDuplicateOrderListener from './lib/objects/nats/listeners/payment-duplicate-order-listener';
 import TicketCreatedListener from './lib/objects/nats/listeners/ticket-created-listener';
 import TicketUpdatedListener from './lib/objects/nats/listeners/ticket-updated-listener';
@@ -43,6 +44,7 @@ const start: MainTypes.MainFunction = async () => {
   new TicketUpdatedListener(stan!).listen();
   new ExpirationCompleteListener(stan!).listen();
   new PaymentDuplicateOrderListener(stan!).listen();
+  new PaymentCreatedListener(stan!).listen();
 
   const server = app.listen(port, () => {
     console.log(`[orders] Orders microservice launched on port ${port}`);

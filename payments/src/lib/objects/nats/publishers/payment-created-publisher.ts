@@ -1,7 +1,7 @@
 import { NatsTypes, objects } from '@msnr-ticketing-app/common';
 
 class PaymentCreatedPublisher extends objects.nats
-  .Publisher<NatsTypes.PaymentCreatedOrderEvent> {
+  .Publisher<NatsTypes.PaymentCreatedEvent> {
   readonly subject = 'payment:created';
 }
 
