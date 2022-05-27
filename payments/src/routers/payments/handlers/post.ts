@@ -62,9 +62,11 @@ const post = async (
     .status(200)
     .send(
       new ApplicationResponse<undefined, undefined>(
-        200,
-        'ROUTE_FOUND',
-        'Route POST /payments reached.',
+        201,
+        'CHARGE_CREATED',
+        `Order with ID ${req.order!.id} completed. User charged for $${
+          req.order!.price
+        } USD.`,
         undefined,
         undefined
       )

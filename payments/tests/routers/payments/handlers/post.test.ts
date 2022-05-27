@@ -23,7 +23,7 @@ describe('Tests for the POST /payments endpoint.', () => {
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
     });
 
-    it('Should call stripe.charged.create with the right arguments upon request arrival.', async () => {
+    it('Should expect a 201/CHARGE_CREATED status and call stripe.charged.create with the right arguments upon request arrival.', async () => {
       const [user, cookie] = cookies.helpers.createUserAndCookie();
 
       const ticket = Ticket.build({
@@ -51,11 +51,16 @@ describe('Tests for the POST /payments endpoint.', () => {
         },
       };
 
-      await request(app)
+      const response = await request(app)
         .post(routes.newCharge)
         .send(body)
         .set('Cookie', cookie)
         .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<undefined, undefined>;
+
+      expect(applicationResponse.status).toBe(201);
+      expect(applicationResponse.code).toBe('CHARGE_CREATED');
 
       expect(stripe.charges.create).toHaveBeenCalledWith(
         {
