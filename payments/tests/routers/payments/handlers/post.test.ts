@@ -7,6 +7,7 @@ import { DbModelTypes } from '../../../../src/lib/types/db/models';
 import Ticket from '../../../../src/lib/db/models/ticket';
 import Order from '../../../../src/lib/db/models/order';
 import stanSingleton from '../../../../src/lib/objects/nats/stan-singleton';
+import stripe from '../../../../src/lib/stripe/instance';
 
 const routes = {
   newCharge: '/payments',
@@ -20,6 +21,50 @@ describe('Tests for the POST /payments endpoint.', () => {
         response.body as ApplicationResponseTypes.Body<unknown, unknown>;
       expect(applicationResponse.status).not.toBe(404);
       expect(applicationResponse.code).not.toBe('ROUTE_NOT_FOUND');
+    });
+
+    it('Should call stripe.charged.create with the right arguments upon request arrival.', async () => {
+      const [user, cookie] = cookies.helpers.createUserAndCookie();
+
+      const ticket = Ticket.build({
+        id: new mongoose.Types.ObjectId().toHexString(),
+        orderId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      await ticket.save();
+
+      const order = Order.build({
+        id: ticket.orderId!,
+        status: 'created',
+        version: 0,
+        userId: user.id,
+        price: 20,
+        ticket,
+      });
+      await order.save();
+
+      const body = {
+        data: {
+          newCharge: {
+            token: 'tok_visa',
+            orderId: order.id,
+          },
+        },
+      };
+
+      await request(app)
+        .post(routes.newCharge)
+        .send(body)
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(stripe.charges.create).toHaveBeenCalledWith(
+        {
+          currency: 'usd',
+          amount: order.price * 100,
+          source: body.data.newCharge.token,
+        },
+        undefined
+      );
     });
   });
 

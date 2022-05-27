@@ -7,6 +7,7 @@ global.console = {
 };
 
 jest.mock('../src/lib/objects/nats/stan-singleton');
+jest.mock('../src/lib/stripe/instance');
 
 let mongo: MongoMemoryServer | undefined = undefined;
 
