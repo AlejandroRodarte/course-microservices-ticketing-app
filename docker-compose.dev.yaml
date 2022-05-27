@@ -14,6 +14,7 @@ services:
       <<: *common-env-variables
   auth-mongodb:
     image: mongo:latest
+    command: mongod --quiet --logpath /dev/null 
   tickets:
     image: rodarte/msnr-ta-tickets-dev:577e925
     volumes:
@@ -23,8 +24,9 @@ services:
       <<: *common-env-variables
   tickets-mongodb:
     image: mongo:latest
+    command: mongod --quiet --logpath /dev/null 
   orders:
-    image: rodarte/msnr-ta-orders-dev:073368d
+    image: rodarte/msnr-ta-orders-dev:52d1e2f
     volumes:
       - ./orders:/node/app
       - /node/app/node_modules
@@ -32,6 +34,7 @@ services:
       <<: *common-env-variables
   orders-mongodb:
     image: mongo:latest
+    command: mongod --quiet --logpath /dev/null 
   expiration:
     image: rodarte/msnr-ta-expiration-dev:2fe6e9e
     volumes:
@@ -42,7 +45,7 @@ services:
   expiration-redis:
     image: redis:latest
   payments:
-    image: rodarte/msnr-ta-payments-dev:577e925
+    image: rodarte/msnr-ta-payments-dev:52d1e2f
     volumes:
       - ./payments:/node/app
       - /node/app/node_modules
@@ -50,6 +53,7 @@ services:
       <<: *common-env-variables
   payments-mongodb:
     image: mongo:latest
+    command: mongod --quiet --logpath /dev/null 
   front:
     image: rodarte/msnr-ta-front-dev:073368d
     volumes:

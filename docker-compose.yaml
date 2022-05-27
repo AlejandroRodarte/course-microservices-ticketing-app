@@ -43,7 +43,7 @@ services:
   tickets-mongodb:
     image: mongo:5.0
   orders:
-    image: rodarte/msnr-ta-orders-prod:073368d
+    image: rodarte/msnr-ta-orders-prod:52d1e2f
     ports:
       - '3003:3003'
     environment:
@@ -73,7 +73,7 @@ services:
   expiration-redis:
     image: redis:7.0
   payments:
-    image: rodarte/msnr-ta-payments-prod:577e925
+    image: rodarte/msnr-ta-payments-prod:52d1e2f
     ports:
       - '3004:3004'
     environment:
