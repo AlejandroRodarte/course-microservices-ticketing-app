@@ -33,6 +33,13 @@ export namespace RequestTypes {
   >;
 
   /**
+   * server-side request to GET /tickets/:id
+   */
+  export type TicketsGetTicketFunction = (
+    id: string
+  ) => Promise<TicketsObjectDtoTypes.BaseTicketDto | null>;
+
+  /**
    * doServerSideRequest util function type
    */
   export interface DoServerSideRequestArgs<BodyType> {
@@ -69,6 +76,17 @@ export namespace RequestTypes {
       newTicket: {
         title: string;
         price: number;
+      };
+    };
+  }
+
+  /**
+   * req.body type for POST /orders
+   */
+   export interface NewOrderBody {
+    data: {
+      newOrder: {
+        ticketId: string;
       };
     };
   }

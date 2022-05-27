@@ -1,17 +1,62 @@
 import { GetServerSideProps } from 'next';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useCallback } from 'react';
 import DefaultLayout from '../../../components/layouts/default-layout';
+import useRequest from '../../../lib/hooks/use-request';
 import requests from '../../../lib/requests';
+import { OrdersObjectDataTypes } from '../../../lib/types/objects/data/orders';
 import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
+import { TicketsObjectDtoTypes } from '../../../lib/types/objects/dto/tickets';
+import { RequestTypes } from '../../../lib/types/requests';
 
 interface TicketDetailsPageProps {
   user: AuthObjectDtoTypes.BaseUserDto | null;
+  ticket: TicketsObjectDtoTypes.BaseTicketDto | null;
 }
 
 const TicketDetailsPage: React.FC<TicketDetailsPageProps> = (props) => {
+  const { user, ticket } = props;
+  const router = useRouter();
+
+  const { doRequest, errors } = useRequest<
+    RequestTypes.NewOrderBody,
+    OrdersObjectDataTypes.CreateOrderData
+  >({
+    endpoint: 'orders',
+    microservice: 'orders',
+    method: 'post',
+    config: {
+      withCredentials: true,
+    },
+  });
+
+  const onPurchase = useCallback(async () => {
+    if (!router.query.id || typeof router.query.id !== 'string') return;
+
+    const [response, error] = await doRequest({
+      data: { newOrder: { ticketId: router.query.id } },
+    });
+    if (error || (response && response.error)) return;
+    if (response && response.status === 201 && response.data)
+      console.log(`Order with ID ${response.data.newOrder.id} created.`);
+  }, [doRequest, router.query.id]);
+
   return (
-    <DefaultLayout user={props.user}>
-      <h1>TicketDetailsPage</h1>
+    <DefaultLayout user={user}>
+      {ticket && (
+        <div className="container">
+          <h1>{ticket.title}</h1>
+          <h4>Price: {ticket.price}</h4>
+          <h4>Status: {ticket.orderId ? 'Reserved' : 'Available'}</h4>
+          <button
+            disabled={!!ticket.orderId}
+            className="btn btn-primary"
+            onClick={onPurchase}
+          >
+            Purchase
+          </button>
+        </div>
+      )}
     </DefaultLayout>
   );
 };
@@ -19,8 +64,17 @@ const TicketDetailsPage: React.FC<TicketDetailsPageProps> = (props) => {
 export const getServerSideProps: GetServerSideProps<
   TicketDetailsPageProps
 > = async (ctx) => {
+  const id = ctx.params
+    ? ctx.params.id && typeof ctx.params.id === 'string'
+      ? ctx.params.id
+      : undefined
+    : undefined;
+
+  if (!id) return { redirect: { permanent: false, destination: '/' } };
+
   const user = await requests.auth.currentUser(ctx.req.headers.cookie);
-  return { props: { user } };
+  const ticket = await requests.tickets.getTicket(id);
+  return { props: { user, ticket } };
 };
 
 export default TicketDetailsPage;

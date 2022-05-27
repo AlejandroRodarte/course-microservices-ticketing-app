@@ -1,5 +1,4 @@
 import { db, objects, OrderResourceTypes } from '@msnr-ticketing-app/common';
-import ApplicationResponse from '@msnr-ticketing-app/common/build/lib/objects/application-response';
 import { Response } from 'express';
 import Payment from '../../../lib/db/models/payment';
 import NewPaymentData from '../../../lib/objects/data/new-payment-data';
@@ -87,7 +86,7 @@ const post = async (
   return res
     .status(200)
     .send(
-      new ApplicationResponse<NewPaymentData, undefined>(
+      new objects.ApplicationResponse<NewPaymentData, undefined>(
         201,
         'CHARGE_CREATED',
         `Order with ID ${req.order!.id} completed. User charged for $${

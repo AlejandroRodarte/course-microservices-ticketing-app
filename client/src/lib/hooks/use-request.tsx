@@ -42,8 +42,9 @@ function useRequest<BodyType, DataType>(
           >
         >(url, body || {}, args.config);
       if (!response.data.error) setErrors(() => undefined);
-      switch (response.data.status) {
-        case 422: {
+      switch (response.data.code) {
+        case 'BAD_ENTITY_ERROR':
+        case 'VALIDATION_ERROR': {
           setErrors(() => (
             <div className="alert alert-danger">
               <h4>Oops...</h4>

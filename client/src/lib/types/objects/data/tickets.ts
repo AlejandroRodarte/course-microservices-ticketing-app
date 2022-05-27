@@ -8,4 +8,8 @@ export namespace TicketsObjectDataTypes {
   export interface GetTicketsData {
     tickets: TicketsObjectDtoTypes.BaseTicketDto[];
   }
+
+  export interface GetTicketData {
+    ticket: TicketsObjectDtoTypes.BaseTicketDto;
+  }
 }

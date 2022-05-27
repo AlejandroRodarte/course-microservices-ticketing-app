@@ -1,3 +1,5 @@
+import codes from '../../constants/responses/codes';
+
 export namespace UniversalObjectTypes {
   interface UniversalErrorItem {
     message: string;
@@ -5,7 +7,7 @@ export namespace UniversalObjectTypes {
   }
   export interface ApplicationResponse<DataType, ErrorType> {
     status: number;
-    code: string;
+    code: typeof codes[number];
     message: string;
     data?: DataType;
     error?: ErrorType;
