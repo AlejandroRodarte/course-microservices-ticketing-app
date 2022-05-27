@@ -1,6 +1,7 @@
 import { objects, OrderResourceTypes } from '@msnr-ticketing-app/common';
 import ApplicationResponse from '@msnr-ticketing-app/common/build/lib/objects/application-response';
 import { Response } from 'express';
+import Payment from '../../../lib/db/models/payment';
 import PaymentDuplicateOrderPublisher from '../../../lib/objects/nats/publishers/payment-duplicate-order-publisher';
 import stanSingleton from '../../../lib/objects/nats/stan-singleton';
 import stripe from '../../../lib/stripe';

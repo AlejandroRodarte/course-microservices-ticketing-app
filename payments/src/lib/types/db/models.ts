@@ -44,4 +44,23 @@ export namespace DbModelTypes {
   export interface OrderModel extends mongoose.Model<OrderDocument> {
     build(attrs: OrderAttributes): OrderDocument;
   }
+
+  /**
+   * Payment model
+   */
+  // attributes required to create a Payment
+  export interface PaymentAttributes {
+    orderId: string;
+    stripeId: string;
+  }
+  // attributes related to a Payment document (single record)
+  export interface PaymentDocument extends mongoose.Document {
+    orderId: string;
+    stripeId: string;
+    version: number;
+  }
+  // extend Payment model to include static methods
+  export interface PaymentModel extends mongoose.Model<PaymentDocument> {
+    build(attrs: PaymentAttributes): PaymentDocument;
+  }
 }
