@@ -4,4 +4,10 @@ export namespace FormTypes {
     password: string;
   }
   export type CredentialsFormKeys = keyof CredentialsForm;
+
+  export interface TicketForm {
+    title: string;
+    price: string;
+  }
+  export type TicketFormKeys = keyof TicketForm;
 }
