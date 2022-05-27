@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 import { UIComponentTypes } from '../../../lib/types/components/ui';
+import { useRouter } from 'next/router';
 
 interface MainHeaderProps {
   user: AuthObjectDtoTypes.BaseUserDto | null;
 }
 
 const MainHeader: React.FC<MainHeaderProps> = (props) => {
+  const router = useRouter();
+  const { redirect } = router.query;
+
   const links: UIComponentTypes.HeaderLink[] = [
     {
       href: '/auth/sign-up',
@@ -36,7 +40,12 @@ const MainHeader: React.FC<MainHeaderProps> = (props) => {
             (link) =>
               link.show && (
                 <li className="nav-item" key={link.label}>
-                  <Link href={link.href}>
+                  <Link
+                    href={{
+                      pathname: link.href,
+                      query: redirect ? { redirect } : undefined,
+                    }}
+                  >
                     <a className="nav-link">{link.label}</a>
                   </Link>
                 </li>

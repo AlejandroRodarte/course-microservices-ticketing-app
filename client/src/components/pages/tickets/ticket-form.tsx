@@ -3,6 +3,7 @@ import { FormTypes } from '../../../lib/types/forms';
 
 interface TicketFormProps {
   onSubmit: (form: FormTypes.TicketForm) => void;
+  errors?: JSX.Element;
 }
 
 const TicketForm: React.FC<TicketFormProps> = (props) => {
@@ -36,10 +37,13 @@ const TicketForm: React.FC<TicketFormProps> = (props) => {
     [form.price]
   );
 
-  const onSubmit = useCallback((event: React.FormEvent) => {
-    event.preventDefault();
-    props.onSubmit(form);
-  }, []);
+  const onSubmit = useCallback(
+    (event: React.FormEvent) => {
+      event.preventDefault();
+      props.onSubmit(form);
+    },
+    [form]
+  );
 
   return (
     <div className="container">
@@ -68,6 +72,7 @@ const TicketForm: React.FC<TicketFormProps> = (props) => {
             onBlur={onPriceBlur}
           />
         </div>
+        {props.errors}
         <button className="btn btn-primary">Submit</button>
       </form>
     </div>

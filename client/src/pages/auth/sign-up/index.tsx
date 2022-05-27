@@ -16,6 +16,8 @@ interface SignUpPageProps {
 
 const SignUpPage: React.FC<SignUpPageProps> = (props) => {
   const router = useRouter();
+  const { redirect } = router.query;
+
   const { doRequest, errors } = useRequest<
     RequestTypes.SignUpRequestBody,
     AuthObjectDataTypes.SignUpData
@@ -33,7 +35,11 @@ const SignUpPage: React.FC<SignUpPageProps> = (props) => {
       const [response, error] = await doRequest({
         data: { credentials: form },
       });
-      if (response && response.status === 201) router.replace('/');
+      if (response && response.status === 201) {
+        if (redirect && typeof redirect === 'string')
+          router.replace(decodeURIComponent(redirect));
+        else router.replace('/');
+      }
     },
     [router, doRequest]
   );
