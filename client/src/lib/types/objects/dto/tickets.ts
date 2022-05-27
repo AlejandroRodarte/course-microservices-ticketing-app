@@ -1,4 +1,4 @@
-export namespace TicketsDtoTypes {
+export namespace TicketsObjectDtoTypes {
   export interface BaseTicketDto {
     id: string;
     title: string;

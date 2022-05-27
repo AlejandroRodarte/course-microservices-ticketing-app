@@ -1,7 +1,11 @@
-import { TicketsDtoTypes } from '../dto/tickets';
+import { TicketsObjectDtoTypes } from '../dto/tickets';
 
-export namespace TicketsDataTypes {
+export namespace TicketsObjectDataTypes {
   export interface NewTicketData {
-    newTicket: TicketsDtoTypes.BaseTicketDto;
+    newTicket: TicketsObjectDtoTypes.BaseTicketDto;
+  }
+
+  export interface GetTicketsData {
+    tickets: TicketsObjectDtoTypes.BaseTicketDto[];
   }
 }

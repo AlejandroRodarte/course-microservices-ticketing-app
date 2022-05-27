@@ -1,11 +1,12 @@
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import DefaultLayout from '../../../components/layouts/default-layout';
 import TicketForm from '../../../components/pages/tickets/ticket-form';
 import useRequest from '../../../lib/hooks/use-request';
 import requests from '../../../lib/requests';
 import { FormTypes } from '../../../lib/types/forms';
-import { TicketsDataTypes } from '../../../lib/types/objects/data/tickets';
+import { TicketsObjectDataTypes } from '../../../lib/types/objects/data/tickets';
 import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 import { RequestTypes } from '../../../lib/types/requests';
 
@@ -14,9 +15,11 @@ interface NewTicketProps {
 }
 
 const NewTicketPage: React.FC<NewTicketProps> = (props) => {
+  const router = useRouter();
+
   const { doRequest, errors } = useRequest<
     RequestTypes.NewTicketBody,
-    TicketsDataTypes.NewTicketData
+    TicketsObjectDataTypes.NewTicketData
   >({
     endpoint: 'tickets',
     microservice: 'tickets',
@@ -32,8 +35,7 @@ const NewTicketPage: React.FC<NewTicketProps> = (props) => {
         data: { newTicket: { title: form.title, price: +form.price } },
       });
       if (error || (response && response.error)) return;
-      if (response.data && response.status === 201)
-        console.log(`Ticket with ID ${response.data.newTicket.id} created!.`);
+      if (response.data && response.status === 201) router.replace('/');
     },
     [doRequest]
   );

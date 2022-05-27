@@ -4,6 +4,7 @@ import { FormTypes } from './forms';
 import { ReturnTypes } from './returns';
 import { UniversalObjectTypes } from './objects/universal';
 import { AuthObjectDtoTypes } from './objects/dto/auth';
+import { TicketsObjectDtoTypes } from './objects/dto/tickets';
 
 export namespace RequestTypes {
   /**
@@ -18,11 +19,18 @@ export namespace RequestTypes {
   >;
 
   /**
-   * server-side helper request function types
+   * server-side request to GET /auth/users/current-user
    */
   export type AuthCurrentUserFunction = (
     cookie?: string
   ) => Promise<AuthObjectDtoTypes.BaseUserDto | null>;
+
+  /**
+   * server-side request to GET /tickets
+   */
+  export type TicketsGetTicketsFunction = () => Promise<
+    TicketsObjectDtoTypes.BaseTicketDto[] | null
+  >;
 
   /**
    * doServerSideRequest util function type
