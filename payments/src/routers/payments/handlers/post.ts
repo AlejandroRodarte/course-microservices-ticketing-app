@@ -4,6 +4,7 @@ import { Response } from 'express';
 import Payment from '../../../lib/db/models/payment';
 import NewPaymentData from '../../../lib/objects/data/new-payment-data';
 import BasePaymentDto from '../../../lib/objects/dto/base-payment-dto';
+import PaymentCreatedPublisher from '../../../lib/objects/nats/publishers/payment-created-publisher';
 import PaymentDuplicateOrderPublisher from '../../../lib/objects/nats/publishers/payment-duplicate-order-publisher';
 import stanSingleton from '../../../lib/objects/nats/stan-singleton';
 import stripe from '../../../lib/stripe';
@@ -16,10 +17,10 @@ const post = async (
 ) => {
   const { token } = req.body.data.newCharge;
 
-  if (req.order!.id !== req.order!.ticket.orderId) {
-    const [stan, stanUnconnectedError] = stanSingleton.stan;
-    if (stanUnconnectedError) throw stanUnconnectedError;
+  const [stan, stanUnconnectedError] = stanSingleton.stan;
+  if (stanUnconnectedError) throw stanUnconnectedError;
 
+  if (req.order!.id !== req.order!.ticket.orderId) {
     console.log(
       `[payments] NATS client ${process.env.NATS_CLIENT_ID} emitting event to payment:duplicate-order channel.`
     );
@@ -73,6 +74,15 @@ const post = async (
       errorMessage: 'There was an error saving the new payment.',
     });
   if (savePaymentError) throw savePaymentError;
+
+  const natsError = await new PaymentCreatedPublisher(stan!).publish({
+    id: savedPayment.id,
+    stripeId: savedPayment.stripeId,
+    order: {
+      id: req.order!.id,
+    },
+  });
+  if (natsError) throw natsError;
 
   return res
     .status(200)

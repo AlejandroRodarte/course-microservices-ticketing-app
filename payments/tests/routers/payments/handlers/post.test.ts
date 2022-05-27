@@ -126,6 +126,59 @@ describe('Tests for the POST /payments endpoint.', () => {
       expect(payment!.orderId).toBe(order.id);
       expect(payment!.stripeId).toBeDefined();
     });
+
+    it('Should publish to payment:created channel upon request arrival.', async () => {
+      const [user, cookie] = cookies.helpers.createUserAndCookie();
+
+      const ticket = Ticket.build({
+        id: new mongoose.Types.ObjectId().toHexString(),
+        orderId: new mongoose.Types.ObjectId().toHexString(),
+      });
+      await ticket.save();
+
+      const order = Order.build({
+        id: ticket.orderId!,
+        status: 'created',
+        version: 0,
+        userId: user.id,
+        price: 20,
+        ticket,
+      });
+      await order.save();
+
+      const body = {
+        data: {
+          newCharge: {
+            token: 'tok_visa',
+            orderId: order.id,
+          },
+        },
+      };
+
+      const response = await request(app)
+        .post(routes.newCharge)
+        .send(body)
+        .set('Cookie', cookie)
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          NewPaymentData,
+          undefined
+        >;
+
+      const [stan] = stanSingleton.stan;
+      expect(stan?.publish).toHaveBeenCalledWith(
+        'payment:created',
+        JSON.stringify({
+          id: applicationResponse.data.newPayment.id,
+          stripeId: 'some-cool-stripe-charge-id',
+          order: {
+            id: order.id,
+          },
+        }),
+        expect.any(Function)
+      );
+    });
   });
 
   describe('Failure cases', () => {
