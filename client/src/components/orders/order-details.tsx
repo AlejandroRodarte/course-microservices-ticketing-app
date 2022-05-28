@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
+import StripeCheckout from 'react-stripe-checkout';
 import { OrdersObjectDtoTypes } from '../../lib/types/objects/dto/orders';
 
 interface OrderDetailsProps {
   order: OrdersObjectDtoTypes.BaseOrderDto;
+  email: string;
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = (props) => {
-  const { order } = props;
+  const { order, email } = props;
 
   const [timeLeft, setTimeLeft] = useState(0);
 
@@ -29,7 +31,17 @@ const OrderDetails: React.FC<OrderDetailsProps> = (props) => {
   }, [setTimeLeft, order.expiresAt]);
 
   if (timeLeft < 0) return <div>Order Expired</div>;
-  return <div>Time left to pay: {timeLeft} seconds.</div>;
+  return (
+    <div>
+      Time left to pay: {timeLeft} seconds.
+      <StripeCheckout
+        token={(token) => console.log(token)}
+        stripeKey={process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+        amount={order.ticket.price * 100}
+        email={email}
+      />
+    </div>
+  );
 };
 
 export default OrderDetails;

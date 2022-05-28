@@ -15,7 +15,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
 
   return (
     <DefaultLayout user={user}>
-      {order && <OrderDetails order={order} />}
+      {order && <OrderDetails order={order} email={user!.email} />}
     </DefaultLayout>
   );
 };
