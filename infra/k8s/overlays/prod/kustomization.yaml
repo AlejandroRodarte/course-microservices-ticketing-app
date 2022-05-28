@@ -46,7 +46,7 @@ images:
   newTag: 52d1e2f
 - name: rodarte/msnr-ta-payments-prod
   newName: rodarte/msnr-ta-payments-prod
-  newTag: 52d1e2f
+  newTag: ee098ad
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
   newTag: 577e925
