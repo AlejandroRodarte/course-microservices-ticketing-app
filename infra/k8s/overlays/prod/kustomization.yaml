@@ -40,7 +40,7 @@ images:
   newTag: 2fe6e9e
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
-  newTag: ee098ad
+  newTag: cc34565
 - name: rodarte/msnr-ta-orders-prod
   newName: rodarte/msnr-ta-orders-prod
   newTag: 52d1e2f
