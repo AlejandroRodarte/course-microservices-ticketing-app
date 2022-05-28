@@ -351,6 +351,55 @@ describe('Tests for the POST /payments endpoint.', () => {
       );
     });
 
+    it('Should return a 400/BAD_ENTITY_ERROR status with the correct error message if replicated ticket is not updated with order that reserved it.', async () => {
+      const [user, cookie] = cookies.helpers.createUserAndCookie();
+
+      const ticket = Ticket.build({
+        id: new mongoose.Types.ObjectId().toHexString(),
+      });
+      await ticket.save();
+
+      const order = Order.build({
+        id: new mongoose.Types.ObjectId().toHexString(),
+        status: 'created',
+        version: 0,
+        userId: user.id,
+        price: 20,
+        ticket,
+      });
+      await order.save();
+
+      const body = {
+        data: {
+          newCharge: {
+            token: 'super-stripe-api-token',
+            orderId: order.id,
+          },
+        },
+      };
+
+      const response = await request(app)
+        .post(routes.newCharge)
+        .send(body)
+        .set('Cookie', cookie)
+        .expect(200);
+      const applicationResponse =
+        response.body as ApplicationResponseTypes.Body<
+          unknown,
+          InstanceType<typeof objects.errors.UniversalError>
+        >;
+
+      expect(applicationResponse.status).toBe(400);
+      expect(applicationResponse.code).toBe('BAD_ENTITY_ERROR');
+
+      const [error] = applicationResponse.error.errors;
+
+      expect(error.field).toBe('ticket');
+      expect(error.message).toBe(
+        `Ticket with ID ${ticket.id} appears to be un-reserved due to the tickets service being down. Will not accept payment for now.`
+      );
+    });
+
     it('Should return a 400/BAD_ENTITY_ERROR status with the correct reason if the user tries to pay for an order that did not reserve the ticket.', async () => {
       const [user, cookie] = cookies.helpers.createUserAndCookie();
 

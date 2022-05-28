@@ -19,6 +19,14 @@ const post = async (
   const [stan, stanUnconnectedError] = stanSingleton.stan;
   if (stanUnconnectedError) throw stanUnconnectedError;
 
+  if (!req.order!.ticket.orderId)
+    throw new objects.errors.BadEntityError(
+      'ticket',
+      `Ticket with ID ${
+        req.order!.ticket.id
+      } appears to be un-reserved due to the tickets service being down. Will not accept payment for now.`
+    );
+
   if (req.order!.id !== req.order!.ticket.orderId) {
     console.log(
       `[payments] NATS client ${process.env.NATS_CLIENT_ID} emitting event to payment:duplicate-order channel.`
