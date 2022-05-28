@@ -49,4 +49,4 @@ images:
   newTag: 52d1e2f
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
-  newTag: 577e925
+  newTag: ee098ad
