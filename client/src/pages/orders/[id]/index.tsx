@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next';
 import DefaultLayout from '../../../components/layouts/default-layout';
+import OrderDetails from '../../../components/orders/order-details';
 import requests from '../../../lib/requests';
 import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 import { OrdersObjectDtoTypes } from '../../../lib/types/objects/dto/orders';
@@ -10,11 +11,11 @@ interface OrderDetailsPageProps {
 }
 
 const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
-  const { user } = props;
+  const { user, order } = props;
 
   return (
     <DefaultLayout user={user}>
-      <h1>OrderDetailsPage</h1>
+      {order && <OrderDetails order={order} />}
     </DefaultLayout>
   );
 };
