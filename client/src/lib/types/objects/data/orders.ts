@@ -4,4 +4,8 @@ export namespace OrdersObjectDataTypes {
   export interface CreateOrderData {
     newOrder: OrdersObjectDtoTypes.BaseOrderDto;
   }
+
+  export interface GetOrderData {
+    order: OrdersObjectDtoTypes.BaseOrderDto;
+  }
 }

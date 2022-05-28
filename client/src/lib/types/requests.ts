@@ -5,6 +5,7 @@ import { ReturnTypes } from './returns';
 import { UniversalObjectTypes } from './objects/universal';
 import { AuthObjectDtoTypes } from './objects/dto/auth';
 import { TicketsObjectDtoTypes } from './objects/dto/tickets';
+import { OrdersObjectDtoTypes } from './objects/dto/orders';
 
 export namespace RequestTypes {
   /**
@@ -38,6 +39,14 @@ export namespace RequestTypes {
   export type TicketsGetTicketFunction = (
     id: string
   ) => Promise<TicketsObjectDtoTypes.BaseTicketDto | null>;
+
+  /**
+   * server-side request to GET /orders/:id
+   */
+  export type OrdersGetOrderFunction = (
+    id: string,
+    cookie?: string
+  ) => Promise<OrdersObjectDtoTypes.BaseOrderDto | null>;
 
   /**
    * doServerSideRequest util function type
@@ -83,7 +92,7 @@ export namespace RequestTypes {
   /**
    * req.body type for POST /orders
    */
-   export interface NewOrderBody {
+  export interface NewOrderBody {
     data: {
       newOrder: {
         ticketId: string;

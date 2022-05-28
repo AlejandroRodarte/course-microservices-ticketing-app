@@ -38,7 +38,7 @@ const TicketDetailsPage: React.FC<TicketDetailsPageProps> = (props) => {
     });
     if (error || (response && response.error)) return;
     if (response && response.status === 201 && response.data)
-      console.log(`Order with ID ${response.data.newOrder.id} created.`);
+      router.push(`/orders/${response.data.newOrder.id}`);
   }, [doRequest, router.query.id]);
 
   return (
@@ -55,6 +55,7 @@ const TicketDetailsPage: React.FC<TicketDetailsPageProps> = (props) => {
           >
             Purchase
           </button>
+          {errors}
         </div>
       )}
     </DefaultLayout>
