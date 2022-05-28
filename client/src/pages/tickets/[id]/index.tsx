@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useCallback } from 'react';
 import DefaultLayout from '../../../components/layouts/default-layout';
+import TicketDetails from '../../../components/tickets/ticket-details';
 import useRequest from '../../../lib/hooks/use-request';
 import requests from '../../../lib/requests';
 import { OrdersObjectDataTypes } from '../../../lib/types/objects/data/orders';
@@ -45,16 +46,7 @@ const TicketDetailsPage: React.FC<TicketDetailsPageProps> = (props) => {
     <DefaultLayout user={user}>
       {ticket && (
         <div className="container">
-          <h1>{ticket.title}</h1>
-          <h4>Price: {ticket.price}</h4>
-          <h4>Status: {ticket.orderId ? 'Reserved' : 'Available'}</h4>
-          <button
-            disabled={!!ticket.orderId}
-            className="btn btn-primary"
-            onClick={onPurchase}
-          >
-            Purchase
-          </button>
+          <TicketDetails ticket={ticket} onPurchase={onPurchase} />
           {errors}
         </div>
       )}
