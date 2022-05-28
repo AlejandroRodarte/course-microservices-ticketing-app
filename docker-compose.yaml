@@ -73,7 +73,7 @@ services:
   expiration-redis:
     image: redis:7.0
   payments:
-    image: rodarte/msnr-ta-payments-prod:52d1e2f
+    image: rodarte/msnr-ta-payments-prod:cc34565
     ports:
       - '3004:3004'
     environment:
@@ -91,7 +91,7 @@ services:
   payments-mongodb:
     image: mongo:5.0
   front:
-    image: rodarte/msnr-ta-front-prod:073368d
+    image: rodarte/msnr-ta-front-prod:cc34565
     ports:
       - '3001:3001'
     environment:

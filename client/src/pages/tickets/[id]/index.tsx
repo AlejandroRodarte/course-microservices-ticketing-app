@@ -67,6 +67,8 @@ export const getServerSideProps: GetServerSideProps<
 
   const user = await requests.auth.currentUser(ctx.req.headers.cookie);
   const ticket = await requests.tickets.getTicket(id);
+
+  if (!ticket) return { redirect: { permanent: false, destination: '/' } };
   return { props: { user, ticket } };
 };
 

@@ -45,7 +45,7 @@ services:
   expiration-redis:
     image: redis:latest
   payments:
-    image: rodarte/msnr-ta-payments-dev:52d1e2f
+    image: rodarte/msnr-ta-payments-dev:cc34565
     volumes:
       - ./payments:/node/app
       - /node/app/node_modules
@@ -55,7 +55,7 @@ services:
     image: mongo:latest
     command: mongod --quiet --logpath /dev/null 
   front:
-    image: rodarte/msnr-ta-front-dev:073368d
+    image: rodarte/msnr-ta-front-dev:cc34565
     volumes:
       - ./client:/node/app
       - /node/app/node_modules
