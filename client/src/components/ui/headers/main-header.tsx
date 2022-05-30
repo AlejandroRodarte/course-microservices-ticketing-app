@@ -23,6 +23,16 @@ const MainHeader: React.FC<MainHeaderProps> = (props) => {
       show: !!!props.user,
     },
     {
+      href: '/tickets/new',
+      label: 'Sell Tickets',
+      show: !!props.user,
+    },
+    {
+      href: '/orders',
+      label: 'My Orders',
+      show: !!props.user,
+    },
+    {
       href: '/auth/sign-out',
       label: 'Sign Out',
       show: !!props.user,
