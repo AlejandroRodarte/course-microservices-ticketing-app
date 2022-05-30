@@ -82,6 +82,10 @@ const post = async (
     });
   if (savePaymentError) throw savePaymentError;
 
+  console.log(
+    `[payments] NATS client ${process.env.NATS_CLIENT_ID} emitting event to payment:created channel.`
+  );
+
   const natsError = await new PaymentCreatedPublisher(stan!).publish({
     id: savedPayment.id,
     stripeId: savedPayment.stripeId,

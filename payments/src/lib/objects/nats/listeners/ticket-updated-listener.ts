@@ -28,7 +28,7 @@ class TicketUpdatedListener extends objects.nats
     | undefined
   > {
     console.log(
-      `[orders] NATS client ${process.env.NATS_CLIENT_ID} received event from ticket:updated channel.`
+      `[payments] NATS client ${process.env.NATS_CLIENT_ID} received event from ticket:updated channel.`
     );
 
     const { id, orderId, version } = data;

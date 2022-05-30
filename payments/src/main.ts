@@ -1,3 +1,4 @@
+import './lib/env/set-docker-secrets';
 import { db } from '@msnr-ticketing-app/common';
 import app from './app';
 import setFromDockerSecrets from './lib/env/set-from-docker-secrets';
@@ -33,6 +34,7 @@ const start: MainTypes.MainFunction = async () => {
 
   const natsError = await stanSingleton.connect();
   if (natsError) return [undefined, natsError];
+
   console.log(
     `[payments] Connected client ${process.env.NATS_CLIENT_ID} to NATS server on payments microservice.`
   );

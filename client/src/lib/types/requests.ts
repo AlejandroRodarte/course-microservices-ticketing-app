@@ -99,4 +99,16 @@ export namespace RequestTypes {
       };
     };
   }
+
+  /**
+   * req.body type for POST /payments
+   */
+  export interface NewPaymentBody {
+    data: {
+      newCharge: {
+        token: string;
+        orderId: string;
+      };
+    };
+  }
 }

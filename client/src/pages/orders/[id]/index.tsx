@@ -1,9 +1,13 @@
 import { GetServerSideProps } from 'next';
+import { useCallback, useState } from 'react';
 import DefaultLayout from '../../../components/layouts/default-layout';
 import OrderDetails from '../../../components/orders/order-details';
+import useRequest from '../../../lib/hooks/use-request';
 import requests from '../../../lib/requests';
+import { PaymentsObjectDataTypes } from '../../../lib/types/objects/data/payments';
 import { AuthObjectDtoTypes } from '../../../lib/types/objects/dto/auth';
 import { OrdersObjectDtoTypes } from '../../../lib/types/objects/dto/orders';
+import { RequestTypes } from '../../../lib/types/requests';
 
 interface OrderDetailsPageProps {
   user: AuthObjectDtoTypes.BaseUserDto | null;
@@ -13,9 +17,45 @@ interface OrderDetailsPageProps {
 const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
   const { user, order } = props;
 
+  const { doRequest, errors } = useRequest<
+    RequestTypes.NewPaymentBody,
+    PaymentsObjectDataTypes.NewPaymentData
+  >({
+    endpoint: 'payments',
+    microservice: 'payments',
+    method: 'post',
+    config: {
+      withCredentials: true,
+    },
+  });
+
+  const [isOrderComplete, setIsOrderComplete] = useState(
+    order !== null && order.status === 'complete'
+  );
+
+  const onPayment = useCallback(
+    async (token: string) => {
+      const [response, error] = await doRequest({
+        data: { newCharge: { token, orderId: order!.id } },
+      });
+      if (error || (response && response.error)) return;
+      if (response && response.status === 201 && response.data)
+        setIsOrderComplete(() => true);
+    },
+    [order!.id]
+  );
+
   return (
     <DefaultLayout user={user}>
-      {order && <OrderDetails order={order} email={user!.email} />}
+      {order && (
+        <OrderDetails
+          order={order}
+          email={user!.email}
+          onToken={onPayment}
+          errors={errors}
+          isOrderComplete={isOrderComplete}
+        />
+      )}
     </DefaultLayout>
   );
 };
@@ -39,8 +79,8 @@ export const getServerSideProps: GetServerSideProps<
       redirect: {
         permanent: false,
         destination: id
-          ? `/auth/sign-in?redirect=${encodeURIComponent(`/orders/${id}`)}}`
-          : `/auth/sign-in?redirect=${encodeURIComponent('/orders')}}`,
+          ? `/auth/sign-in?redirect=${encodeURIComponent(`/orders/${id}`)}`
+          : `/auth/sign-in?redirect=${encodeURIComponent('/orders')}`,
       },
     };
 

@@ -29,6 +29,10 @@ class PaymentCreatedListener extends objects.nats
     | InstanceType<typeof objects.errors.NatsError>
     | undefined
   > {
+    console.log(
+      `[orders] NATS client ${process.env.NATS_CLIENT_ID} received event from payment:created channel.`
+    );
+
     const {
       order: { id: orderId },
     } = data;
@@ -56,6 +60,10 @@ class PaymentCreatedListener extends objects.nats
         errorMessage: `There was an error marking order with ID ${orderId} as complete.`,
       });
     if (updateOrderError) return updateOrderError;
+
+    console.log(
+      `[orders] NATS client ${process.env.NATS_CLIENT_ID} emitting event to order:completed channel.`
+    );
 
     const natsError = await new OrderCompletedPublisher(this.client).publish({
       id: order.id,

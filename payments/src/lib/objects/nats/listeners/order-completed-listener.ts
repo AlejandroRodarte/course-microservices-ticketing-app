@@ -27,6 +27,10 @@ class OrderCompletedListener extends objects.nats
     | InstanceType<typeof objects.errors.EntityNotFoundError>
     | undefined
   > {
+    console.log(
+      `[payments] NATS client ${process.env.NATS_CLIENT_ID} received event from order:completed channel.`
+    );
+
     const { id, version } = data;
 
     const [order, findOrderError] = await dbHelpers.orders.findByEvent({
