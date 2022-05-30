@@ -4,4 +4,4 @@ metadata:
   name: expiration-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2

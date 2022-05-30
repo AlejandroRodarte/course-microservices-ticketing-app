@@ -34,6 +34,11 @@ data:
   AUTH_MICROSERVICE_PORT: "3000"
   NEXT_PUBLIC_API_URL: https://ticketing-api.104.197.128.80.nip.io
   NEXT_PUBLIC_ENV: development-gcloud
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_51L3nTtIWPfnfPOmq5I97aU1tPKrTiPgdP3DJipBNIJwLRbc4HP8QlGBkL3Fg4GF35YnyNXIYu5giGJuReR5gyysu00nBVr8fYj
+  ORDERS_MICROSERVICE_NAME: orders-service
+  ORDERS_MICROSERVICE_PORT: "3003"
+  PAYMENTS_MICROSERVICE_NAME: payments-service
+  PAYMENTS_MICROSERVICE_PORT: "3004"
   TICKETS_MICROSERVICE_NAME: tickets-service
   TICKETS_MICROSERVICE_PORT: "3002"
 kind: ConfigMap
@@ -452,6 +457,41 @@ spec:
             configMapKeyRef:
               key: AUTH_MICROSERVICE_PORT
               name: front-configmap
+        - name: TICKETS_MICROSERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: TICKETS_MICROSERVICE_NAME
+              name: front-configmap
+        - name: TICKETS_MICROSERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: TICKETS_MICROSERVICE_PORT
+              name: front-configmap
+        - name: ORDERS_MICROSERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: ORDERS_MICROSERVICE_NAME
+              name: front-configmap
+        - name: ORDERS_MICROSERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: ORDERS_MICROSERVICE_PORT
+              name: front-configmap
+        - name: PAYMENTS_MICROSERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: PAYMENTS_MICROSERVICE_NAME
+              name: front-configmap
+        - name: PAYMENTS_MICROSERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PAYMENTS_MICROSERVICE_PORT
+              name: front-configmap
+        - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              name: front-configmap
         image: us.gcr.io/prime-byway-274602/msnr-ta-front-skaffold
         livenessProbe:
           failureThreshold: 5
@@ -692,6 +732,11 @@ spec:
             secretKeyRef:
               key: MONGODB_URL
               name: payments-secret
+        - name: STRIPE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: STRIPE_API_KEY
+              name: payments-secret
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
@@ -920,7 +965,8 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    MONGODB_URL: AgAI9OsOZk78FM0xIl8xmfLT262Dzy7PVx3m6PDm31HS72uvQ4JuTJw9CwDKT6x9lu4YyAP5UqfI0VjCaT6QQxPzpFW27A5fMxBFxfSSILK3J4PJsbsEeuEeAz9Gb7iGhyUYe6IIX8oTt73LJ30CEUwYXLoL8GPjrXPb718wUrZa/sDe1lwxl6cZSlI6LrEvZm/ENg4SrWSgRr0PhYPAvHMM6o/SPyBpOGQbiqC9ObNsJIRZ6cOhgDlBVoRR586GhYgalKO2e2+VveMttn8tv8uoNrgSXPLGZ/UtGTy7eD6CyBIM2+DfbCTeWVXyLUOVRKjrXHDaqu9irxFgv+lWNsNkwIUvDtODVtdTSxStsI/f8szWS1DdhQGWMnE4bQZoijeVlMAfP2wisyp3X5JYmNuePADk5Q7Ide85NN1ZapzUWGpu/HQtpX8t3nJ1E4Ba0mGtOWRK1npCeKe162uyDjvCcoR/Zu1zPS7x6Er+T4EHjl4NbnTtzpgpK4M0xJ1wcCftfQRaBvHSpGDdTuD7oUgmjiWkGRTS7sGfulqRjPxo2QdNknqh3S2agNetIqozL9pxQcqFaLjCh8PojvBKwurjC4YyZ9i5ZmjBjsDesb+G1YVvt9JEhBLPxAh9jQwj7Fp9aSrcu2B6etBG9ZshZEz/2uydR5uHF2jFvHbzH5UeDiGiuj/o25mERfc2UdtI2EiDe3u++FUPMF3viJuHIhZayvmx9SiME3fgC9ZtIhDGZ/BbmVov1u4ikxW3xZlKerpgRI0TTxUS4BQ=
+    MONGODB_URL: AgCafyev9QOwqnGKbn/8ub9p7Lxv5n8QZ+jXpD6WgcTc7HclNkGZytUODV7gJl1xd4LCgtzrlG5FGsXACU9X/ux+UpNRWbhWdJt9St/zT7HMfs+rbTZ1f9KLX/WOBByTansJBth5y3brSZ276SI3cllcM+4OxRoMe4x2ffGvF9HMgFesHn8Bbi03NHUaEAI8eqo/3AVc0ddsow1x/nosRypIx0E+OpF3sBq2WEhF7fUAHC6WxsiX1RUCP5RfQNKT7SKHCkn9NzCwqVvpdQWbHzz1daM5n/UJ54N2e/a+7moUZLjrwnS+x62LIpi1U1S4fjieLgngcJGxIhfNRwlFSe5hliq0n83kuvfsAOdaZMkZRMta2xRvq2ujt/IcLJzXoQ8/UHYwqlOUlbgGIG9flhnlqJB2ac2sAyYznoqMmXBTYM8rJnzPChXX67m7Fx6CcOJV5iIq+5lsa3RQQ8ksc5IfP5YCCq3NemRIoxmKsMUDThhQnfViWBYZwy2c+HB/KldevhozcSASLK1B1/BiOfOtz8GNDsxEXFZYQl7G4c1uEn0glj1GZLm3sHWOssrOSuarzhlI/BkGGCaOn0W7QUX8eqny1CcJS7q0Y/WwCIL8fV5eFxoJpkDVmBfqZ0+TPRKIHAQgZZL/5Te0rhJH5ycMO8pFL5Y+44s3g6oHIfppS7kdNqItWD5pf0H2/QaMLiEhp46yEr1TR5UTrp1wBRIIkYAaZhf+d3MG4dbUS6crLN7hb1QIZs/2WtsI91t0AXaZGiwDQpliT/I=
+    STRIPE_API_KEY: AgAx1qt6APtUIgbdDSUwd7ph8oU31i53dmYawIKrihSqeltRvwgcSlxM+eoT5rpwevtE9dwSl3BTfNxwHmB4Cm5Z5CYKCP+IkTgpjq82hVxFvV5X3XgSbDbKkTl/Zr9ScapaIFnOnFltjOKUsVcLOJJpVYmv6xzWXtZSmIcN7yTe1Ti4MK9LGtgadcDw2SkojR2kgdnE+KDHaYxXNC+guUVneG6KIk0g+A2ASMWUPcW6kpQfoXr22GmEsuyF23m6sowFeqm9mBhqIgOWaCQrBdyhrSKVpjCOTfgIEL9a6BY4zHpkR7AGTcnx47bolmXixz/rBG3LdUyCMTwk/YEfyAa717mXb3cNsyPcksOyxHvKG9oN5FrlKyE8QALZPLcmj3gcWzkXPQhnIjIh+ojcCb509SrQ9LZHeoAudqueMBU6HGNrC2TDnZuZYktCeSam+56DwsGtOaL6qOuasaHxd/kMndmYTrGuAcf4kr+cz/wFUru/WXWfZJR0laBOyPp6keX9ziDRYlLQeX9F4JjXLCSrqaz1TVGd8ccnONlBraKF24MokcNTCzM1gMbYEbi1HU58N4u/P1IQxlyiTommM05KZE1xC0zJ+Mjc7De/lOQ/9re0PYymoeoJ2CP3W52PSJLAic7Og+CY8yI466Zbwzy/kyithBA1SEL7zwdeprTGe5jRimZYsRm1EGsBAWa4xgsJ521xdoTe6FwI7aD41kTHadSsVZOfGRrmqB/fyIS8uPR+Dw/0iM3NGP8IqmSLBq/0aypLlKcthYne8iPFivVnxeqEGPhH4SiVt9NdtXIa7WMZxP+qJSfBIINSuGjwI4BBko05rfxQfIDGcg==
   template:
     metadata:
       name: payments-secret

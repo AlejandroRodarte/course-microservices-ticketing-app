@@ -34,6 +34,11 @@ data:
   AUTH_MICROSERVICE_PORT: "3000"
   NEXT_PUBLIC_API_URL: https://ticketing-api.10.64.140.43.nip.io
   NEXT_PUBLIC_ENV: production
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_51L3nTtIWPfnfPOmq5I97aU1tPKrTiPgdP3DJipBNIJwLRbc4HP8QlGBkL3Fg4GF35YnyNXIYu5giGJuReR5gyysu00nBVr8fYj
+  ORDERS_MICROSERVICE_NAME: orders-service
+  ORDERS_MICROSERVICE_PORT: "3003"
+  PAYMENTS_MICROSERVICE_NAME: payments-service
+  PAYMENTS_MICROSERVICE_PORT: "3004"
   TICKETS_MICROSERVICE_NAME: tickets-service
   TICKETS_MICROSERVICE_PORT: "3002"
 kind: ConfigMap
@@ -236,7 +241,7 @@ metadata:
   name: auth-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: auth
@@ -330,7 +335,7 @@ metadata:
   name: expiration-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: expiration
@@ -415,7 +420,7 @@ metadata:
   name: front-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: front
@@ -447,7 +452,42 @@ spec:
             configMapKeyRef:
               key: AUTH_MICROSERVICE_PORT
               name: front-configmap
-        image: rodarte/msnr-ta-front-prod:04398b2
+        - name: TICKETS_MICROSERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: TICKETS_MICROSERVICE_NAME
+              name: front-configmap
+        - name: TICKETS_MICROSERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: TICKETS_MICROSERVICE_PORT
+              name: front-configmap
+        - name: ORDERS_MICROSERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: ORDERS_MICROSERVICE_NAME
+              name: front-configmap
+        - name: ORDERS_MICROSERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: ORDERS_MICROSERVICE_PORT
+              name: front-configmap
+        - name: PAYMENTS_MICROSERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: PAYMENTS_MICROSERVICE_NAME
+              name: front-configmap
+        - name: PAYMENTS_MICROSERVICE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: PAYMENTS_MICROSERVICE_PORT
+              name: front-configmap
+        - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              name: front-configmap
+        image: rodarte/msnr-ta-front-prod:cc34565
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -518,7 +558,7 @@ metadata:
   name: orders-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: orders
@@ -574,7 +614,7 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-orders-prod:2fe6e9e
+        image: rodarte/msnr-ta-orders-prod:52d1e2f
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -631,7 +671,7 @@ metadata:
   name: payments-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: payments
@@ -677,12 +717,17 @@ spec:
             secretKeyRef:
               key: MONGODB_URL
               name: payments-secret
+        - name: STRIPE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: STRIPE_API_KEY
+              name: payments-secret
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-payments-prod:250e673
+        image: rodarte/msnr-ta-payments-prod:cc34565
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -739,7 +784,7 @@ metadata:
   name: tickets-deployment
   namespace: ticketing
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: tickets
@@ -790,7 +835,7 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-tickets-prod:250e673
+        image: rodarte/msnr-ta-tickets-prod:ee098ad
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -900,7 +945,8 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    MONGODB_URL: AgCw63JNRjV54wI10IpaFLUoqvswM2YPcW5pfGczFt0jgpGQwSb4TfbHMTwBRffRDugIEZS1JWcMFAK+Tb/cEWYKCrdjsGWDgZ7OMxmHhIEMEmtvY8ED5EFlbKPSC/SLH0M5sU2an7z0osCxmoyICtXMG4+X5xDINayQMLnL/P7Rcfetln2gVXOfIc4gzbcTleI861bQYpd/ept/tX1AucRZOL5MSIUbIrZROiHF7o11AIvQz5ZfLnLFX7rSQzKhOYZWkemfX6brmlrqh3BeE2WN6bMvXSjBC4EJT4UDmOKy5MGNc+RafdIsO3xKGhJeEWsJvRCi5pdWrNYWfgq0ZgbOlG8HjLFVrxPR3upLD7PnYVtZzpRfR4134DVFS50otJff5wNFoTmrs3aJUPIHrUiTYniOGTtZVR1A9JqyQtokE06Jf7iXY/crEzzVcLZScxVXpwjY8/H5DnHkxUO9KDILzuBKYZ426E/il0E0vCVQNNBCuLojhvjyi5eiflSaviqhPU0tAeu5EV4m0KmHfIplQeRQLfD9AOOn6uy/EXGxYCEtDedCbFBIo2yFmW9zGNyHq7jen60I9Vx3F/dJt3kCl6s307RrKR5tRBVHNu/D0hXy5IZ6EYiO5Fs/V43teqvS8PKKPwxdAdSNnwlLD8G4I2+dKQRq0KWKHDHveYS9y3v1NRn4Fn3R/tJvGfr5iwkI6sZhgvhpaXrhKUt5SG0JNwczsC2dDYWGOJDgh6HZZak4vHxZ4kSCAFzaHpHGEGnO2zRqrQ4XM2M=
+    MONGODB_URL: AgCOSQOSUDo7Xo5n5Y1ZCIH7r+LY87AWTa1yBMTheb1nr9s48I0E+5X1Oe4hgDtVyp2gTMQIFUO5fSIJNYF0DvBvqt3xKz5b9ZN2UKjNE+ZU+k85unGJ+8mmsqHzC+r2beU+Z0slz9kl75AVreVXK//w+36WI4y5QTzAqSXKorNvV/iyrhPr9KzkQnLOwQdepbF2AlQ80D9MLaOvcbP3rDW44OVBlbmHEHI3vkF9dWkabUMEQ2Cm3xuVjdGwzExugtGW8qvGAjyj2Alces1mXJNlfEqprquwNlJ18DpIXzNbkNOwSMVZFKKkEhgnYMU8e5SWdcjnx9oL/OD7RwufcvuJX6aCLI33yHEsJiwh2GCGvbw9vhddHlCsNIhMF1vdZ8wIFurJsjfXBDv5J+YbrjbkESuTyzFem8cq+wFEn9hvLgyfF1GyqLMtmDyv8kPRc5pN8629NA6HqXti2vwWj3e7LVk3Bb1ejejCtTmsINwAckdc3EGtnU21sS42F8+sUMtBUI59FPlDQ8/p2zh6t+g/RKFDLlco0U7zeAEL7jNzcG5L5gXHt2hoyVb4XMW1O1ewc9DTXVPcRPKO4prBHwNYWII1E0u/kKWtsKeA4dNaayO1SPfElOcPBNOTbTKa2RPegEb8SgUxN0jtVFLJeeMuYBhf0j5wY0axlO2bwM9e/YLkGmabtlN+pQg6P/q9S49hNKyucZ8bP5lzbSifye+8gNZ1Tfy23JWCW6nE3zxYrXev9ghgJx5hwiVIZW/u9m+JiEtA2PuYxrk=
+    STRIPE_API_KEY: AgAnKg2KIkeDnB4ApVK8YbKZk3SSXYAlLWw6gM7IDF0+7rKPMPs1n8tm0r0lkbsPecv+ig7Y4QfV4YFI636M+hdLpW4at8WlWCjSNtg2Xg/JfSYP/bqWQYJiyoamJHh72yrI1UJhBi1ltup5vbiArIu9jWsJ0E5MgSvwTE76/ueym4SjZ2SvmyoYGNzRfXQpJSi/PF51tUlUEPDUH3aKiVenh4p2eCOXGhBQvfS8aA80NZucwzSwDsHV1vlzJi6Ts700ze12ehKTM8btAN0a7xj81tU/lnws5KlblaTgb5KdhX2wd+Awa1HO71aoikWtOHVNK1I+a5v0kb4mDgXMlzjYCfCYe9qUdpcPC/mr60ZkNY1vw+V5KuZWqtdkz5oNiJ9Obb8r/wmHmQcGOSgXcIbUtlDHi87DwrnFhegK5qLGBDZiv6EAavAlLMa/1k2kAfxZ1yPa+F7QB2TEjqWGQniZkEk6zW52+5J4aHX6Rb2eofHEOP76dmIhUyVQ3UoaO4PvJ/tkRlsEVgD3qpj8Zzn8scbv5EgEcLNtbUh3gN4rO0KUDrRA096rkWDa/hA3Pbkc63rumiZe6B54XDspB7VY3mVuFXALt/HRpWMew3i7iRukh6Dv8PmdwonJMAnIdb7HeN2sysjjA0+MZI9jkUethRlCMuNPnQTUSZ9rTT6p5Ps8mEz8O3RtJ3zVo7//wD6CZRxfe1YY5QNDzrpQutU3MQRU31FrhsJ1WmXP0ZL/cCzaPpQCoJTLRufU9guTCEQrSB1pz6kvNXy9K7WihGC0HDwCW9Rr1L57/Br+ssWjwt6dSmeGXK22k9vgsd/lCctSom98nXsKhSnsHA==
   template:
     metadata:
       name: payments-secret

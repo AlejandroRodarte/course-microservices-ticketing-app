@@ -4,4 +4,4 @@ metadata:
   name: auth-deployment
   namespace: ticketing
 spec:
-  replicas: 3 # scale the auth-deployment Deployment to 3 replicas instead of 1
+  replicas: 2 # scale the auth-deployment Deployment to 3 replicas instead of 1
