@@ -64,7 +64,7 @@ const post = async (
     instance: stripe.instance,
     params: {
       currency: 'usd',
-      amount: req.order!.price * 100,
+      amount: +(req.order!.price * 100).toFixed(2),
       source: token,
     },
   });

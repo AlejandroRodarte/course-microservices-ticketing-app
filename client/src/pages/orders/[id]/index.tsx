@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 import DefaultLayout from '../../../components/layouts/default-layout';
 import OrderDetails from '../../../components/orders/order-details';
@@ -16,6 +17,7 @@ interface OrderDetailsPageProps {
 
 const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
   const { user, order } = props;
+  const router = useRouter();
 
   const { doRequest, errors } = useRequest<
     RequestTypes.NewPaymentBody,
@@ -39,8 +41,10 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
         data: { newCharge: { token, orderId: order!.id } },
       });
       if (error || (response && response.error)) return;
-      if (response && response.status === 201 && response.data)
+      if (response && response.status === 201 && response.data) {
         setIsOrderComplete(() => true);
+        router.replace('/orders');
+      }
     },
     [order!.id]
   );
@@ -72,7 +76,6 @@ export const getServerSideProps: GetServerSideProps<
   if (!id) return { redirect: { permanent: false, destination: '/' } };
 
   const user = await requests.auth.currentUser(ctx.req.headers.cookie);
-  const order = await requests.orders.getOrder(id, ctx.req.headers.cookie);
 
   if (!user)
     return {
@@ -83,6 +86,8 @@ export const getServerSideProps: GetServerSideProps<
           : `/auth/sign-in?redirect=${encodeURIComponent('/orders')}`,
       },
     };
+
+  const order = await requests.orders.getOrder(id, ctx.req.headers.cookie);
 
   if (!order)
     return {

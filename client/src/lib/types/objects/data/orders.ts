@@ -8,4 +8,8 @@ export namespace OrdersObjectDataTypes {
   export interface GetOrderData {
     order: OrdersObjectDtoTypes.BaseOrderDto;
   }
+
+  export interface GetOrdersData {
+    orders: OrdersObjectDtoTypes.BaseOrderDto[];
+  }
 }

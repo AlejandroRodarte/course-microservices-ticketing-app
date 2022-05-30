@@ -49,6 +49,13 @@ export namespace RequestTypes {
   ) => Promise<OrdersObjectDtoTypes.BaseOrderDto | null>;
 
   /**
+   * server-side request to GET /orders
+   */
+  export type OrdersGetOrdersFunction = (
+    cookie?: string
+  ) => Promise<OrdersObjectDtoTypes.BaseOrderDto[] | null>;
+
+  /**
    * doServerSideRequest util function type
    */
   export interface DoServerSideRequestArgs<BodyType> {
