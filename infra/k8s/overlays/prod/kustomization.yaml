@@ -34,7 +34,7 @@ resources:
 images:
 - name: rodarte/msnr-ta-auth-prod
   newName: rodarte/msnr-ta-auth-prod
-  newTag: 34f1d42
+  newTag: cf7fc04
 - name: rodarte/msnr-ta-expiration-prod
   newName: rodarte/msnr-ta-expiration-prod
   newTag: 2fe6e9e
