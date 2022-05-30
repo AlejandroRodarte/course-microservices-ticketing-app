@@ -40,13 +40,13 @@ images:
   newTag: 2fe6e9e
 - name: rodarte/msnr-ta-front-prod
   newName: rodarte/msnr-ta-front-prod
-  newTag: cc34565
+  newTag: 579a77b
 - name: rodarte/msnr-ta-orders-prod
   newName: rodarte/msnr-ta-orders-prod
-  newTag: 52d1e2f
+  newTag: 579a77b
 - name: rodarte/msnr-ta-payments-prod
   newName: rodarte/msnr-ta-payments-prod
-  newTag: cc34565
+  newTag: 579a77b
 - name: rodarte/msnr-ta-tickets-prod
   newName: rodarte/msnr-ta-tickets-prod
-  newTag: ee098ad
+  newTag: 579a77b
