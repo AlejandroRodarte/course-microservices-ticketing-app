@@ -29,7 +29,11 @@ const get = async (
         200,
         'TICKETS_FETCHED',
         'The tickets have been succesfully fetched from the database.',
-        new GetTicketsData(BaseTicketDto.fromTicketDocumentArray(tickets)),
+        new GetTicketsData(
+          BaseTicketDto.fromTicketDocumentArray(
+            tickets.filter((ticket) => !ticket.orderId)
+          )
+        ),
         undefined
       )
     );
