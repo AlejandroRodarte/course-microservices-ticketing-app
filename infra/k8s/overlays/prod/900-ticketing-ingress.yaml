@@ -4,5 +4,5 @@ kind: Ingress
 metadata:
   name: ticketing-ingress
   namespace: ticketing # application namespace
-spec:
-  ingressClassName: public
+  annotations:
+    kubernetes.io/ingress.class: nginx
