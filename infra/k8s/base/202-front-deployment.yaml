@@ -15,20 +15,20 @@ spec:
       namespace: ticketing
     spec:
       volumes:
-        - name: env-local
+        - name: env
           configMap:
             name: front-public-configmap
             items:
-              - key: .env.local
-                path: .env.local
+              - key: .env
+                path: .env
       containers:
         - name: next
           image: rodarte/msnr-ta-front-prod
           volumeMounts:
-            - name: env-local
-              mountPath: /node/.env.local
+            - name: env
+              mountPath: /node/.env
               readOnly: true
-              subPath: .env.local
+              subPath: .env
           env:
             - name: AUTH_MICROSERVICE_NAME
               valueFrom:
