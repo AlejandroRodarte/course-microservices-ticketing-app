@@ -5,6 +5,6 @@ metadata:
   namespace: ticketing
 data:
   NODE_ENV: production
-  CORS_ORIGIN: https://ticketing.10.64.140.43.nip.io
+  CORS_ORIGIN: https://ticketing.143.198.247.194.nip.io
   FORCE_INSECURE_COOKIE: 'false'
-  COOKIE_SESSION_DOMAIN: .10.64.140.43.nip.io
+  COOKIE_SESSION_DOMAIN: .143.198.247.194.nip.io

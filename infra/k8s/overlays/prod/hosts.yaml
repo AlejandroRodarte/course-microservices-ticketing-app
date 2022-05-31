@@ -1,7 +1,7 @@
 # at 900-ticketing-ingress.yaml, replace the spec.rules[0].host dummy value with our production website
 - op: replace
   path: /spec/rules/0/host
-  value: ticketing-api.10.64.140.43.nip.io
+  value: ticketing-api.143.198.247.194.nip.io
 - op: replace
   path: /spec/rules/1/host
-  value: ticketing.10.64.140.43.nip.io
+  value: ticketing.143.198.247.194.nip.io
