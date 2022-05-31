@@ -143,6 +143,7 @@ LABEL com.rodarte.msnr.ticketing.client.stage prod
 
 # copy /node/.next compiled frontend from build stage to /node/.next in prod stage
 COPY --chown=node:node --from=build /node/.next ./.next
+COPY --chown=node:node --from=build /node/next.config.js ./next.config.js
 
 # run healthcheck
 HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/api/health/healthz || exit 1
