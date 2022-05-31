@@ -19,7 +19,6 @@ function useRequest<BodyType, DataType>(
   >['doRequest'] = async (body?: BodyType) => {
     try {
       const url = getUrl(args.endpoint, args.microservice);
-      console.log(url);
       let response:
         | AxiosResponse<
             UniversalObjectTypes.ApplicationResponse<

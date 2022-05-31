@@ -14,65 +14,62 @@ spec:
         app: front
       namespace: ticketing
     spec:
+      volumes:
+        - name: env-local
+          configMap:
+            name: front-public-configmap
+            items:
+              - key: .env.local
+                path: .env.local
       containers:
         - name: next
           image: rodarte/msnr-ta-front-prod
+          volumeMounts:
+            - name: env-local
+              mountPath: /node/.env.local
+              readOnly: true
+              subPath: .env.local
           env:
-            - name: NEXT_PUBLIC_ENV
-              valueFrom:
-                configMapKeyRef:
-                  name: front-configmap
-                  key: NEXT_PUBLIC_ENV
-            - name: NEXT_PUBLIC_API_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: front-configmap
-                  key: NEXT_PUBLIC_API_URL
             - name: AUTH_MICROSERVICE_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: AUTH_MICROSERVICE_NAME
             - name: AUTH_MICROSERVICE_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: AUTH_MICROSERVICE_PORT
             - name: TICKETS_MICROSERVICE_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: TICKETS_MICROSERVICE_NAME
             - name: TICKETS_MICROSERVICE_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: TICKETS_MICROSERVICE_PORT
             - name: ORDERS_MICROSERVICE_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: ORDERS_MICROSERVICE_NAME
             - name: ORDERS_MICROSERVICE_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: ORDERS_MICROSERVICE_PORT
             - name: PAYMENTS_MICROSERVICE_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: PAYMENTS_MICROSERVICE_NAME
             - name: PAYMENTS_MICROSERVICE_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: front-configmap
+                  name: front-private-configmap
                   key: PAYMENTS_MICROSERVICE_PORT
-            - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-              valueFrom:
-                configMapKeyRef:
-                  name: front-configmap
-                  key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
           startupProbe:
             failureThreshold: 3
             tcpSocket:

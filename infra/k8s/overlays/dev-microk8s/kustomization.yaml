@@ -5,12 +5,12 @@ kind: Kustomization
 patchesStrategicMerge:
 - 101-auth-secret.yaml
 - 102-common-secret.yaml
-- 103-front-configmap.yaml
 - 104-common-configmap.yaml
 - 106-tickets-secret.yaml
 - 108-orders-secret.yaml
 - 110-expiration-secret.yaml
 - 112-payments-secret.yaml
+- 113-front-public-configmap.yaml
 - 200-auth-deployment.yaml
 - 201-auth-mongodb-deployment.yaml
 - 202-front-deployment.yaml

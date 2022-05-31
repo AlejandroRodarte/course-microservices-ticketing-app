@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: front-public-configmap
+  namespace: ticketing
+data:
+  .env.local: |-
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51L3nTtIWPfnfPOmq5I97aU1tPKrTiPgdP3DJipBNIJwLRbc4HP8QlGBkL3Fg4GF35YnyNXIYu5giGJuReR5gyysu00nBVr8fYj
+    NEXT_PUBLIC_ENV=development-gcloud
+    NEXT_PUBLIC_API_URL=https://ticketing-api.104.197.128.80.nip.io
