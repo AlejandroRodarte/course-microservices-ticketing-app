@@ -1,6 +1,4 @@
-#!/usr/bin/env bash
-set -Ex
-
+#!/bin/bash
 function apply_path {
   echo "Check that we have NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY variable."
   test -n "$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
@@ -16,4 +14,4 @@ function apply_path {
 }
 
 apply_path
-
+exec "$@"
