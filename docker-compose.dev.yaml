@@ -55,7 +55,7 @@ services:
     image: mongo:latest
     command: mongod --quiet --logpath /dev/null 
   front:
-    image: rodarte/msnr-ta-front-dev:43d27db
+    image: rodarte/msnr-ta-front-dev:ca983e0
     volumes:
       - ./client:/node/app
       - /node/app/node_modules

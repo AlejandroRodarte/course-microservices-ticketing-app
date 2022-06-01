@@ -28,10 +28,24 @@ const getUrl = (
   microservice: AxiosTypes.MicroServices,
   isServer = false
 ) => {
-  console.log('NEXT_PUBLIC_AUTH_MICROSERVICE_PORT: ', process.env.NEXT_PUBLIC_AUTH_MICROSERVICE_PORT);
-  console.log('NEXT_PUBLIC_TICKETS_MICROSERVICE_PORT: ', process.env.NEXT_PUBLIC_TICKETS_MICROSERVICE_PORT);
-  console.log('NEXT_PUBLIC_ORDERS_MICROSERVICE_PORT: ', process.env.NEXT_PUBLIC_ORDERS_MICROSERVICE_PORT);
-  console.log('NEXT_PUBLIC_PAYMENTS_MICROSERVICE_PORT: ', process.env.NEXT_PUBLIC_AUTH_MICROSERVICE_PORT);
+  console.log('isDocker?', isDocker());
+  console.log('NEXT_PUBLIC_API_URL: ', process.env.NEXT_PUBLIC_API_URL);
+  console.log(
+    'microserviceToPortMapper: ',
+    JSON.stringify(microserviceToPortMapper, undefined, 2)
+  );
+  console.log('microservice: ', microservice);
+  console.log(
+    'microserviceToPortMapper[microservice!]: ',
+    microserviceToPortMapper[microservice!]
+  );
+  console.log('endpoint: ', endpoint);
+  console.log(
+    'url: ',
+    `${process.env.NEXT_PUBLIC_API_URL}:${
+      microserviceToPortMapper[microservice!]
+    }/${endpoint}`
+  );
   if (isServer)
     return `http://${microserviceToNameMapper[microservice!]}:${
       microserviceToPortMapper[microservice!]
