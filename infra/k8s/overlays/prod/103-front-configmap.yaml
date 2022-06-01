@@ -5,4 +5,4 @@ metadata:
   namespace: ticketing
 data:
   NEXT_PUBLIC_ENV: development-microk8s
-  NEXT_PUBLIC_API_URL: https://ticketing-api.143.198.247.194.nip.io
+  NEXT_PUBLIC_API_URL: https://ticketing-api.rodarte.tk
