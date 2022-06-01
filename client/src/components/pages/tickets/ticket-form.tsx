@@ -7,6 +7,8 @@ interface TicketFormProps {
 }
 
 const TicketForm: React.FC<TicketFormProps> = (props) => {
+  const { onSubmit: propsOnSubmit } = props;
+
   const [form, setForm] = useState<FormTypes.TicketForm>({
     title: '',
     price: '',
@@ -40,9 +42,9 @@ const TicketForm: React.FC<TicketFormProps> = (props) => {
   const onSubmit = useCallback(
     (event: React.FormEvent) => {
       event.preventDefault();
-      props.onSubmit(form);
+      propsOnSubmit(form);
     },
-    [form]
+    [form, propsOnSubmit]
   );
 
   return (

@@ -35,10 +35,12 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
     order !== null && order.status === 'complete'
   );
 
+  const { id: orderId } = order!;
+
   const onPayment = useCallback(
     async (token: string) => {
       const [response, error] = await doRequest({
-        data: { newCharge: { token, orderId: order!.id } },
+        data: { newCharge: { token, orderId } },
       });
       if (error || (response && response.error)) return;
       if (response && response.status === 201 && response.data) {
@@ -46,7 +48,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = (props) => {
         router.replace('/orders');
       }
     },
-    [order!.id]
+    [doRequest, router, orderId]
   );
 
   return (

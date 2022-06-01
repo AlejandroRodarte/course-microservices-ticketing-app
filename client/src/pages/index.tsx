@@ -5,6 +5,7 @@ import TicketsTable from '../components/tickets/tickets-table';
 import requests from '../lib/requests';
 import { AuthObjectDtoTypes } from '../lib/types/objects/dto/auth';
 import { TicketsObjectDtoTypes } from '../lib/types/objects/dto/tickets';
+import getConfig from 'next/config';
 
 interface HomePageProps {
   user: AuthObjectDtoTypes.BaseUserDto | null;
@@ -12,6 +13,13 @@ interface HomePageProps {
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
+  const config = getConfig();
+  console.log(config);
+  console.log(config.publicRuntimeConfig.NEXT_PUBLIC_ENV);
+  console.log(
+    config.publicRuntimeConfig.NEXT_PUBLIC_ENV === 'production-docker'
+  );
+
   const { user, tickets } = props;
 
   return (

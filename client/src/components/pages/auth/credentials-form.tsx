@@ -8,6 +8,8 @@ interface CredentialsForm {
 }
 
 const CredentialsForm: React.FC<CredentialsForm> = (props) => {
+  const { onSubmit: propsOnSubmit } = props;
+
   const [form, setForm] = useState<FormTypes.CredentialsForm>({
     email: '',
     password: '',
@@ -28,9 +30,9 @@ const CredentialsForm: React.FC<CredentialsForm> = (props) => {
   const onSubmit = useCallback(
     (event: React.FormEvent) => {
       event.preventDefault();
-      props.onSubmit(form);
+      propsOnSubmit(form);
     },
-    [form]
+    [propsOnSubmit, form]
   );
 
   return (

@@ -37,7 +37,7 @@ const NewTicketPage: React.FC<NewTicketProps> = (props) => {
       if (error || (response && response.error)) return;
       if (response.data && response.status === 201) router.replace('/');
     },
-    [doRequest]
+    [doRequest, router]
   );
 
   return (

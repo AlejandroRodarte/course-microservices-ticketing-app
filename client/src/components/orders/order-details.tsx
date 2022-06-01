@@ -12,26 +12,32 @@ interface OrderDetailsProps {
 }
 
 const OrderDetails: React.FC<OrderDetailsProps> = (props) => {
-  const { order, email, errors, isOrderComplete } = props;
+  const {
+    order,
+    email,
+    errors,
+    isOrderComplete,
+    onToken: propsOnToken,
+  } = props;
 
   const [timeLeft, setTimeLeft] = useState(0);
-  const payableOrderStatuses: OrderResourceTypes.Status[] = [
-    'created',
-    'awaiting:payment',
-  ];
+  const payableOrderStatuses: OrderResourceTypes.Status[] = useMemo(
+    () => ['created', 'awaiting:payment'],
+    []
+  );
   const canOrderBePaid = useMemo(
     () =>
       payableOrderStatuses.includes(order.status) &&
       !isOrderComplete &&
       timeLeft > 0,
-    [payableOrderStatuses, order.status, timeLeft]
+    [payableOrderStatuses, order.status, timeLeft, isOrderComplete]
   );
 
   const onToken = useCallback(
     (token: Token) => {
-      props.onToken(token.id);
+      propsOnToken(token.id);
     },
-    [props.onToken]
+    [propsOnToken]
   );
 
   useEffect(() => {

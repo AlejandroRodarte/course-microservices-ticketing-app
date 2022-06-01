@@ -8,6 +8,9 @@ const nextConfig = {
   experimental: {
     outputStandalone: true,
   },
+  publicRuntimeConfig: {
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
+  },
 };
 
 module.exports = nextConfig;

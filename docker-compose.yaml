@@ -91,7 +91,7 @@ services:
   payments-mongodb:
     image: mongo:5.0
   front:
-    image: rodarte/msnr-ta-front-prod:d1a97a6
+    image: rodarte/msnr-ta-front-prod:3619efc
     ports:
       - '3001:3001'
     environment:

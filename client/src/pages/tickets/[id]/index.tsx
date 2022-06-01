@@ -40,7 +40,7 @@ const TicketDetailsPage: React.FC<TicketDetailsPageProps> = (props) => {
     if (error || (response && response.error)) return;
     if (response && response.status === 201 && response.data)
       router.push(`/orders/${response.data.newOrder.id}`);
-  }, [doRequest, router.query.id]);
+  }, [doRequest, router]);
 
   return (
     <DefaultLayout user={user}>

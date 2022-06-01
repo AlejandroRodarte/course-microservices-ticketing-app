@@ -41,7 +41,7 @@ const SignUpPage: React.FC<SignUpPageProps> = (props) => {
         else router.replace('/');
       }
     },
-    [router, doRequest]
+    [router, doRequest, redirect]
   );
   return (
     <DefaultLayout user={props.user}>
