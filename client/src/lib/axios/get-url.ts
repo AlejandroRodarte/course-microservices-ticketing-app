@@ -1,3 +1,4 @@
+import getConfig from 'next/config';
 import { IS_DOCKER } from '../constants/env';
 import { AxiosTypes } from '../types/axios';
 
@@ -28,11 +29,6 @@ const getUrl = (
   microservice: AxiosTypes.MicroServices,
   isServer = false
 ) => {
-  console.log('process.env.NEXT_PUBLIC_ENV', process.env.NEXT_PUBLIC_ENV);
-  console.log(
-    "process.env.NEXT_PUBLIC_ENV === 'production-docker'?: ",
-    process.env.NEXT_PUBLIC_ENV === 'production-docker'
-  );
   if (isServer)
     return `http://${microserviceToNameMapper[microservice!]}:${
       microserviceToPortMapper[microservice!]
