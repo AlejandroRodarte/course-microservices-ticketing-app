@@ -14,8 +14,9 @@ spec:
         app: front
       namespace: ticketing
     spec:
-      volumes:
       containers:
+        - name: next
+          image: rodarte/msnr-ta-front-prod
           env:
             - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
               valueFrom:
