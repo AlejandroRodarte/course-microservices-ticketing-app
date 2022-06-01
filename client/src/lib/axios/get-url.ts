@@ -1,4 +1,4 @@
-import { isDocker } from '../constants/env';
+import { IS_DOCKER } from '../constants/env';
 import { AxiosTypes } from '../types/axios';
 
 const microserviceToPortMapper: AxiosTypes.MicroserviceToPortMapper = {
@@ -28,29 +28,16 @@ const getUrl = (
   microservice: AxiosTypes.MicroServices,
   isServer = false
 ) => {
-  console.log('isDocker?', isDocker());
-  console.log('NEXT_PUBLIC_API_URL: ', process.env.NEXT_PUBLIC_API_URL);
+  console.log('process.env.NEXT_PUBLIC_ENV', process.env.NEXT_PUBLIC_ENV);
   console.log(
-    'microserviceToPortMapper: ',
-    JSON.stringify(microserviceToPortMapper, undefined, 2)
-  );
-  console.log('microservice: ', microservice);
-  console.log(
-    'microserviceToPortMapper[microservice!]: ',
-    microserviceToPortMapper[microservice!]
-  );
-  console.log('endpoint: ', endpoint);
-  console.log(
-    'url: ',
-    `${process.env.NEXT_PUBLIC_API_URL}:${
-      microserviceToPortMapper[microservice!]
-    }/${endpoint}`
+    "process.env.NEXT_PUBLIC_ENV === 'production-docker'?: ",
+    process.env.NEXT_PUBLIC_ENV === 'production-docker'
   );
   if (isServer)
     return `http://${microserviceToNameMapper[microservice!]}:${
       microserviceToPortMapper[microservice!]
     }/${endpoint}`;
-  return isDocker()
+  return IS_DOCKER
     ? `${process.env.NEXT_PUBLIC_API_URL}:${
         microserviceToPortMapper[microservice!]
       }/${endpoint}`
