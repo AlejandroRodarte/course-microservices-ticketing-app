@@ -145,7 +145,10 @@ LABEL org.opencontainers.image.title "Production image for the frontend applicat
 LABEL com.rodarte.msnr.ticketing.client.stage prod
 
 # copy /node/.next compiled frontend from build stage to /node/.next in prod stage
-COPY --chown=node:node --from=build /node/.next ./.next
+COPY --chown=node:node --from=build /node/.next/standalone ./
+COPY --chown=node:node --from=build /node/.next/static ./.next/static
+COPY --chown=node:node --from=build /node/next.config.js ./next.config.js
+COPY --chown=node:node --from=build /node/public ./public
 COPY --chown=node:node --from=build /node/scripts/bash/entrypoint.sh ./scripts/bash/entrypoint.sh
 
 # run healthcheck

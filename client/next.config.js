@@ -5,6 +5,9 @@ const nextConfig = {
     if (dev) config.watchOptions.poll = 300;
     return config;
   },
+  experimental: {
+    outputStandalone: true,
+  },
 };
 
 module.exports = nextConfig;
