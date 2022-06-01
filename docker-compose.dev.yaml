@@ -16,7 +16,7 @@ services:
     image: mongo:latest
     command: mongod --quiet --logpath /dev/null 
   tickets:
-    image: rodarte/msnr-ta-tickets-dev:577e925
+    image: rodarte/msnr-ta-tickets-dev:cf7fc04
     volumes:
       - ./tickets:/node/app
       - /node/app/node_modules

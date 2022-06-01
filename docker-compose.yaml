@@ -27,7 +27,7 @@ services:
   auth-mongodb:
     image: mongo:5.0
   tickets:
-    image: rodarte/msnr-ta-tickets-prod:577e925
+    image: rodarte/msnr-ta-tickets-prod:cf7fc04
     ports:
       - '3002:3002'
     environment:
