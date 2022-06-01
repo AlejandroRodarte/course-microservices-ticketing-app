@@ -6,7 +6,7 @@ resources:
   - 100-auth-configmap.yaml
   - 101-auth-secret.yaml
   - 102-common-secret.yaml
-  - 103-front-private-configmap.yaml
+  - 103-front-configmap.yaml
   - 104-common-configmap.yaml
   - 105-tickets-configmap.yaml
   - 106-tickets-secret.yaml
@@ -16,7 +16,6 @@ resources:
   - 110-expiration-secret.yaml
   - 111-payments-configmap.yaml
   - 112-payments-secret.yaml
-  - 113-front-public-configmap.yaml
   - 200-auth-deployment.yaml
   - 201-auth-mongodb-deployment.yaml
   - 202-front-deployment.yaml

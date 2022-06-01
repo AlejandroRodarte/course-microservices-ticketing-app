@@ -127,7 +127,10 @@ LABEL org.opencontainers.image.title "Build image for the frontend application o
 LABEL com.rodarte.msnr.ticketing.client.stage build
 
 # compile frontend in a /node/.next folder
-RUN next build
+RUN NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=APP_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY_VAR \
+    NEXT_PUBLIC_ENV=APP_NEXT_PUBLIC_ENV_VAR \
+    NEXT_PUBLIC_API_URL=APP_NEXT_PUBLIC_API_URL_VAR \
+    next build
 
 
 # stage 7: prod image
@@ -143,13 +146,16 @@ LABEL com.rodarte.msnr.ticketing.client.stage prod
 
 # copy /node/.next compiled frontend from build stage to /node/.next in prod stage
 COPY --chown=node:node --from=build /node/.next ./.next
-COPY --chown=node:node --from=build /node/next.config.js ./next.config.js
+COPY --chown=node:node --from=build /node/scripts/bash/entrypoint.sh ./scripts/bash/entrypoint.sh
 
 # run healthcheck
 HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 CMD curl -f http://localhost:${PORT}/api/health/healthz || exit 1
 
 # switch to node user
 USER node
+
+RUN chmod +x ./scripts/bash/entrypoint.sh
+ENTRYPOINT [ "/node/scripts/bash/entrypoint.sh" ]
 
 # run production server
 CMD [ "next", "start" ]
