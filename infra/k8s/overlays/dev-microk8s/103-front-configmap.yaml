@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: front-public-configmap
+  name: front-configmap
   namespace: ticketing
 data:
   NEXT_PUBLIC_ENV: development-microk8s
