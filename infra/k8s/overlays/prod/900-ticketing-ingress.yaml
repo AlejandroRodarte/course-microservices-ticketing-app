@@ -6,3 +6,10 @@ metadata:
   namespace: ticketing # application namespace
   annotations:
     kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: 'letsencrypt-staging'
+spec:
+  tls:
+    - hosts:
+        - ticketing.rodarte.tk
+        - ticketing-api.rodarte.tk
+      secretName: ticketing-tls

@@ -11,9 +11,9 @@ metadata:
 ---
 apiVersion: v1
 data:
-  COOKIE_SESSION_DOMAIN: .10.64.140.43.nip.io
-  CORS_ORIGIN: https://ticketing.10.64.140.43.nip.io
-  FORCE_INSECURE_COOKIE: "true"
+  COOKIE_SESSION_DOMAIN: .rodarte.tk
+  CORS_ORIGIN: https://ticketing.rodarte.tk
+  FORCE_INSECURE_COOKIE: "false"
   NATS_CLUSTER_ID: ticketing
   NATS_SERVER_URL: http://nats-service:4222
   NODE_ENV: production
@@ -32,7 +32,7 @@ apiVersion: v1
 data:
   AUTH_MICROSERVICE_NAME: auth-service
   AUTH_MICROSERVICE_PORT: "3000"
-  NEXT_PUBLIC_API_URL: https://ticketing-api.10.64.140.43.nip.io
+  NEXT_PUBLIC_API_URL: https://ticketing-api.rodarte.tk
   NEXT_PUBLIC_ENV: production
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_51L3nTtIWPfnfPOmq5I97aU1tPKrTiPgdP3DJipBNIJwLRbc4HP8QlGBkL3Fg4GF35YnyNXIYu5giGJuReR5gyysu00nBVr8fYj
   ORDERS_MICROSERVICE_NAME: orders-service
@@ -278,7 +278,7 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-auth-prod:34f1d42
+        image: rodarte/msnr-ta-auth-prod:cf7fc04
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -432,6 +432,11 @@ spec:
     spec:
       containers:
       - env:
+        - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              name: front-configmap
         - name: NEXT_PUBLIC_ENV
           valueFrom:
             configMapKeyRef:
@@ -482,12 +487,7 @@ spec:
             configMapKeyRef:
               key: PAYMENTS_MICROSERVICE_PORT
               name: front-configmap
-        - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-          valueFrom:
-            configMapKeyRef:
-              key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-              name: front-configmap
-        image: rodarte/msnr-ta-front-prod:cc34565
+        image: rodarte/msnr-ta-front-prod:2a58839
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -614,7 +614,7 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-orders-prod:52d1e2f
+        image: rodarte/msnr-ta-orders-prod:cf7fc04
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -727,7 +727,7 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-payments-prod:cc34565
+        image: rodarte/msnr-ta-payments-prod:cf7fc04
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -835,7 +835,7 @@ spec:
             secretKeyRef:
               key: JWT_SECRET
               name: common-secret
-        image: rodarte/msnr-ta-tickets-prod:ee098ad
+        image: rodarte/msnr-ta-tickets-prod:cf7fc04
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -893,7 +893,7 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    MONGODB_URL: AgApHTmSwsPRpYwRG34wnXonRlyBA3xH/DTkiySy72pZY9l+o+cqCSU28Rgo2a1AhNAEr2lihaPsZZu8v7eYM5SI2xkSvAnNklkuqwloUTSls1euIRe5fD9IFBMkyQyCkuS8zQ1e/lRp+fsM/gZ7/qTznY/PELPf/luMaPDIg4PAXD9zccu9hQYjRB6TAC6fq/flNVBAqmolJWn1LZApWoBxC6nc91iPp6ia9/5pwYWsgbSf/++maaznyYcRWIgRYCZ2A9JiWnvdwy7zYXC7y3yu0fet/As72enb6Jkq99brDQrGEpXFXgelrc6tQFATeFDbj9g5g22YaWz5LK5ys4lWAR2ABypxDN+e6T+a7Kf+lcHxSdPTjYQWflzv/+ru1+igWiGg6IDsysewZgbwszJ8f5s/ohY6vpmjItHiXbhjy7zsx3Qh256IexyUV0lpNAK7nf2btsrI+ep37LPBjZDoAvoDlGu8zi3cmRsb+khL49T8J6a9EpmxQRY1imqOUgeJQ8HlfJByCmTcF42bodnorDehiZfuecy5hl6Lx64YnLG/HpxzSLRitseUxCtJIuvwRCIa2WeXLPsvIOXS7+O9v6VBafqivrCOyqR82P9i1khcVUTJDW2F++mQlj5VSVijLOHiXn8gC+njBC+ZUFINNxm3gyKfNR5AuxU6SB2AHMmQclPfnPlM5hnuvwtConU4fnpLN0a30Dg3Ywwab3TSvFkyWJSH0mA+apuuEqF13GnGGG31R1MAb+c9cK2oRSFl
+    MONGODB_URL: AgBllDorhi9eHP3jcLVpRycMaIh4YpeVwfER0mzlKIwWBRbvzzC9oxHXeNLK1ZwKP6jqZy2ibn2oqo4JfT0JJSy7kORtMfAF6e4tOVLVQ4z/kwpawneehrcFPwj/TkFgzgH86Bfmz2KX3/7giR1a0oK4oKphC+fgM9eANrb0DOhykh0ZjLo3o7kPs8VhrVQDA8NBqdId3nqccjBktTyyaydRoGyZvQiDa0F35J9dPcME0Bo0bm8MrUGEYNs3CC9b+0oifU6t9TRiAW9uqhpRA7x5wVp0+5/zXFK1CZ1xbQ16xAofPKHmN4/UtEdmSGowrKg8UVY5ElYPaOtE/RumUaYF/Q3RFtm9HvGeF23EvRF/KWgQHWeLQqRQXXR2OP6m8V6qceK+neYmt/JktWOAJAFzTNZvSGbeNfTGmDyFR+PlexRbIP3YamEOgS53q75pNARovKFZ+sT09vMXJvdtkxDnmbZpeiMhNw8qRxNIaytPYZ8p53ZCHKyZkg32ufVWRz+NgQjqjijYadP/55YnQRLcMRo38yNxBcDWYfiJu3x8IC0eQIBN8FY7WMgS3dmFSx2P/H6JH8jiTgoxl1MBURCkCa+dtd2sQwT+i0f36xAduPmVeIvGlApLJhiaiOdIlZcnO7/aYpA87hhi2cExAca3RsgspkojojlK/NZxNcc1RX0iTk5TxFbIXGqiYYjb9dHMY8NjNboVjBMX8h3nUaB3uNQa5sT3a2aLZSPJIjZ2HKDBoU2qOdlZSXW1UXQUvSMZ
   template:
     metadata:
       name: auth-secret
@@ -906,7 +906,7 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    JWT_SECRET: AgB5HYnm9Q5su7WAEJJGdxEw9lsB8VpOWl+xWr5DrngA3GjukgMWEUSdlqkyDSUB94MfICi4mCQ0wbOgqF3ThPrbI7yDZ90cZT/lXXoFCuPRIPm5hCFdW/rI4plgoSBXJcCFsaPjbgYrvfThSP/Gvw2vFdODpBAqb6Kv/yBf4Q8aRhPSlDzNGxtzSu/ER72XA6RngH0PN3yi57SJbbswIFyhqbO6gy9fMr04N/Q0VYzlAAyCh6eaG8w6n8V5CspNWfWevmMJnZqOT2VWQCH7T7CWPS2z8Wr1Tm3pGTFIaur994MtWcgeRCeRtFZoaLpXjgduHfchzbQbItD/PntzpHcSwV2v50CJvKq3OYDTaApWezt+GWMv1VuGccExGrl4LS2mZDhk/U31KewXW+V1CgYiE/pjpbWdGC8huaYUWAqtAvdrVo+/BRR1av8mY4zJVGl8X/qqdW6aENSuWqGoNDcrcXAT09o1os/NtONLp48/EnSpwi+lHziek8EeF5xSJoYps05w+PqqswXedDD2TsriImaV1R+tSEXSFOeKqAj2sW7mM6PBA7hxs9HRHZzRWItKqP4t06EuSD0q1OR8XZgAQnFFuYGxh7D4tB57oHJOUzTzpLAsRP1k5l649LwMQELRwCjQmv5tFcxymx9HlERTpUscPo6PM8xvs4rSk/B/MOUW85lHTaqdZ8vqIiuw72SdTFuIQmrrx69C/WvtLQywbZQRqYBNLDlgnAuFpe4=
+    JWT_SECRET: AgC466mdXYrsnSQPjO6h5DOXt3ArEe+rSK7eE+YHpwBWqvrR4cj7Iz5dJYg81DGQM6fwvIAYOvnmufXOReKGsfJyKOHqhjYyNw1U6EFSJ2KOWlUVXg5P5PxOEV6TY8R/GAIAPgZAmDev2JFJaO8aBnKeN9An9IojmXUdZZzpwdC6I1Pl3G9MmSXI1yCqn5AKTpmO0k+CIeuGyjtYWd0prvqJzXwKVN93Cf7BRjOm5HFtQkB4pHzciMXJgh3wYAabd8aJmi6LhYtlW4CLg37GdPzZf7JhNarT1tOABM2jwWHeh85fjFnOMnv7O0poycm2pBxbPZ2klR+d/culW2hpNn7FX+IRkKEn0QVvIvYgRQoWS9JFJPma8dvTjPln3KN2zopJc+q4CmKmXA69iuZ+06qRdyBvkAcxS6WcYpGZiijjGCaLrozXY0HaCmQrhLSk6ddRc8U9ofZbTCeVwg3HQpMdQADxezeyt5x/CLqshGsyeGC4XpO7mRlmANlkInTbYEvIl7F74jXiGesIFxne/u1DrTWzScCrWO8EJ7caXuy4eMagicyzy2lnDhXEEZj3wr0C5+4x/ZL7pP7K/QzAO9TMX2h1Ty9Ei7puCDAvJsMLe3zVGzFXtKdWkbUWMu2Sq/XOc747p09gwpyq+rWDZrxmsPUrYsdBp1GmAaiw3fxOoqts6+eSYlYJTgzUhq/8lpAbFiz7l+kiYEPHFwdXIqkYIiU1kx3cSjfvQ0eGPak=
   template:
     metadata:
       name: common-secret
@@ -919,7 +919,7 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    REDIS_HOST: AgAmnkzgTHovouhnjW056eeLVrBqDFcCsYGotSnYSBOIhjceJfe2u3hnXgKjTJm/mIiqsNKXbRGeg4BBASIlpQSndNB4LkothFyG4cnrBCUT0wDD6gtPFFRuh3UERJIiFLAkloyvchyYBhWXE2foC9zi23PcMq/11TCsRikAfQL9w5QQadzxmpU3x8Zlc3AcT4QGe2fcomxGnt3FJ8eA7ayRJn8lTICuJmGrNQ2gOkqk0pnnQi8kgztuRsasFEVGwufmllGV+pVoln6cwakzwbsH15BKImQOO9p9k/G/RgaUA/89RnwDeV5RtAUQ/FqVgUUYHsibvdKy7jHkNnmB/1/L5zKbom3lFAB8TsP+0fOmYWpjZTTpoJmLj7If7kld5NEbRU7vI8pwGmLyVzvwfBlfMi8H1p1yO3XsqRVpWf4VlTJhEpfsmKTCupHEmXE7vNsEeOBHgq9r+4D+9iR1+njL1gbeiFo9XyKPALUperxHvcFhiLUOHP3QK5Mi8UY6aipGq5qFaZTMJksaoM0UISyAkTPao/famRYirxyZbH+WL8msQyga0IoGBv96SCGXcarzRUjDAKX3VGpb3r1Prkdo6sIbfbUlDzeHB5cccpLpGtI513wFFgdA5An+NjH3FJYn1+dSZzKgONFdqW9t48jzyuJ6dkAi9CkVftJsFRwFHfMnMzqlsh//+woVwhV8PvSyyxHOwcgXJZF1CUsSF3wU75giaNvAw8k=
+    REDIS_HOST: AgDbbeRTkc2cFSDQvnbP/UmuwMjfBFAlV/uIPr+04UjnrkBvBJRrtO5PBu3+GEwAIPzyVO+1zYldBlyt8LFeHN9NBN64+yf/bsTvATH0ALbmlQFpIVKxVQVBaZ6+rj9tzFrU1sbDn1LiOZf8/E+OQtPTKix9jXoYlyywVGpVQYG0GsbLUbJxevEmr/RaQaGz9pBFrcKDg2ILRTAKid0TXb/RpJfiC2SRnj5BNBIAPkVs8/b5D0ioqKGntjzMmOEGHEOVphAieiL4BOzE7Fagmialg02c7ryJ0DfVazDrnWhXuLyfcxYRSO3iKQPh9pqHVqejxyVm1Z3iCf5AZKdJAdepD8fwx8hn6djLoBGBCQk9Iee+Ag59TyafE9+TxrPUEWS4wOVhf+gk9Ig6HIiuJgelbZIw9OUsEOJa6myn48EuAQQVp9Lb7okGPr0hZn/7eK+VCEADjYO9rRDf7LZyj732ilBLd6EEJ+h6KmSwXgyOwe5Ef9KaCziEV6WtLekIzocZbPhG7yfC7IynftMkk0H8yPIuTN1K8Vorf4ZWASc2Y4sN5A/YZXhd6wDgyHJIlAfYqaXBiVhUK6pzrmUS4zFYqlV/H4tpuFi/kx9lPgbhLnVjkjMjaI6jiVEqmMvlpqnhnXWSSyUKNPsoydohl5EZZ7LRRryLjEFi8yT3EQ32PjCbuWwgyMRF780GnHF1TKr+pApPE907VBDJ265z9gVrNYMv6ll25bg=
   template:
     metadata:
       name: expiration-secret
@@ -932,7 +932,7 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    MONGODB_URL: AgBetZt55k+4FlqxC5hiYksmoHXfVPsV1+VgJ3zKTjxZO4oSzufEe6kPFdR+Ml0XhpuO9gd0anNCdls07IYe49RCFHb4EK+36A2rbWXR5pFvnSy/mTGGPXL8dEyHiAqTyf35hajl57W0KHiy9OVeSVtVa93hv2XEdapIqZ1DQcxryC5vsgsmaOuoyGxGQwwOSN8WPuRRTE5h+m3oWgbi3B7b0u1ofWGhlH4L73iAPmr0eIvSuSpz9duF7VZKKxmjqGxwG3pmRd867n73B9zW5xPwuq0JJs9I6xSzVg9kIikO4RZJIHtw+hD7s2ymzz4SV10ymI3IK33vxgiNnnI5cAIl7xndcarpavcT2yFCkbZKFmb4mDeHjsOQDRcuuEQnF9Z8XHOqgmH5vEK2886NRslJUonnK/SnJNACII74xRLFjJnNoXeu4dlEDc9rZyyktpi01hOmO5fcRsmTkRzHu/ZRY0AST3WlW19q4kU9wyiXRb/8y6TOzRIQ7exhVIxh7d6Ykljl0+8+uGLJEuyW2pIMwdBImSodwyrq9BBkoEQv9cH2B4o2QqUDLNY9hAkTam2ceogYCmYDTCrHPqehC3L3uH0DTe6AXygv57IR/ccbK7WEF74PXjcjL7P9WH71yws0DWbb8TCbT8V1WvzkASaA05EOVQ4Za6cI9Dt7vD03pWoYiAcHFVFxcdroXPLNFFo2bHF78mSQWoCZE8pX7EXi1QoNEerMQNY1AtMdxlEFoSZeLPxkBAo4a1/xzWGI9SE1TKsZ9A==
+    MONGODB_URL: AgDWCsGERTFRYW4dPPzuzP/iy5XP8dS3tIGxiX2DBh1AU/ZN0Lu1EmrkRaYwqJVXhnpaEnuANa5RtHDly/mQhmnl+NldN2N4GLK4V2NAvtaBLFqD1CziIVVfiDhR1jNfR73Zf6DBtqvQzP2q59TYzKfr0IOCcOAd5VxFk0ro8DOmN0odVYLwCxHy9oo/XHnNlkWRoPz2+DEUUrBkpNSsEA/cNayuVSgv06VsfEQ3Sd2bnn71uS+J5hN6wXZ0O2yeV/0ZZItITAvBmOrOdz46obVAb680PTu7N+avPXJKz3ECFVQBLnpv4RZBX57dT+7nbqHVYgviI8atyH9/BT2Wb/C49qz1I5RMYaOLqnTwt1QCMOzLoJAOzJAcIxFmDFR01iBYteWF7/g9NCP1W2I9O8KpNwjNfaJwz2+4RYEhmGHH93MNKp2xtXohoRolMTjfMsGRj7s/tZjZ3wJp8i04ouxqpxExsHoqACerKsxqAhZu6vfoxTYQkBozmt4B2Ra7bekz70JuNL2yHr/p+KyqGWffx+vA7g2cLNnI7R3CFGoqCzmzngcaclsvChuLduZlD/1bhI3phFMSQotlj7r8lyIhCLUH6oBcmUGFojVI28qYofjrfVb91cAI3GJCn4cTgbFAUwf+2ZaZnYMBn4bPB0GandmVk/WV+9xMwTw4uAEIgJ6E4/SKIY0aUPxxphfRSkw0Ld9H9x7TNk9ELdy1QhGRbD4rkI9xKkaDy/vipyYkTbc3TP/iePrBpOwg9Xt/lDJI5/oyLQ==
   template:
     metadata:
       name: orders-secret
@@ -945,8 +945,8 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    MONGODB_URL: AgCOSQOSUDo7Xo5n5Y1ZCIH7r+LY87AWTa1yBMTheb1nr9s48I0E+5X1Oe4hgDtVyp2gTMQIFUO5fSIJNYF0DvBvqt3xKz5b9ZN2UKjNE+ZU+k85unGJ+8mmsqHzC+r2beU+Z0slz9kl75AVreVXK//w+36WI4y5QTzAqSXKorNvV/iyrhPr9KzkQnLOwQdepbF2AlQ80D9MLaOvcbP3rDW44OVBlbmHEHI3vkF9dWkabUMEQ2Cm3xuVjdGwzExugtGW8qvGAjyj2Alces1mXJNlfEqprquwNlJ18DpIXzNbkNOwSMVZFKKkEhgnYMU8e5SWdcjnx9oL/OD7RwufcvuJX6aCLI33yHEsJiwh2GCGvbw9vhddHlCsNIhMF1vdZ8wIFurJsjfXBDv5J+YbrjbkESuTyzFem8cq+wFEn9hvLgyfF1GyqLMtmDyv8kPRc5pN8629NA6HqXti2vwWj3e7LVk3Bb1ejejCtTmsINwAckdc3EGtnU21sS42F8+sUMtBUI59FPlDQ8/p2zh6t+g/RKFDLlco0U7zeAEL7jNzcG5L5gXHt2hoyVb4XMW1O1ewc9DTXVPcRPKO4prBHwNYWII1E0u/kKWtsKeA4dNaayO1SPfElOcPBNOTbTKa2RPegEb8SgUxN0jtVFLJeeMuYBhf0j5wY0axlO2bwM9e/YLkGmabtlN+pQg6P/q9S49hNKyucZ8bP5lzbSifye+8gNZ1Tfy23JWCW6nE3zxYrXev9ghgJx5hwiVIZW/u9m+JiEtA2PuYxrk=
-    STRIPE_API_KEY: AgAnKg2KIkeDnB4ApVK8YbKZk3SSXYAlLWw6gM7IDF0+7rKPMPs1n8tm0r0lkbsPecv+ig7Y4QfV4YFI636M+hdLpW4at8WlWCjSNtg2Xg/JfSYP/bqWQYJiyoamJHh72yrI1UJhBi1ltup5vbiArIu9jWsJ0E5MgSvwTE76/ueym4SjZ2SvmyoYGNzRfXQpJSi/PF51tUlUEPDUH3aKiVenh4p2eCOXGhBQvfS8aA80NZucwzSwDsHV1vlzJi6Ts700ze12ehKTM8btAN0a7xj81tU/lnws5KlblaTgb5KdhX2wd+Awa1HO71aoikWtOHVNK1I+a5v0kb4mDgXMlzjYCfCYe9qUdpcPC/mr60ZkNY1vw+V5KuZWqtdkz5oNiJ9Obb8r/wmHmQcGOSgXcIbUtlDHi87DwrnFhegK5qLGBDZiv6EAavAlLMa/1k2kAfxZ1yPa+F7QB2TEjqWGQniZkEk6zW52+5J4aHX6Rb2eofHEOP76dmIhUyVQ3UoaO4PvJ/tkRlsEVgD3qpj8Zzn8scbv5EgEcLNtbUh3gN4rO0KUDrRA096rkWDa/hA3Pbkc63rumiZe6B54XDspB7VY3mVuFXALt/HRpWMew3i7iRukh6Dv8PmdwonJMAnIdb7HeN2sysjjA0+MZI9jkUethRlCMuNPnQTUSZ9rTT6p5Ps8mEz8O3RtJ3zVo7//wD6CZRxfe1YY5QNDzrpQutU3MQRU31FrhsJ1WmXP0ZL/cCzaPpQCoJTLRufU9guTCEQrSB1pz6kvNXy9K7WihGC0HDwCW9Rr1L57/Br+ssWjwt6dSmeGXK22k9vgsd/lCctSom98nXsKhSnsHA==
+    MONGODB_URL: AgBCLiLuGSftn68toVjdxxmPBUk6W0/Pc1SGB/LCAkroW2p/BQxclh5zETVnRC1VxToV+7j4hujSw7HzJ9PCVEKVLoHaq6UyCvLNpL7min57FscngzW2WtBp4UDfP8iRLbSmaxiUnxY70C4gQ+I2cUGU3vxwlM2ujr8k/m7w4XuoKc024zXk6cFlNOhelNfhYsp8cc4vIGa09Kcb18+fgo8k2C2bZcrP3o1vBQkCjXcT6Mx0NobKvVHZb8y3pDpRjODi2FEj1rzxZIJaelPNqQiZCQ1tSU2aLK80NsEqP4ZNC2M15t9QLdMgQUjDbzP21FUg8YQDzLbmj3Zy9/soiytg8J336h+J2sjbj7/NSTLgMfGIZQFIbKwpFb/qK1/WqPMCRkCfR3O6UajlOGXdK7KSv5PoUrl7c4BhvQRJc+3oUayMQltboXr86xz8nEZQKcqDTFn2RhU91zUxR4+1s88B89DojaXvn4nEBZvuTK3CFS+uP8kf4V2KhPiBzAamNjLmd0MjyC0M9iuuSUEsa4sB6Hd599vC343jX9FsDKBSRt8rxjVJ5uKcLrfCrhYIDK3VruCpe4JiYiRiGEm6F1AyK7L7Nc5TgE/r380X0da5ZmU0S3hQOuLv1Wypuez8d3xnqP7w83Jdv9Y7W3c/7WDHZ7D+O1aI6G6HUUcifTjco8adi365PUbyRKCheuaKQTbpNAs/JiKX9BUTOBaZuwyV4fl/AZzJzJQhsEvvGuG/yluVCL7yL9IXx1GUdV4zUGszdQ9/cprLqO0=
+    STRIPE_API_KEY: AgA98kIlAVZiH1XK5+KvOHt222jRP8uRmR7cyC3BlIxHUuufrF+B+qGGowmjajB+N1ZvmNLVCoLNrspj7Y83wr92UvnIs1W1S4lBU6qVb4E8uxkx0c7OGqV33siSVT2mwjBwNwhmu95L/Vkw8lC2iCCFUrxUlRDqYwHhtYPsgT4eID9c9x8Czs1mDqDOBmx30UjYsHk6jHlR9T8Nnjtut7R+EJqZD9i5P8EA2fwXLzmhOOqyOHD5nrZZozA+v4ocUiRzlgPhOB53AjVxWB6WYNZj1wdZKRahygdL4JghKr22u3Db9Ds7m2GhKaimcNM2iqQQr62GVD7fAMD1LKPYUE2jSyMaBcZpTcXsVeexRhg5f2C8MDwY7dBD0228ft6Y/qNJtnnfWeH/z8/oaxlG5XuXPGpR+TGKjYbKE24pAWW/eqS04S+crpsipzZ034FA09VrczKQjO8Mul/L4H/pwLimgRR69HTeNmdni+i1Gmv0u7kJHzSJ6CW1pqrIxpGeT/RhnuBw1TtSX/tVsqNSHcdh+235fPeb/UZ6AscQzJgPCVgI2DG1xJ48E8kXGWSo5pJgWEXb1lA44nIbQGbi4NAwePU4b0CgvRNQJ3MqjECakJwS5oM9vzkctp7i6EKydCP8G8gHA5XsQ7QrSwCeqtOZHyJaxGPoWyEFkJcsde9x8v564igwNRUZC7gj5G3tV3A3VxDpX93H01jKjWNZ37juz3WFdr7r8W/hvgAie3rrWg1eeU4eS4rjVWI1TUX3jg/iTHblBhEbfMjUs5sGsE3hPDeC/Q7h+uhXp4wmOQlQ5oVTjCHza7rWMC3M0CJRrULVooGXtvzfa1NQGg==
   template:
     metadata:
       name: payments-secret
@@ -959,7 +959,7 @@ metadata:
   namespace: ticketing
 spec:
   encryptedData:
-    MONGODB_URL: AgCX8K8sWTcUar/IGX0K90UlxfIPk2Uj6aM8P6ZLwQF8oDihkNL1/0BUG5cx/aIGEa0FoafQilDFAwQwPbMyhiNhypNXVubvUyt/qNLR/M0QIdrAfn53+OB5NZf1i79k/fW79A5AAF5Z9CwzzOSVcj3eSHmWVhQjfwOwkkqjpSQ2XVA9TyvURDh2efy3UqNlsqbhqGxblAITGMYA2ANv+8mB2+b0VwdN9m226gEoR1zI2wP/AjHbAZUmzZ66+PT635fWHny5of9+BFE11QkhvzmHc2ecfELr1lwEBEAEIT4GW7CjUV52r2wlVr8FK+ciKEcKYKHO/FqJH6Z59WPzq03ZjP7xaDoUWWZUi1MADFJ3luXr0u/wUd3riZzg8555HnKZekCJhmDRDYiefPimRnxUR9mimlhRsotl/JbrkyxdhVih5JoHldbcWuKuNqK3w3HksF6NBW32MF4G4zwvyqkZuzPqpo9I2PPE2UsKjZeBz6hgT7/cNiKYKV1v8rZbRaLNfI3EwxlQ1TUllcvACnlQL5GB2TR3eJN+/DXngdV0E2iYa730y5/NjVWG2XPaY3/QcipwRuM8lIdfWYjLBjxwkNW6Rchw3Rik5dgFf2yaIdUoefnyumqGgeR/ZXPXrx+1fdb7KnV+d7299xHDuF+mvJIKyfAV7GO5CC2eZvFiki0IVkjdvxfkQ/V4cqz0gFv1GvhgxAXY6w/yPFQ9ebCSi4F7QE3gSHlXidXloPtFgi8VCp5bp1WWsmTItMqB1iYu5X3piEFK
+    MONGODB_URL: AgCeIZff7cznpnS5fnsBr903nbSY22TkVF8pdkebvdCxLnKFFRXWPjq0VuPRlQZBf1Y3h3RytHsq1f7qfzdI+DaibOE78QMqyLrpkbU7/+XP14T11MxkTJgmLzX/FOCpUX+UX2IoXcum1C2aKZElgD2wSdo+s6nv+Cip73jOAO6zrhsUOwXACq4c0oiQFroGA7TCr4Io+qbiwhp4ZFySswA8kozxuOUtf15AN8+FleS5bsqDW6D0Emk0LVONNzCjKHIgPItsCoEF4oJt21xg4sjmF0yZAqEjsxOxRMY9sBURbHKw3LL9Mv4WHVn0wSKgA9T4ota/lmNFh35stWl2iqP1g70hpOMzMWGQgY7ygZlOKeSCT6omBvvAQXXLAQMYFgBnYvstn2+KGvsPfJIzXofVT0fI1qL75rKTKJ5hZa14OCiphrJT1UgVKfjzJ+td98aBmS//y7PdcHrdKSSXQw4rNxUuJEb2E+ifl8tTOljUOtqGJlRbQwvxjl5rifP2zsm/T+bNRCyrNU4UqBKyny19FC2H49zGpb4+VoJYagGB1U++B9h01SzIYvRqdu7vk2zzHV25GPSOGxnwczIGiNFfP9QOpInlcAySvga+akWszHBsMgRvECix/rn1wWTN9PaI31vH3BCzCV8LRJKJYD+gZ4zxp9346/XpDFmcHi6GuqgYZ4vPaLe4YXBRBDb/DAgI02uEb2R9fB149J1OguzqCFQpTDv4JTd8a0RStonRZL/KZtdgYLSG8wvvfCB9fHXU/s8qe/Hz
   template:
     metadata:
       name: tickets-secret
@@ -968,12 +968,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: nginx
   name: ticketing-ingress
   namespace: ticketing
 spec:
-  ingressClassName: public
   rules:
-  - host: ticketing-api.10.64.140.43.nip.io
+  - host: ticketing-api.rodarte.tk
     http:
       paths:
       - backend:
@@ -1004,7 +1006,7 @@ spec:
               number: 3004
         path: /payments
         pathType: Prefix
-  - host: ticketing.10.64.140.43.nip.io
+  - host: ticketing.rodarte.tk
     http:
       paths:
       - backend:
@@ -1014,3 +1016,8 @@ spec:
               number: 3001
         path: /
         pathType: Prefix
+  tls:
+  - hosts:
+    - ticketing.rodarte.tk
+    - ticketing-api.rodarte.tk
+    secretName: ticketing-tls
